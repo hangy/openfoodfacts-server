@@ -59,7 +59,7 @@
     "opencollective-postinstall": "^2.0.1",
     "osmtogeojson": "tyrasd/osmtogeojson#^2.2.12",
     "papaparse": "mholt/papaparse#^4.3.6",
-    "yarn": "^1.2.1",
+    "yarn": "^1.16.0",
     "opencollective": "^1.0.3"
   },
   "devDependencies": {
