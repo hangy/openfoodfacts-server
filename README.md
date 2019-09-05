@@ -15,6 +15,8 @@
 
 ## What is Product Opener?
 
+This is cool.
+
 Product Opener is the server software for Open Food Facts and Open Beauty Facts. It is [free and open-source software](https://en.wikipedia.org/wiki/Free_and_open-source_software) created in Perl, HTML and JavaScript.
 
 ## What is Open Food Facts?
