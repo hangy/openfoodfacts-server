@@ -48,7 +48,7 @@ synonyms:en:no12, n12, 12
 
 synonyms:en:colour, color
 
-en:E100, Curcumin, Turmeric extract, curcuma extract
+en:E100, Curcumin, Turmeric extract, curcuma extract, dummy
 ar:E100, كركومين
 bg:E100, Куркумин
 bs:E100, Kurkumin
