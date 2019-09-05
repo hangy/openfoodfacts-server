@@ -6,7 +6,7 @@ en:Acid, Acidifier
 bg:Киселина
 cs:Kyselina
 da:Syre
-de:Säuerungsmittel
+de:Säuerungsmittel, Sauerungsmittel
 el:Μέσο οξίνισης
 es:Acidulante
 et:Hape
