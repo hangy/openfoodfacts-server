@@ -1999,6 +1999,16 @@ it:Confetture di ribes nero
 nl:Cassisjams
 
 < en:Berry jams
+en:Cloudberries jams
+fr:Confitures de plaquebières
+se:Hjortronsylter, htronsylt
+
+< en:Berry jams
+en:Lingonberries jams
+fr:Confitures d'airelles rouges
+se:Lingonsylter, lingonsylt
+
+< en:Berry jams
 en:Raspberry jams
 de:Himbeermarmeladen
 es:Mermeladas y confituras de frambuesas, Mermeladas de frambuesas, Confituras de frambuesa
@@ -13899,10 +13909,19 @@ fr:Confitures de coings
 hu:Birs lekvár
 
 < en:Fruit jellies
+en:Apples jellies
+fr:Gelées de pommes
+
+< en:Fruit jellies
 en:Blackberry jellies
 es:Jaleas de moras
 fr:Gelées de mûres
 nl:Zwarte bessengeleien
+
+< en:Fruit jellies
+en:Blackcurrants jellies
+fr:Gelées de cassis
+sv:Svartvinbärsgeléer, Svartvinbärsgelé
 
 < en:Fruit jellies
 en:Elderberry jellies
@@ -13944,12 +13963,6 @@ en:Redcurrants jellies
 es:Jaleas de grosellas
 fr:Gelées de groseilles
 nl:Aalbessengeleien
-
-< en:Fruit jellies
-fr:Gelées de cassis
-
-< en:Fruit jellies
-fr:Gelées de pommes
 
 < en:Fruit juice and soy drinks
 en:Apple juice and soy drinks
