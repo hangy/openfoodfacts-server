@@ -75,7 +75,7 @@ async function main() {
     }
   }
 
-  console.log('Waiting for spawned processed to exit.');
+  console.log('Waiting for spawned processes to exit.');
   let running = Number.MAX_SAFE_INTEGER;
   let lastMsg = new Date();
   while (running > 0) {

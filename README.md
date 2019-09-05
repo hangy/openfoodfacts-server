@@ -5,12 +5,13 @@
 
 [![Project Status](http://opensource.box.com/badges/active.svg)](http://opensource.box.com/badges)
 [![Build Status](https://travis-ci.org/openfoodfacts/openfoodfacts-server.svg?branch=master)](https://travis-ci.org/openfoodfacts/openfoodfacts-server)
+[![Actions Status](https://github.com/hangy/openfoodfact-server/workflows/Docker%20Image%20CI/badge.svg)](https://github.com/openfoodfacts/openfoodfacts-server/actions)
 [![Average time to resolve an issue](https://isitmaintained.com/badge/resolution/openfoodfacts/openfoodfacts-server.svg)](https://isitmaintained.com/project/openfoodfacts/openfoodfacts-server "Average time to resolve an issue")
 [![Percentage of issues still open](https://isitmaintained.com/badge/open/openfoodfacts/openfoodfacts-server.svg)](https://isitmaintained.com/project/openfoodfacts/openfoodfacts-server "Percentage of issues still open")
 [![Crowdin](https://d322cqt584bo4o.cloudfront.net/openfoodfacts/localized.svg)](https://translate.openfoodfacts.org/)
 [![Open Source Helpers](https://www.codetriage.com/openfoodfacts/openfoodfacts-server/badges/users.svg)](https://www.codetriage.com/openfoodfacts/openfoodfacts-server)
 [![Backers on Open Collective](https://opencollective.com/openfoodfacts-server/backers/badge.svg)](#backers)
- [![Sponsors on Open Collective](https://opencollective.com/openfoodfacts-server/sponsors/badge.svg)](#sponsors) 
+ [![Sponsors on Open Collective](https://opencollective.com/openfoodfacts-server/sponsors/badge.svg)](#sponsors)
 
 ## What is Product Opener?
 
@@ -77,7 +78,7 @@ Specific pages are defined in the relevant `Config.pm` `wiki_texts` variables.
 
 ## Contributors
 
-This project exists thanks to all the people who contribute. 
+This project exists thanks to all the people who contribute.
 <a href="https://github.com/openfoodfacts/openfoodfacts-server/graphs/contributors"><img src="https://opencollective.com/openfoodfacts-server/contributors.svg?width=890&button=false" /></a>
 
 
