@@ -1,47 +1,47 @@
-#!/usr/bin/perl
+#!/usr/bin/perl -w
 
 # This file is part of Product Opener.
-# 
+#
 # Product Opener
-# Copyright (C) 2011-2015 Association Open Food Facts
+# Copyright (C) 2011-2019 Association Open Food Facts
 # Contact: contact@openfoodfacts.org
-# Address: 21 rue des Iles, 94100 Saint-Maur des Fossés, France
-# 
+# Address: 21 rue des Iles, 94100 Saint-Maur des FossÃ©s, France
+#
 # Product Opener is free software: you can redistribute it and/or modify
 # it under the terms of the GNU Affero General Public License as
 # published by the Free Software Foundation, either version 3 of the
 # License, or (at your option) any later version.
-# 
+#
 # This program is distributed in the hope that it will be useful,
 # but WITHOUT ANY WARRANTY; without even the implied warranty of
 # MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 # GNU Affero General Public License for more details.
-# 
+#
 # You should have received a copy of the GNU Affero General Public License
-# along with this program.  If not, see <http://www.gnu.org/licenses/>.
+# along with this program.  If not, see <https://www.gnu.org/licenses/>.
+
+use Modern::Perl '2017';
+use utf8;
 
 use CGI::Carp qw(fatalsToBrowser);
 
-use strict;
-use utf8;
-
-use Blogs::Config qw/:all/;
-use Blogs::Store qw/:all/;
-use Blogs::Index qw/:all/;
-use Blogs::Display qw/:all/;
-use Blogs::Users qw/:all/;
-use Blogs::Lang qw/:all/;
+use ProductOpener::Config qw/:all/;
+use ProductOpener::Store qw/:all/;
+use ProductOpener::Index qw/:all/;
+use ProductOpener::Display qw/:all/;
+use ProductOpener::Users qw/:all/;
+use ProductOpener::Lang qw/:all/;
 
 use CGI qw/:cgi :form escapeHTML charset/;
 use URI::Escape::XS;
 use Storable qw/dclone/;
 
-Blogs::Display::init();
+ProductOpener::Display::init();
 
 my $type = param('type') || 'add';
 my $action = param('action') || 'display';
 
-my $userid = get_fileid(param('userid'));
+my $userid = get_fileid(param('userid'), 1);
 
 my $html = '';
 
@@ -77,60 +77,76 @@ if ($action eq 'process') {
 			}
 		}
 	}
-	
-	Blogs::Users::check_user_form($user_ref, \@errors);
-	
+
+	ProductOpener::Users::check_user_form($user_ref, \@errors);
+
 	if ($#errors >= 0) {
 		$action = 'display';
-	}	
+	}
 }
 
 
 if ($action eq 'display') {
-	
+
 	$scripts .= <<SCRIPT
 SCRIPT
 ;
 
 	if ($#errors >= 0) {
-		$html .= "<p><b>$Lang{correct_the_following_errors}{$lang}</b></p>";
+		$html .= "
+		<div class='alert-box alert'>
+			<p>
+				<b>$Lang{correct_the_following_errors}{$lang}</b>
+			</p>
+		";
 		foreach my $error (@errors) {
-			$html .= "<p class=\"error\">$error</p>\n";
+			$html .= "$error<br />";
 		}
+		$html .= '</div>';
 	}
-	
+
 	$html .= start_form()
 	. "<table>";
-	
-	$html .= Blogs::Users::display_user_form($user_ref,\$scripts);
-	$html .= Blogs::Users::display_user_form_optional($user_ref);
-	
+
+	$html .= ProductOpener::Users::display_user_form($user_ref,\$scripts);
+	$html .= ProductOpener::Users::display_user_form_optional($user_ref);
+	$html .= ProductOpener::Users::display_user_form_admin_only($user_ref);
+
 	if ($admin) {
-		$html .= "\n<tr><td colspan=\"2\">" . checkbox(-name=>'delete', -label=>'Effacer l\'utilisateur') . "</td></tr>";
-	}	
-	
+		$html .= "\n<tr><td colspan=\"2\">" . checkbox(-name=>'delete', -label=>lang("delete_user")) . "</td></tr>";
+	}
+
 	$html .= "\n<tr><td>"
 	. hidden(-name=>'action', -value=>'process', -override=>1)
 	. hidden(-name=>'type', -value=>$type, -override=>1)
 	. hidden(-name=>'userid', -value=>$userid, -override=>1)
-	. submit()
+	. submit(-class=>'button')
 	. "</td></tr>\n</table>"
 	. end_form();
 
 }
 elsif ($action eq 'process') {
 
-    my $dialog = '_user_confirm';
+	my $dialog = '_user_confirm';
 	if (($type eq 'add') or ($type eq 'edit')) {
-		if ( Blogs::Users::process_user_form($user_ref) ) {
+		if ( ProductOpener::Users::process_user_form($user_ref) ) {
             $dialog = '_user_confirm_no_mail';
         }
 	}
 	elsif ($type eq 'delete') {
-		Blogs::Users::delete_user($user_ref);		
+		ProductOpener::Users::delete_user($user_ref);
 	}
-	
+
 	$html .= lang($type . $dialog);
+
+	if (($type eq 'add') or ($type eq 'edit')) {
+
+		# Do not display donate link on producers platform
+		if (not $server_options{producers_platform}) {
+			$html .= "<h3>" . lang("you_can_also_help_us") . "</h3>\n";
+			$html .= "<p>" . lang("bottom_content") . "</p>\n";
+		}
+	}
 }
 
 if ($debug) {

@@ -1,11 +1,11 @@
-#!/usr/bin/perl
+#!/usr/bin/perl -w
 
 # This file is part of Product Opener.
 # 
 # Product Opener
-# Copyright (C) 2011-2015 Association Open Food Facts
+# Copyright (C) 2011-2019 Association Open Food Facts
 # Contact: contact@openfoodfacts.org
-# Address: 21 rue des Iles, 94100 Saint-Maur des Fossés, France
+# Address: 21 rue des Iles, 94100 Saint-Maur des FossÃ©s, France
 # 
 # Product Opener is free software: you can redistribute it and/or modify
 # it under the terms of the GNU Affero General Public License as
@@ -18,31 +18,32 @@
 # GNU Affero General Public License for more details.
 # 
 # You should have received a copy of the GNU Affero General Public License
-# along with this program.  If not, see <http://www.gnu.org/licenses/>.
+# along with this program.  If not, see <https://www.gnu.org/licenses/>.
+
+use Modern::Perl '2017';
+use utf8;
 
 use CGI::Carp qw(fatalsToBrowser);
 use CGI qw/:cgi :form escapeHTML/;
 
-use strict;
-use utf8;
-
-use Blogs::Config qw/:all/;
-use Blogs::Store qw/:all/;
-use Blogs::Index qw/:all/;
-use Blogs::Display qw/:all/;
-use Blogs::Users qw/:all/;
-use Blogs::Products qw/:all/;
-use Blogs::Food qw/:all/;
-use Blogs::Tags qw/:all/;
+use ProductOpener::Config qw/:all/;
+use ProductOpener::Store qw/:all/;
+use ProductOpener::Index qw/:all/;
+use ProductOpener::Display qw/:all/;
+use ProductOpener::Users qw/:all/;
+use ProductOpener::Products qw/:all/;
+use ProductOpener::Food qw/:all/;
+use ProductOpener::Tags qw/:all/;
+use ProductOpener::URL qw/:all/;
 
 use CGI qw/:cgi :form escapeHTML/;
 use URI::Escape::XS;
 use Storable qw/dclone/;
 use Encode;
-use JSON;
+use JSON::PP;
 
-Blogs::Display::init();
-use Blogs::Lang qw/:all/;
+ProductOpener::Display::init();
+use ProductOpener::Lang qw/:all/;
 
 # https://developer.mozilla.org/en-US/Add-ons/Creating_OpenSearch_plugins_for_Firefox
 # Maximum of 16 characters
@@ -59,6 +60,8 @@ else {
 my $description = lang("search_description_opensearch");
 my $image_tag = $options{opensearch_image};
 
+my $uri = format_subdomain($subdomain);
+
 my $xml = <<XML
 <?xml version="1.0" encoding="UTF-8"?>
 <OpenSearchDescription xmlns="http://a9.com/-/spec/opensearch/1.1/">
@@ -72,12 +75,11 @@ my $xml = <<XML
 <OutputEncoding>UTF-8</OutputEncoding>
 <InputEncoding>UTF-8</InputEncoding>
 $image_tag
-<Url type="text/html" method="GET" template="http://$subdomain.$server_domain/cgi/search.pl?search_terms={searchTerms}&amp;search_simple=1&amp;action=process" />
-<Url type="application/opensearchdescription+xml" rel="self" template="http://$subdomain.$server_domain/cgi/opensearch.pl" />
+<Url type="text/html" method="GET" template="$uri/cgi/search.pl?search_terms={searchTerms}&amp;search_simple=1&amp;action=process" />
+<Url type="application/rss+xml" method="GET" template="$uri/cgi/search.pl?search_terms={searchTerms}&amp;search_simple=1&amp;action=process&amp;page={startPage?}&amp;page_size={count?}&amp;rss=1" />
+<Url type="application/opensearchdescription+xml" rel="self" template="$uri/cgi/opensearch.pl" />
 </OpenSearchDescription>
 XML
 ;
 
-print "Content-Type: application/opensearchdescription+xml; charset=UTF-8\r\nAccess-Control-Allow-Origin: *\r\nCache-Control: public, max-age: 10080\r\n\r\n" . $xml;
-
-
+print header( -type => 'application/opensearchdescription+xml', -charset => 'utf-8', -access_control_allow_origin => '*', -cache_control => 'public, max-age: 10080' ) . $xml;

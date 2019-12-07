@@ -1,9 +1,9 @@
 // This file is part of Product Opener.
 // 
 // Product Opener
-// Copyright (C) 2011-2015 Association Open Food Facts
+// Copyright (C) 2011-2019 Association Open Food Facts
 // Contact: contact@openfoodfacts.org
-// Address: 21 rue des Iles, 94100 Saint-Maur des Fossés, France
+// Address: 21 rue des Iles, 94100 Saint-Maur des FossÃ©s, France
 // 
 // Product Opener is free software: you can redistribute it and/or modify
 // it under the terms of the GNU Affero General Public License as
@@ -16,7 +16,7 @@
 // GNU Affero General Public License for more details.
 // 
 // You should have received a copy of the GNU Affero General Public License
-// along with this program.  If not, see <http://www.gnu.org/licenses/>.
+// along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
 function modifySearchCriterion(element, criterion_number){
 	//Type of criterion
@@ -53,7 +53,7 @@ function addSearchCriterion(target, criteria_number) {
 	$(document).on("change", ".tag-search-criterion > input", function(e){
 		var criterionNumber = parseInt(e.target.name.substr(e.target.name.length - 1));
 		//If it's the last criterion, add two more
-		if(!isNaN(criterionNumber) && $("#tag_" + (criterionNumber + 1).toString()).length == 0){
+		if(!isNaN(criterionNumber) && $("#tag_" + (criterionNumber + 1).toString()).length === 0){
 			addSearchCriterion(e.target, criterionNumber + 1);
 		}
 	});
