@@ -77,9 +77,9 @@ sub separator_before_colon($) {
 
 
 # same logic can be implemented by creating the missing values for all keys
-sub lang($) {
+sub lang {
 
-	my $s = shift;
+	my ($s) = @_;
 
 	my $short_l = undef;
 	if ($lang =~ /_/) {

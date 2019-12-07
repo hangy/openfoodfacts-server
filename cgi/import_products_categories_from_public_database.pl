@@ -67,7 +67,7 @@ if ($action eq "display") {
 	$html .= start_multipart_form(-id=>"import_products_categories_form") ;
 
 	$html .= <<HTML
-<input type="submit" class="button small" value="$Lang{import_products_categories}{$lc}">
+<input type="submit" class="button small" value="@{[ lang('import_products_categories') ]}">
 <input type="hidden" name="action" value="process">
 HTML
 ;

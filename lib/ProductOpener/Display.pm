@@ -1678,7 +1678,7 @@ sub display_list_of_tags($$) {
 			if ($tagtype eq 'nutrition_grades') {
 				if ($tagid =~ /^[abcde]$/) {
 					my $grade = $tagid;
-					$display = "<img src=\"/images/misc/nutriscore-$grade.svg\" alt=\"$Lang{nutrition_grade_fr_alt}{$lc} " . uc($grade) . "\" style=\"margin-bottom:1rem;max-width:100%\">" ;
+					$display = "<img src=\"/images/misc/nutriscore-$grade.svg\" alt=\"@{[ lang('nutrition_grade_fr_alt') ]} " . uc($grade) . "\" style=\"margin-bottom:1rem;max-width:100%\">" ;
 				}
 				else {
 					$display = lang("unknown");
@@ -1834,7 +1834,7 @@ HTML
                 text: '$request_ref->{title}'
             },
             subtitle: {
-                text: '$Lang{data_source}{$lc}$sep: $formatted_subdomain'
+                text: '@{[ lang('data_source') ]}$sep: $formatted_subdomain'
             },
             xAxis: {
                 title: {
@@ -1920,7 +1920,7 @@ HTML
 	var label = el.html();
 	label = countries_map_names[code];
 	if (countries_map_data[code] > 0) {
-		label = label + ' (' + countries_map_data[code] + ' $Lang{products}{$lc})';
+		label = label + ' (' + countries_map_data[code] + ' @{[ lang('products') ]})';
 	}
 	el.html(label);
   },
@@ -1966,9 +1966,9 @@ HTML
 		$initjs .= <<JS
 oTable = \$('#tagstable').DataTable({
 	language: {
-		search: "$Lang{tagstable_search}{$lang}",
+		search: "@{[ lang('tagstable_search') ]}",
 		info: "_TOTAL_ $tagtype_p",
-		infoFiltered: " - $Lang{tagstable_filtered}{$lang}"
+		infoFiltered: " - @{[ lang('tagstable_filtered') ]}"
 	},
 	paging: false,
 	order: [[ 1, "desc" ]],
@@ -2198,7 +2198,7 @@ $new_translation
 <span style="font-size: 80%;">&rarr; <a href="$google_translate_link" target="_blank">Google Translate</a></span>
 </td>
 <td>
-<div id="save_${j}_div"><button id="save_$j" class="tiny button save" type="button">$Lang{save}{$lang}</button></div>
+<div id="save_${j}_div"><button id="save_$j" class="tiny button save" type="button">@{[ lang('save') ]}</button></div>
 </td>
 <td style="text-align:right">$products</td></tr>
 HTML
@@ -2227,9 +2227,9 @@ HTML
 		$initjs .= <<JS
 oTable = \$('#tagstable').DataTable({
 	language: {
-		search: "$Lang{tagstable_search}{$lang}",
+		search: "@{[ lang('tagstable_search') ]}",
 		info: "_TOTAL_ $tagtype_p",
-		infoFiltered: " - $Lang{tagstable_filtered}{$lang}"
+		infoFiltered: " - @{[ lang('tagstable_filtered') ]}"
 	},
 	paging: false,
 	order: [[ 1, "desc" ]],
@@ -2385,9 +2385,9 @@ sub display_points_ranking($$) {
 		$initjs .= <<JS
 ${tagtype}Table = \$('#${tagtype}table').DataTable({
 	language: {
-		search: "$Lang{tagstable_search}{$lang}",
+		search: "@{[ lang('tagstable_search') ]}",
 		info: "_TOTAL_ $tagtype_p",
-		infoFiltered: " - $Lang{tagstable_filtered}{$lang}"
+		infoFiltered: " - @{[ lang('tagstable_filtered') ]}"
 	},
 	paging: false,
 	order: [[ 1, "desc" ]]
@@ -3896,7 +3896,7 @@ sub search_and_display_products($$$$$) {
 <ul class="button-group">
 <li><div style="font-size:1.2rem;background-color:#eeeeee;padding:0.3rem 1rem;height:2.75rem;margin:0">$html_count</div></li>
 <li>
-<button href="#" data-dropdown="drop1" aria-controls="drop1" aria-expanded="false" class="button dropdown small">$Lang{explore_products_by}{$lc}</button>
+<button href="#" data-dropdown="drop1" aria-controls="drop1" aria-expanded="false" class="button dropdown small">@{[ lang('explore_products_by') ]}</button>
 <ul id="drop1" data-dropdown-content class="f-dropdown" aria-hidden="true">
 HTML
 ;
@@ -4692,7 +4692,7 @@ JS
 				my $seriesid = $nutrition_grade;
 				$series_data .= <<JS
 {
-	name: '$title : $series_n{$seriesid} $Lang{products_p}{$lc}',
+	name: '$title : $series_n{$seriesid} @{[ lang('products_p') ]}',
 	color: 'rgba($r, $g, $b, .9)',
 	turboThreshold : 0,
 	data: [ $series{$seriesid} ]
@@ -4737,7 +4737,7 @@ JS
 
 				$series_data .= <<JS
 {
-	name: '$title : $series_n{$seriesid} $Lang{products_p}{$lc}',
+	name: '$title : $series_n{$seriesid} @{[ lang('products_p') ]}',
 	color: 'rgba($r, $g, $b, .9)',
 	turboThreshold : 0,
 	data: [ $series{$seriesid} ]
@@ -4770,7 +4770,7 @@ JS
                 text: '$graph_ref->{graph_title}'
             },
             subtitle: {
-                text: '$Lang{data_source}{$lc}$sep: $formatted_subdomain'
+                text: '@{[ lang('data_source') ]}$sep: $formatted_subdomain'
             },
             xAxis: {
 				$x_allowDecimals
@@ -4796,7 +4796,7 @@ JS
 				formatter: function() {
                     return '<a href="' + this.point.url + '">' + this.point.product_name + '<br>'
 						+ this.point.img + '</a><br>'
-						+ '$Lang{nutrition_data_per_100g}{$lc} :'
+						+ '@{[ lang('nutrition_data_per_100g') ]} :'
 						+ '<br>$x_title$sep: '+ this.x + ' $x_unit2'
 						+ '<br>$y_title$sep: ' + this.y + ' $y_unit2';
                 }
@@ -5123,7 +5123,7 @@ JS
                 text: '$graph_ref->{graph_title}'
             },
             subtitle: {
-                text: '$Lang{data_source}{$lc}$sep: $formatted_subdomain'
+                text: '@{[ lang('data_source') ]}$sep: $formatted_subdomain'
             },
             xAxis: {
                 title: {
@@ -5590,31 +5590,31 @@ sub display_login_register($)
 	if (not defined $User_id) {
 
 		my $content = <<HTML
-<p>$Lang{login_to_add_and_edit_products}{$lc}</p>
+<p>@{[ lang('login_to_add_and_edit_products') ]}</p>
 
 <form method="post" action="/cgi/session.pl">
 	<div class="row">
 		<div class="small-12 columns">
-			<label>$Lang{login_username_email}{$lc}
+			<label>@{[ lang('login_username_email') ]}
 				<input type="text" name="user_id" autocomplete="username" required>
 			</label>
 		</div>
 		<div class="small-12 columns">
-			<label>$Lang{password}{$lc}
+			<label>@{[ lang('password') ]}
 				<input type="password" name="password" autocomplete="current-password" required>
 			</label>
 		</div>
 		<div class="small-12 columns">
 			<label>
 				<input type="checkbox" name="remember_me" value="on">
-				$Lang{remember_me}{$lc}
+				@{[ lang('remember_me') ]}
 			</label>
 		</div>
 	</div>
-	<input type="submit" name=".submit" value="$Lang{login_register_title}{$lc}" class="button small">
+	<input type="submit" name=".submit" value="@{[ lang('login_register_title') ]}" class="button small">
 </form>
-<p>$Lang{login_not_registered_yet}{$lc}
-<a href="/cgi/user.pl">$Lang{login_create_your_account}{$lc}</a></p>
+<p>@{[ lang('login_not_registered_yet') ]}
+<a href="/cgi/user.pl">@{[ lang('login_create_your_account') ]}</a></p>
 
 HTML
 ;
@@ -5666,7 +5666,7 @@ sub display_my_block($)
 	</form>
 </li>
 <li>
-	<a href="/cgi/user.pl?userid=$User_id&type=edit" class="button small" title="$Lang{edit_settings}{$lc}" style="padding-left:1rem;padding-right:1rem">@{[ display_icon('settings') ]}</a>
+	<a href="/cgi/user.pl?userid=$User_id&type=edit" class="button small" title="@{[ lang('edit_settings') ]}" style="padding-left:1rem;padding-right:1rem">@{[ display_icon('settings') ]}</a>
 </li>
 </ul>
 $links
@@ -5930,7 +5930,7 @@ $options{favicons}
 <link rel="stylesheet" href="$static_subdomain/css/dist/app.css?v=$file_timestamps{"css/dist/app.css"}">
 <link rel="stylesheet" href="$static_subdomain/css/dist/jqueryui/themes/base/jquery-ui.min.css">
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.3/css/select2.min.css" integrity="sha384-HIipfSYbpCkh5/1V87AWAeR5SUrNiewznrUrtNz1ux4uneLhsAKzv/0FnMbj3m6g" crossorigin="anonymous">
-<link rel="search" href="$formatted_subdomain/cgi/opensearch.pl" type="application/opensearchdescription+xml" title="$Lang{site_name}{$lang}">
+<link rel="search" href="$formatted_subdomain/cgi/opensearch.pl" type="application/opensearchdescription+xml" title="@{[ lang('site_name') ]}">
 <style media="all">
 HTML
 ;
@@ -5965,7 +5965,7 @@ $google_analytics
 		</li>
 	</ul>
 	<section class="top-bar-section">
-		<label for="select_country" style="display:none">$Lang{select_country}{$lang}</label>
+		<label for="select_country" style="display:none">@{[ lang('select_country') ]}</label>
 HTML
 ;
 
@@ -6342,8 +6342,8 @@ HTML
 
 	my $public_site_menu_options = <<HTML
 			<li class="show-for-large-up divider"></li>
-			<li><a href="$Lang{menu_discover_link}{$lang}">$Lang{menu_discover}{$lang}</a></li>
-			<li><a href="$Lang{menu_contribute_link}{$lang}">$Lang{menu_contribute}{$lang}</a></li>
+			<li><a href="@{[ lang('menu_discover_link') ]}">@{[ lang('menu_discover') ]}</a></li>
+			<li><a href="@{[ lang('menu_contribute_link') ]}">@{[ lang('menu_contribute') ]}</a></li>
 			<li class="show-for-large"><a href="/$Lang{get_the_app_link}{$lc}" title="$Lang{get_the_app}{$lc}" class="button success">@{[ display_icon('phone_android') ]}</a></li>
 			<li class="show-for-xlarge-up"><a href="/$Lang{get_the_app_link}{$lc}" class="button success">@{[ display_icon('phone_android') ]} $Lang{get_the_app}{$lc}</a></li>
 HTML
@@ -6359,20 +6359,20 @@ HTML
 				<form action="/cgi/search.pl">
 					<div class="row collapse">
 						<div class="small-8 columns">
-							<input type="text" placeholder="$Lang{search_a_product_placeholder}{$lang}" name="search_terms" value="${search_terms}">
+							<input type="text" placeholder="@{[ lang('search_a_product_placeholder') ]}" name="search_terms" value="${search_terms}">
 							<input name="search_simple" value="1" type="hidden">
 							<input name="action" value="process" type="hidden">
 						</div>
 						<div class="small-4 columns">
-							<button type="submit" title="$Lang{search}{$lang}">@{[ display_icon('search') ]}</button>
+							<button type="submit" title="@{[ lang('search') ]}">@{[ display_icon('search') ]}</button>
 						</div>
 					</div>
 				</form>
 			</li>
-			<li class="show-for-large-only"><a href="/cgi/search.pl" title="$Lang{advanced_search}{$lang}">@{[ display_icon('add') ]}</a></li>
-			<li class="show-for-xlarge-up"><a href="/cgi/search.pl">@{[ display_icon('add') ]} $Lang{advanced_search}{$lang}</span></a></li>
-			<li class="show-for-large-only"><a href="/cgi/search.pl?graph=1" title="$Lang{graphs_and_maps}{$lang}">@{[ display_icon('bar_chart') ]}</a></li>
-			<li class="show-for-xlarge-up"><a href="/cgi/search.pl?graph=1">@{[ display_icon('bar_chart') ]} $Lang{graphs_and_maps}{$lang}</span></a></li>
+			<li class="show-for-large-only"><a href="/cgi/search.pl" title="@{[ lang('advanced_search') ]}">@{[ display_icon('add') ]}</a></li>
+			<li class="show-for-xlarge-up"><a href="/cgi/search.pl">@{[ display_icon('add') ]} @{[ lang('advanced_search') ]}</span></a></li>
+			<li class="show-for-large-only"><a href="/cgi/search.pl?graph=1" title="@{[ lang('graphs_and_maps') ]}">@{[ display_icon('bar_chart') ]}</a></li>
+			<li class="show-for-xlarge-up"><a href="/cgi/search.pl?graph=1">@{[ display_icon('bar_chart') ]} @{[ lang('graphs_and_maps') ]}</span></a></li>
 			$public_site_menu_options
 		</ul>
 	</section>
@@ -6396,7 +6396,7 @@ HTML
 					<button type="submit" class="button postfix">@{[ display_icon('search') ]}</button>
 				</div>
 				<div class="small-2 columns">
-					<a href="/cgi/search.pl" title="$Lang{advanced_search}{$lang}">@{[ display_icon('search') ]} @{[ display_icon('add') ]}</a>
+					<a href="/cgi/search.pl" title="@{[ lang('advanced_search') ]}">@{[ display_icon('search') ]} @{[ display_icon('add') ]}</a>
 				</div>
 			</div>
 		</form>
@@ -6417,7 +6417,7 @@ HTML
 			<div class="xxlarge-1 xlarge-2 large-3 medium-4 columns hide-for-small" style="background-color:#fafafa;padding-top:1rem;" data-equalizer-watch>
 				<div class="sidebar">
 					<div style="text-align:center">
-						<a href="/"><img id="logo" src="/images/misc/$Lang{logo}{$lang}" srcset="/images/misc/$Lang{logo2x}{$lang} 2x" width="178" height="150" alt="$Lang{site_name}{$lang}" style="margin-bottom:0.5rem"></a>
+						<a href="/"><img id="logo" src="/images/misc/@{[ lang('logo') ]}" srcset="/images/misc/@{[ lang('logo2x') ]} 2x" width="178" height="150" alt="@{[ lang('site_name') ]}" style="margin-bottom:0.5rem"></a>
 					</div>
 					$tagline
 					<form action="/cgi/search.pl" class="hide-for-large-up">
@@ -6432,7 +6432,7 @@ HTML
 							</div>
 							<div class="small-1 columns">
 								<label class="right inline">
-									<a href="/cgi/search.pl" title="$Lang{advanced_search}{$lang}">@{[ display_icon('add') ]}</a>
+									<a href="/cgi/search.pl" title="@{[ lang('advanced_search') ]}">@{[ display_icon('add') ]}</a>
 								</label>
 							</div>
 						</div>
@@ -6453,43 +6453,43 @@ HTML
 <footer>
 	<div class="small-12 medium-6 large-3 columns off">
 		<div class="title">Open Food Facts</div>
-		<p>$Lang{footer_tagline}{$lc}</p>
+		<p>@{[ lang('footer_tagline') ]}</p>
 		<ul>
-			<li><a href="$Lang{footer_legal_link}{$lc}">$Lang{footer_legal}{$lc}</a></li>
-			<li><a href="$Lang{footer_terms_link}{$lc}">$Lang{footer_terms}{$lc}</a></li>
-			<li><a href="$Lang{footer_data_link}{$lc}">$Lang{footer_data}{$lc}</a></li>
-			<li><a href="$Lang{donate_link}{$lc}">$Lang{donate}{$lc}</a></li>
+			<li><a href="@{[ lang('footer_legal_link') ]}">@{[ lang('footer_legal') ]}</a></li>
+			<li><a href="@{[ lang('footer_terms_link') ]}">@{[ lang('footer_terms') ]}</a></li>
+			<li><a href="@{[ lang('footer_data_link') ]}">@{[ lang('footer_data') ]}</a></li>
+			<li><a href="@{[ lang('donate_link') ]}">@{[ lang('donate') ]}</a></li>
 		</ul>
 	</div>
 	<div class="small-12 medium-6 large-3 columns app">
-		<div class="title">$Lang{footer_install_the_app}{$lc}</div>
-		<a href="$Lang{ios_app_link}{$lc}">$Lang{ios_app_badge}{$lc}</a>
-		<a href="$Lang{android_app_link}{$lc}">$Lang{android_app_badge}{$lc}</a>
-		<a href="$Lang{windows_phone_app_link}{$lc}">$Lang{windows_phone_app_badge}{$lc}</a>
-		<a href="$Lang{android_apk_app_link}{$lc}">$Lang{android_apk_app_badge}{$lc}</a>
+		<div class="title">@{[ lang('footer_install_the_app') ]} </div>
+		<a href="@{[ lang('ios_app_link') ]}">@{[ lang('ios_app_badge') ]}</a>
+		<a href="@{[ lang('android_app_link') ]}">@{[ lang('android_app_badge') ]}</a>
+		<a href="@{[ lang('windows_phone_app_link') ]}">@{[ lang('windows_phone_app_badge') ]}</a>
+		<a href="@{[ lang('android_apk_app_link') ]}">@{[ lang('android_apk_app_badge') ]}</a>
 	</div>
 	<div class="small-12 medium-6 large-3 columns project">
-		<div class="title">$Lang{footer_discover_the_project}{$lc}</div>
+		<div class="title">@{[ lang('footer_discover_the_project') ]}</div>
 		<ul>
-			<li><a href="$Lang{footer_who_we_are_link}{$lc}">$Lang{footer_who_we_are}{$lc}</a></li>
-			<li><a href="$Lang{footer_faq_link}{$lc}">$Lang{footer_faq}{$lc}</a></li>
-			<li><a href="$Lang{footer_blog_link}{$lc}">$Lang{footer_blog}{$lc}</a></li>
-			<li><a href="$Lang{footer_press_link}{$lc}">$Lang{footer_press}{$lc}</a></li>
-			<li><a href="$Lang{footer_wiki_link}{$lc}">$Lang{footer_wiki}{$lc}</a></li>
-			<li><a href="$Lang{footer_translators_link}{$lc}">$Lang{footer_translators}{$lc}</a></li>
-			<li><a href="$Lang{footer_partners_link}{$lc}">$Lang{footer_partners}{$lc}</a></li>
-			<li><a href="$Lang{footer_obf_link}{$lc}">$Lang{footer_obf}{$lc}</a></li>
+			<li><a href="@{[ lang('footer_who_we_are_link') ]}">@{[ lang('footer_who_we_are') ]}</a></li>
+			<li><a href="@{[ lang('footer_faq_link') ]}">@{[ lang('footer_faq') ]}</a></li>
+			<li><a href="@{[ lang('footer_blog_link') ]}">@{[ lang('footer_blog') ]}</a></li>
+			<li><a href="@{[ lang('footer_press_link') ]}">@{[ lang('footer_press') ]}</a></li>
+			<li><a href="@{[ lang('footer_wiki_link') ]}">@{[ lang('footer_wiki') ]}</a></li>
+			<li><a href="@{[ lang('footer_translators_link') ]}">@{[ lang('footer_translators') ]}</a></li>
+			<li><a href="@{[ lang('footer_partners_link') ]}">@{[ lang('footer_partners') ]}</a></li>
+			<li><a href="@{[ lang('footer_obf_link') ]}">@{[ lang('footer_obf') ]}</a></li>
 		</ul>
 	</div>
 	<div class="small-12 medium-6 large-3 columns community">
-		<div class="title">$Lang{footer_join_the_community}{$lc}</div>
+		<div class="title">@{[ lang('footer_join_the_community') ]}</div>
 		<p>
-			<a href="$Lang{footer_code_of_conduct_link}{$lc}">$Lang{footer_code_of_conduct}{$lc}</a>
+			<a href="@{[ lang('footer_code_of_conduct_link') ]}">@{[ lang('footer_code_of_conduct') ]}</a>
 			<br><br>
 			$join_us_on_slack
 			<br>
-			$Lang{footer_and_the_facebook_group}{$lc}
-			$Lang{footer_follow_us}{$lc}
+			@{[ lang('footer_and_the_facebook_group') ]}
+			@{[ lang('footer_follow_us') ]}
 		</p>
 	</div>
 </footer>
@@ -6503,7 +6503,7 @@ HTML
 <script>
 \$(function() {
 \$("#select_country").select2({
-	placeholder: "$Lang{select_country}{$lang}",
+	placeholder: "@{[ lang('select_country') ]}",
 	allowClear: true
 }).on("select2:select", function(e) {
 	var subdomain =  e.params.data.id;
@@ -6576,7 +6576,7 @@ window.addEventListener('load', onLoad);
 {
 	"\@context" : "https://schema.org",
 	"\@type" : "WebSite",
-	"name" : "$Lang{site_name}{$lc}",
+	"name" : "@{[ lang('site_name') ]}",
 	"url" : "$formatted_subdomain",
 	"potentialAction": {
 		"\@type": "SearchAction",
@@ -6588,8 +6588,8 @@ window.addEventListener('load', onLoad);
 	"\@context": "https://schema.org/",
 	"\@type": "Organization",
 	"url": "$formatted_subdomain",
-	"logo": "/images/misc/$Lang{logo}{$lang}",
-	"name": "$Lang{site_name}{$lc}",
+	"logo": "/images/misc/@{[ lang('logo') ]}",
+	"name": "@{[ lang('site_name') ]}",
 	"sameAs" : [ "$facebook_page", "https://twitter.com/$twitter_account"]
 }
 </script>
@@ -6669,7 +6669,7 @@ sub display_product_search_or_add($)
 
 	my $title = lang("add_product");
 
-	my $or = $Lang{or}{$lc};
+	my $or = lang('or');
 	$or =~ s/( |\&nbsp;)?://;
 
 	my $html = '';
@@ -6679,9 +6679,9 @@ sub display_product_search_or_add($)
 	if ($server_options{producers_platform}) {
 
 		$html = <<HTML
-&rarr; <a href="/cgi/import_file_upload.pl">$Lang{import_product_data}{$lc}</a><br>
-&rarr; <a href="/cgi/import_photos_upload.pl">$Lang{import_product_photos}{$lc}</a><br>
-&rarr; <a href="/cgi/export_products.pl">$Lang{export_product_data_photos}{$lc}</a><br>
+&rarr; <a href="/cgi/import_file_upload.pl">@{[ lang('import_product_data') ]}</a><br>
+&rarr; <a href="/cgi/import_photos_upload.pl">@{[ lang('import_product_photos') ]}</a><br>
+&rarr; <a href="/cgi/export_products.pl">@{[ lang('export_product_data_photos') ]}</a><br>
 </p>
 HTML
 ;
@@ -6704,14 +6704,14 @@ HTML
 
       <div class="row collapse">
         <div class="small-9 columns">
-          <input type="text" name="code" placeholder="$or $Lang{barcode}{$lc}">
+          <input type="text" name="code" placeholder="$or @{[ lang('barcode') ]}">
         </div>
         <div class="small-3 columns">
-           <input type="submit" value="$Lang{add}{$lc}" class="button postfix">
+           <input type="submit" value="@{[ lang('add') ]}" class="button postfix">
         </div>
       </div>
 
-	  <input type="submit" value="$Lang{no_barcode}{$lc}" class="button tiny">
+	  <input type="submit" value="@{[ lang('no_barcode') ]}" class="button tiny">
 </form>
 HTML
 ;
@@ -7146,7 +7146,7 @@ HTML
 <div class="edit_button right" style="float:right;margin-top:-10px;">
 <a href="/cgi/product.pl?type=edit&code=$code" class="button small">
 	@{[ display_icon('edit') ]}
-	<span class="show-for-large-up"> $Lang{edit_product_page}{$lc}</span>
+	<span class="show-for-large-up"> @{[ lang('edit_product_page') ]}</span>
 </a></div>
 HTML
 ;
@@ -7156,7 +7156,7 @@ HTML
 <div class="delete_button right" style="float:right;margin-top:-10px;margin-right:10px;">
 <a href="/cgi/product.pl?type=delete&code=$code" class="button small">
 	@{[ display_icon('delete') ]}
-	<span class="show-for-large-up"> $Lang{delete_product_page}{$lc}</span>
+	<span class="show-for-large-up"> @{[ lang('delete_product_page') ]}</span>
 </a></div>
 HTML
 ;
@@ -7222,7 +7222,7 @@ HTML
 	if ($code =~ /^(?:(?:0{7}[0-9]{5,6})|(?:04[0-9]{10,11})|(?:[02][0-9]{2}[0-9]{5}))$/) {
 		$html .= <<HTML
 <div data-alert class="alert-box info" id="warning_gs1_company_prefix" style="display: block;">
-$Lang{warning_gs1_company_prefix}{$lc}
+@{[ lang('warning_gs1_company_prefix') ]}
 <a href="#" class="close">&times;</a>
 </span></div>
 HTML
@@ -7235,7 +7235,7 @@ HTML
 
 		$html .= <<HTML
 <div data-alert class="alert-box info" id="warning_not_complete" style="display: block;">
-$Lang{warning_not_complete}{$lc}
+@{[ lang('warning_not_complete') ]}
 <a href="#" class="close">&times;</a>
 </span></div>
 HTML
@@ -7362,7 +7362,7 @@ HTML
 	}
 
 	$html .= <<HTML
-<h2>$Lang{product_characteristics}{$lc}</h2>
+<h2>@{[ lang('product_characteristics') ]}</h2>
 <div class="row">
 <div class="hide-for-large-up medium-12 columns">$html_image</div>
 <div class="medium-12 large-8 xlarge-8 xxlarge-8 columns">
@@ -7402,7 +7402,7 @@ HTML
 
 
 		$html .= <<HTML
-<h2>$Lang{ingredients}{$lc}</h2>
+<h2>@{[ lang('ingredients') ]}</h2>
 <div class="row">
 <div class="hide-for-large-up medium-12 columns">$html_image</div>
 <div class="medium-12 large-8 xlarge-8 xxlarge-8 columns">
@@ -7778,7 +7778,7 @@ HTML
 		my $display = display_taxonomy_tag($lc, "nova_groups", $product_ref->{nova_groups_tags}[0]);
 
 		$html .= <<HTML
-<h4>$Lang{nova_groups_s}{$lc}
+<h4>@{[ lang('nova_groups_s') ]}
 <a href="/nova">
 @{[ display_icon('info') ]}</a>
 </h4>
@@ -7807,7 +7807,7 @@ HTML
 
 
 	$html .= <<HTML
-<h2>$Lang{nutrition_data}{$lc}</h2>
+<h2>@{[ lang('nutrition_data') ]}</h2>
 <div class="row">
 <div class="hide-for-large-up medium-12 columns">$html_image</div>
 <div class="medium-12 large-8 xlarge-8 xxlarge-8 columns">
@@ -7880,7 +7880,7 @@ HTML
 	if ($html_fields ne "") {
 
 		$html .= <<HTML
-<h2>$Lang{product_other_information}{$lc}</h2>
+<h2>@{[ lang('product_other_information') ]}</h2>
 <div class="row">
 <div class="small-12 columns">
 $html_fields
@@ -7945,14 +7945,14 @@ HTML
 
 	$html .= <<HTML
 
-<p class="details">$Lang{product_added}{$lang} $created_date $Lang{by}{$lang} $creator.<br>
-$Lang{product_last_edited}{$lang} $last_modified_date $Lang{by}{$lang} $last_editor.
+<p class="details">@{[ lang('product_added') ]} $created_date @{[ lang('by') ]} $creator.<br>
+@{[ lang('product_last_edited') ]} $last_modified_date @{[ lang('by') ]} $last_editor.
 $other_editors
 $checked
 </p>
 
 <div class="alert-box info">
-$Lang{fixme_product}{$lc}
+@{[ lang('fixme_product') ]}
 </div>
 
 </div>
@@ -7970,7 +7970,7 @@ HTML
 <div class="edit_button right" style="float:right;margin-top:-10px;">
 <a href="/cgi/product.pl?type=edit&code=$code" class="button small">
 	@{[ display_icon('edit') ]}
-	$Lang{edit_product_page}{$lc}
+	@{[ lang('edit_product_page') ]}
 </a></div>
 HTML
 ;
@@ -8004,9 +8004,9 @@ HTML
 <meta name="twitter:creator" content="@<twitter_account>">
 <meta name="twitter:title" content="$title">
 <meta name="twitter:description" content="$description">
-<meta name="twitter:label1" content="$Lang{brands_s}{$lc}">
+<meta name="twitter:label1" content="@{[ lang('brands_s') ]}">
 <meta name="twitter:data1" content="$product_ref->{brand}">
-<meta name="twitter:label2" content="$Lang{categories_s}{$lc}">
+<meta name="twitter:label2" content="@{[ lang('categories_s') ]}">
 <meta name="twitter:data2" content="$product_ref->{category}">
 $meta_product_image_url
 
@@ -8158,7 +8158,7 @@ HTML
 		my $display = display_taxonomy_tag($lc, "nova_groups", $product_ref->{nova_groups_tags}[0]);
 
 		$html .= <<HTML
-<h4>$Lang{nova_groups_s}{$lc}
+<h4>@{[ lang('nova_groups_s') ]}
 <a href="https://world.openfoodfacts.org/nova" title="NOVA groups for food processing">
 @{[ display_icon('info') ]}</a>
 </h4>
@@ -8400,28 +8400,28 @@ HTML
 	$html .= <<HTML
 
 <p>
-$Lang{product_added}{$lang} $created_date $Lang{by}{$lang} $creator
+@{[ lang('product_added') ]} $created_date @{[ lang('by') ]} $creator
 $last_image
 </p>
 
 
 <div style="margin-bottom:20px;">
 
-<p>$Lang{fixme_product}{$lang}</p>
+<p>@{[ lang('fixme_product') ]}</p>
 
 $image_warning
 
-<p>$Lang{app_you_can_add_pictures}{$lang}</p>
+<p>@{[ lang('app_you_can_add_pictures') ]}</p>
 
-<button onclick="captureImage();" data-icon="off-camera">$Lang{image_front}{$lang}</button>
+<button onclick="captureImage();" data-icon="off-camera">@{[ lang('image_front') ]}</button>
 <div id="upload_image_result_front"></div>
-<button onclick="captureImage();" data-icon="off-camera">$Lang{image_ingredients}{$lang}</button>
+<button onclick="captureImage();" data-icon="off-camera">@{[ lang('image_ingredients') ]}</button>
 <div id="upload_image_result_ingredients"></div>
-<button onclick="captureImage();" data-icon="off-camera">$Lang{image_nutrition}{$lang}</button>
+<button onclick="captureImage();" data-icon="off-camera">@{[ lang('image_nutrition') ]}</button>
 <div id="upload_image_result_nutrition"></div>
-<button onclick="captureImage();" data-icon="off-camera">$Lang{app_take_a_picture}{$lang}</button>
+<button onclick="captureImage();" data-icon="off-camera">@{[ lang('app_take_a_picture') ]}</button>
 <div id="upload_image_result"></div>
-<p>$Lang{app_take_a_picture_note}{$lang}</p>
+<p>@{[ lang('app_take_a_picture_note') ]}</p>
 
 </div>
 HTML
@@ -8595,11 +8595,11 @@ sub display_nutrient_levels($) {
 		}
 
 		$html_nutrition_grade .= <<HTML
-<h4>$Lang{nutrition_grade_fr_title}{$lc}
-<a href="/nutriscore" title="$Lang{nutrition_grade_fr_formula}{$lc}">
+<h4>@{[ lang('nutrition_grade_fr_title') ]}
+<a href="/nutriscore" title="@{[ lang('nutrition_grade_fr_formula') ]}">
 @{[ display_icon('info') ]}</a>
 </h4>
-<a href="/nutriscore" title="$Lang{nutrition_grade_fr_formula}{$lc}"><img src="/images/misc/nutriscore-$grade.svg" alt="$Lang{nutrition_grade_fr_alt}{$lc} $uc_grade" style="margin-bottom:1rem;max-width:100%"></a><br>
+<a href="/nutriscore" title="@{[ lang('nutrition_grade_fr_formula') ]}"><img src="/images/misc/nutriscore-$grade.svg" alt="@{[ lang('nutrition_grade_fr_alt') ]} $uc_grade" style="margin-bottom:1rem;max-width:100%"></a><br>
 $warning
 HTML
 ;
@@ -8621,8 +8621,8 @@ HTML
 	}
 	if ($html_nutrient_levels ne '') {
 		$html_nutrient_levels = <<HTML
-<h4>$Lang{nutrient_levels_info}{$lc}
-<a href="$Lang{nutrient_levels_link}{$lc}" title="$Lang{nutrient_levels_info}{$lc}">@{[ display_icon('info') ]}</a>
+<h4>@{[ lang('nutrient_levels_info') ]}
+<a href="@{[ lang('nutrient_levels_link') ]}" title="@{[ lang('nutrient_levels_info') ]}">@{[ display_icon('info') ]}</a>
 </h4>
 $html_nutrient_levels
 HTML
@@ -8906,9 +8906,9 @@ HTML
 		$html .= <<HTML
 <br>
 <input type="radio" id="nutrition_data_compare_percent" value="compare_percent" name="nutrition_data_compare_type" checked>
-<label for="nutrition_data_compare_percent">$Lang{nutrition_data_compare_percent}{$lang}</label>
+<label for="nutrition_data_compare_percent">@{[ lang('nutrition_data_compare_percent') ]}</label>
 <input type="radio" id="nutrition_data_compare_value" value="compare_value" name="nutrition_data_compare_type">
-<label for="nutrition_data_compare_value">$Lang{nutrition_data_compare_value}{$lang}</label>
+<label for="nutrition_data_compare_value">@{[ lang('nutrition_data_compare_value') ]}</label>
 
 HTML
 ;
@@ -9413,7 +9413,7 @@ HTML
 		elsif (($nid eq 'carbon-footprint') or ($nid eq 'carbon-footprint-from-meat-or-fish')) {
 
 			$html2 .= <<HTML
-<tr id="ecological_footprint"><td style="padding-top:10px;font-weight:bold;">$Lang{ecological_data_table}{$lang}</td>$empty_cols</tr>
+<tr id="ecological_footprint"><td style="padding-top:10px;font-weight:bold;">@{[ lang('ecological_data_table') ]}</td>$empty_cols</tr>
 HTML
 			. $input;
 
@@ -9462,10 +9462,10 @@ sub display_product_api($)
 		$response{status_verbose} = 'product not found';
 		if ($request_ref->{jqm}) {
 			$response{jqm} = <<HTML
-$Lang{app_please_take_pictures}{$lang}
-<button onclick="captureImage();" data-icon="off-camera">$Lang{app_take_a_picture}{$lang}</button>
+@{[ lang('app_please_take_pictures') ]}
+<button onclick="captureImage();" data-icon="off-camera">@{[ lang('app_take_a_picture') ]}</button>
 <div id="upload_image_result"></div>
-<p>$Lang{app_take_a_picture_note}{$lang}</p>
+<p>@{[ lang('app_take_a_picture_note') ]}</p>
 HTML
 ;
 			if ($request_ref->{api_version} >= 0.1) {
@@ -9492,16 +9492,16 @@ HTML
 				$html .= <<HTML
 </div>
 <div id="save_button">
-<input type="submit" id="save" name="save" value="$Lang{save}{$lang}">
+<input type="submit" id="save" name="save" value="@{[ lang('save') ]}">
 </div>
 <div id="saving" style="display:none">
-<img src="loading2.gif" style="margin-right:10px"> $Lang{saving}{$lang}
+<img src="loading2.gif" style="margin-right:10px"> @{[ lang('saving') ]}
 </div>
 <div id="saved" style="display:none">
-$Lang{saved}{$lang}
+@{[ lang('saved') ]}
 </div>
 <div id="not_saved" style="display:none">
-$Lang{not_saved}{$lang}
+@{[ lang('not_saved') ]}
 </div>
 </form>
 HTML

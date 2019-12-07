@@ -284,12 +284,12 @@ sub display_search_image_form($) {
 </div>
 
 <div id="imgsearchmsg_$id" data-alert class="alert-box info" style="display:none">
-  $Lang{sending_image}{$lang}
+  @{[ lang('sending_image') ]}
   <a href="#" class="close">&times;</a>
 </div>
 
 <div id="imgsearcherror_$id" data-alert class="alert-box alert" style="display:none">
-  $Lang{send_image_error}{$lang}
+  @{[ lang('send_image_error') ]}
   <a href="#" class="close">&times;</a>
 </div>
 

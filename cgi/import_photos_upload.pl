@@ -92,16 +92,16 @@ else {
             <!-- The fileinput-button span is used to style the file input field as button -->
             <span class="button small btn-success fileinput-button">
               @{[ display_icon('add') ]}
-              <span>$Lang{add_photos}{$lang}</span>
+              <span>@{[ lang('add_photos') ]}</span>
               <input type="file" name="files[]" multiple accept="image/*" data-url="/cgi/product_image_import.pl" />
             </span>
             <button type="submit" class="button small btn-primary start">
               @{[ display_icon('arrow_upward') ]}
-              <span>$Lang{start_upload}{$lang}</span>
+              <span>@{[ lang('start_upload') ]}</span>
             </button>
             <button type="reset" class="button small btn-warning cancel alert">
               @{[ display_icon('cancel') ]}
-              <span>$Lang{cancel_upload}{$lang}</span>
+              <span>@{[ lang('cancel_upload') ]}</span>
             </button>
             <!-- The global file processing state -->
             <span class="fileupload-process"></span>
@@ -157,13 +157,13 @@ HTML
                   {\% if (!i && !o.options.autoUpload) { \%}
                       <button class="button tiny btn-primary start" disabled>
                           @{[ display_icon('arrow_upward') ]}
-                          <span>$Lang{start}{$lang}</span>
+                          <span>@{[ lang('start') ]}</span>
                       </button>
                   {\% } \%}
                   {\% if (!i) { \%}
                       <button class="button tiny btn-warning cancel alert">
                           @{[ display_icon('cancel') ]}
-                          <span>$Lang{cancel}{$lang}</span>
+                          <span>@{[ lang('cancel') ]}</span>
                       </button>
                   {\% } \%}
               </td>
@@ -191,16 +191,16 @@ HTML
 						  <span class="name">{\%=file.filename\%}</span>
                   {\% } \%}
                   {\% if (file.info) { \%}
-                      <div><span class="label info">$Lang{info}{$lang}</span> {\%=file.info\%}</div>
+                      <div><span class="label info">@{[ lang('info') ]}</span> {\%=file.info\%}</div>
                   {\% } \%}
                   {\% if (file.error) { \%}
-                      <div><span class="label alert">$Lang{error}{$lang}</span> {\%=file.error\%}</div>
+                      <div><span class="label alert">@{[ lang('error') ]}</span> {\%=file.error\%}</div>
                   {\% } \%}
               </td>
               <td>
                   <span class="size">{\%=o.formatFileSize(file.size)\%}</span><br>
 				  {\% if (!file.error) { \%}
-                      $Lang{file_received}{$lang} </div>
+                      @{[ lang('file_received') ]} </div>
                   {\% } \%}
               </td>
               <td>
@@ -208,7 +208,7 @@ HTML
                   {\% } else { \%}
                       <button class="button tiny btn-warning cancel">
                           @{[ display_icon('cancel') ]}
-                          <span>$Lang{close}{$lang}</span>
+                          <span>@{[ lang('close') ]}</span>
                       </button>
                   {\% } \%}
               </td>

@@ -281,7 +281,7 @@ sub check_user_form($$) {
 		# check that the email is not already used
 		my $emails_ref = retrieve("$data_root/users_emails.sto");
 		if (defined $emails_ref->{decode utf8=>param('email')}) {
-			push @$errors_ref, $Lang{error_email_already_in_use}{$lang};
+			push @\$errors_ref, lang('error_email_already_in_use');
 		}
 
 		$user_ref->{email} = remove_tags_and_quote(decode utf8=>param('email'));
@@ -325,7 +325,7 @@ sub check_user_form($$) {
 
 
 	if (length($user_ref->{name}) < 2) {
-		push @$errors_ref, $Lang{error_no_name}{$lang};
+		push @\$errors_ref, lang('error_no_name');
 	}
 
 	my $address;
@@ -334,7 +334,7 @@ sub check_user_form($$) {
 	};
 	$address = 0 if $@;
 	if (not $address) {
-		push @$errors_ref, $Lang{error_invalid_email}{$lang};
+		push @\$errors_ref, lang('error_invalid_email');
 	}
 
 	if (($type eq 'add') or ($type eq 'suggest')) {
@@ -342,22 +342,22 @@ sub check_user_form($$) {
 		my $userid = get_string_id_for_lang("no_language", $user_ref->{userid});
 
 		if (length($user_ref->{userid}) < 2) {
-			push @$errors_ref, $Lang{error_no_username}{$lang};
+			push @\$errors_ref, lang('error_no_username');
 		}
 		elsif (-e "$data_root/users/$userid.sto") {
-			push @$errors_ref, $Lang{error_username_not_available}{$lang};
+			push @\$errors_ref, lang('error_username_not_available');
 		}
 		elsif ($user_ref->{userid} !~ /^[a-z0-9]+[a-z0-9\-]*[a-z0-9]+$/) {
-			push @$errors_ref, $Lang{error_invalid_username}{$lang};
+			push @\$errors_ref, lang('error_invalid_username');
 		}
 
 		if (length(decode utf8=>param('password')) < 6) {
-			push @$errors_ref, $Lang{error_invalid_password}{$lang};
+			push @\$errors_ref, lang('error_invalid_password');
 		}
 	}
 
 	if (param('password') ne param('confirm_password')) {
-		push @$errors_ref, $Lang{error_different_passwords}{$lang};
+		push @\$errors_ref, lang('error_different_passwords');
 	}
 	elsif (param('password') ne '') {
 		$user_ref->{encrypted_password} = create_password_hash( encode_utf8(decode utf8=>param('password')) );

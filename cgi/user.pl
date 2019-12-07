@@ -50,7 +50,7 @@ my $user_ref = {};
 if ($type eq 'edit') {
 	$user_ref = retrieve("$data_root/users/$userid.sto");
 	if (not defined $user_ref) {
-		display_error($Lang{error_invalid_user}{$lang}, 404);
+		display_error(lang('error_invalid_user'), 404);
 	}
 }
 else {
@@ -58,7 +58,7 @@ else {
 }
 
 if (($type eq 'edit') and ($User_id ne $userid) and not $admin) {
-	display_error($Lang{error_no_permission}{$lang}, 403);
+	display_error(lang('error_no_permission'), 403);
 }
 
 my $debug = 0;
@@ -73,7 +73,7 @@ if ($action eq 'process') {
 				$type = 'delete';
 			}
 			else {
-				display_error($Lang{error_no_permission}{$lang}, 403);
+				display_error(lang('error_no_permission'), 403);
 			}
 		}
 	}
@@ -93,10 +93,11 @@ SCRIPT
 ;
 
 	if ($#errors >= 0) {
+		my $correct_the_following_errors = lang('error_no_permission');
 		$html .= "
 		<div class='alert-box alert'>
 			<p>
-				<b>$Lang{correct_the_following_errors}{$lang}</b>
+				<b>$correct_the_following_errors</b>
 			</p>
 		";
 		foreach my $error (@errors) {

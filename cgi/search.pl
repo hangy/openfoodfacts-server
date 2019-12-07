@@ -231,13 +231,13 @@ if ($action eq 'display') {
 	$html .= <<HTML
 <div class="row">
 	<div class="large-12 columns">
-<label for="search_terms2">$Lang{search_terms_note}{$lc}</label>
+<label for="search_terms2">@{[ lang('search_terms_note') ]}</label>
 <input type="text" name="search_terms2" id="search_terms2" value="$search_terms" />
 	</div>
 </div>
 
-<h3>$Lang{search_tags}{$lang}</h3>
-<label>$Lang{search_criteria}{$lc}</label>
+<h3>@{[ lang('search_tags') ]}</h3>
+<label>@{[ lang('search_criteria') ]}</label>
 HTML
 ;
 
@@ -284,7 +284,7 @@ HTML
 		$html .= <<HTML
 			</div>
 			<div class="small-12 medium-12 large-4 columns tag-search-criterion">
-				<input type="text" id="tag_$i" name="tag_$i" value="$search_tags[$i][2]" placeholder="$Lang{search_value}{$lc}"/>
+				<input type="text" id="tag_$i" name="tag_$i" value="$search_tags[$i][2]" placeholder="@{[ lang('search_value') ]}"/>
 			</div>
 		</div>
 	</div>
@@ -295,7 +295,7 @@ HTML
 	$html .= <<HTML
 </div>
 
-<h3>$Lang{search_ingredients}{$lang}</h3>
+<h3>@{[ lang('search_ingredients') ]}</h3>
 
 <div class="row">
 HTML
@@ -316,11 +316,11 @@ HTML
 
 		$html .= <<HTML
 			<input type="radio" name="$tagtype" value="without" id="without_$tagtype" $search_ingredient_classes_checked{$tagtype}{without}/>
-				<label for="without_$tagtype">$Lang{search_without}{$lc}</label>
+				<label for="without_$tagtype">@{[ lang('search_without') ]}</label>
 			<input type="radio" name="$tagtype" value="with" id="with_$tagtype" $search_ingredient_classes_checked{$tagtype}{with}/>
-				<label for="with_$tagtype">$Lang{search_with}{$lc}</label>
+				<label for="with_$tagtype">@{[ lang('search_with') ]}</label>
 			<input type="radio" name="$tagtype" value="indifferent" id="indifferent_$tagtype" $search_ingredient_classes_checked{$tagtype}{indifferent}/>
-				<label for="indifferent_$tagtype">$Lang{search_indifferent}{$lc}</label>
+				<label for="indifferent_$tagtype">@{[ lang('search_indifferent') ]}</label>
 	</div>
 HTML
 ;
@@ -330,7 +330,7 @@ HTML
 	$html .= <<HTML
 </div>
 
-<h3>$Lang{search_nutriments}{$lang}</h3>
+<h3>@{[ lang('search_nutriments') ]}</h3>
 <div class="row">
 HTML
 ;
@@ -390,21 +390,21 @@ HTML
 
 <ul class="accordion" style="margin-left:0" data-accordion>
 	<li class="accordion-navigation">
-		<a href="#results_list" style="border-top:1px solid #ccc"><h3>$Lang{search_list_choice}{$lc}</h3></a>
+		<a href="#results_list" style="border-top:1px solid #ccc"><h3>@{[ lang('search_list_choice') ]}</h3></a>
 		<div id="results_list" class="content $active_list">
 
 			<div class="row">
 				<div class="small-6 columns">
-					<label for="sort_by">$Lang{sort_by}{$lang}</label>
+					<label for="sort_by">@{[ lang('sort_by') ]}</label>
 					$popup_sort
 				</div>
 				<div class="small-6 columns">
-					<label for="page_size">$Lang{search_page_size}{$lc}</label>
+					<label for="page_size">@{[ lang('search_page_size') ]}</label>
 					$popup_size
 				</div>
 			</div>
 
-		<input type="submit" name="search" class="button" value="$Lang{search_button}{$lc}" />
+		<input type="submit" name="search" class="button" value="@{[ lang('search_button') ]}" />
 		</div>
 	</li>
 HTML
@@ -414,15 +414,15 @@ HTML
 
 	$html .= <<HTML
 	<li class="accordion-navigation">
-		<a href="#results_graph" style="border-top:1px solid #ccc"><h3>$Lang{search_graph_choice}{$lc}</h3></a>
+		<a href="#results_graph" style="border-top:1px solid #ccc"><h3>@{[ lang('search_graph_choice') ]}</h3></a>
 		<div id="results_graph" class="content $active_graph">
 
-			<div class="alert-box info">$Lang{search_graph_note}{$lang}</div>
+			<div class="alert-box info">@{[ lang('search_graph_note') ]}</div>
 
-			<label for="graph_title">$Lang{graph_title}{$lang}</label>
+			<label for="graph_title">@{[ lang('graph_title') ]}</label>
 			<input type="text" name="graph_title" id="graph_title" value="$graph_ref->{graph_title}" />
 
-			<p>$Lang{search_graph_instructions}{$lc}</p>
+			<p>@{[ lang('search_graph_instructions') ]}</p>
 
 			<div class="row">
 HTML
@@ -458,7 +458,7 @@ HTML
 
 			<div class="row">
 				<div class="small-12 medium-6 columns">
-					<p>$Lang{search_series}{$lc}</p>
+					<p>@{[ lang('search_series') ]}</p>
 HTML
 ;
 
@@ -474,7 +474,7 @@ HTML
 				$html .= <<HTML
 				</div>
 				<div class="small-12 medium-6 columns">
-					<p>$Lang{or}{$lc}</p>
+					<p>@{[ lang('or') ]}</p>
 HTML
 ;
 			}
@@ -492,7 +492,7 @@ HTML
 				</div>
 			</div>
 
-			<input type="submit" name="graph" value="$Lang{search_generate_graph}{$lc}" class="button" />
+			<input type="submit" name="graph" value="@{[ lang('search_generate_graph') ]}" class="button" />
 
 		</div>
 	</li>
@@ -500,15 +500,15 @@ HTML
 	<!-- Map results -->
 
 	<li class="accordion-navigation">
-		<a href="#results_map" style="border-top:1px solid #ccc"><h3>$Lang{search_map_choice}{$lc}</h3></a>
+		<a href="#results_map" style="border-top:1px solid #ccc"><h3>@{[ lang('search_map_choice') ]}</h3></a>
 		<div id="results_map" class="content $active_map">
 
-			<div class="alert-box info">$Lang{search_map_note}{$lc}</div>
+			<div class="alert-box info">@{[ lang('search_map_note') ]}</div>
 
-			<label for="map_title">$Lang{map_title}{$lc}</label>
+			<label for="map_title">@{[ lang('map_title') ]}</label>
 			<input type="text" name="map_title" id="map_title" value="$map_title" />
 
-			<input type="submit" name="generate_map" value="$Lang{search_generate_map}{$lc}" class="button" />
+			<input type="submit" name="generate_map" value="@{[ lang('search_generate_map') ]}" class="button" />
 
 		</div>
 	</li>
@@ -516,13 +516,13 @@ HTML
 	<!-- Download results -->
 
 	<li class="accordion-navigation">
-		<a href="#results_download" style="border-top:1px solid #ccc"><h3>$Lang{search_download_choice}{$lc}</h3></a>
+		<a href="#results_download" style="border-top:1px solid #ccc"><h3>@{[ lang('search_download_choice') ]}</h3></a>
 		<div id="results_download" class="content">
 
-			<p>$Lang{search_download_results}{$lc}</p>
-			<p>$Lang{search_download_results_description}{$lc}</p>
+			<p>@{[ lang('search_download_results') ]}</p>
+			<p>@{[ lang('search_download_results_description') ]}</p>
 
-			<input type="submit" name="download" value="$Lang{search_download_button}{$lc}" class="button" />
+			<input type="submit" name="download" value="@{[ lang('search_download_button') ]}" class="button" />
 
 		</div>
 	</li>

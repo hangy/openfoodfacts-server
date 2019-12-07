@@ -77,7 +77,7 @@ if ($action eq "display") {
 	$html .= start_multipart_form(-id=>"export_products_form") ;
 
 	$html .= <<HTML
-<input type="submit" class="button small" value="$Lang{export_product_data_photos}{$lc}">
+<input type="submit" class="button small" value="@{[ lang('export_product_data_photos') ]}">
 <input type="hidden" name="action" value="process">
 HTML
 ;

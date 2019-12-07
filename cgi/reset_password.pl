@@ -57,7 +57,7 @@ my $userid = undef;
 my $html = '';
 
 if (defined $User_id) {
-	display_error($Lang{error_reset_already_connected}{$lang}, undef);
+	display_error('error_reset_already_connected', undef);
 }
 
 if ($action eq 'process') {
@@ -69,7 +69,7 @@ if ($action eq 'process') {
 		if ($id =~ /\@/) {
 			my $emails_ref = retrieve("$data_root/users_emails.sto");
 			if (not defined $emails_ref->{$id}) {
-				push @errors, $Lang{error_reset_unknown_email}{$lang};
+				push @errors, lang('error_reset_unknown_email');
 			}
 			else {
 				$email_ref = $emails_ref->{$id};
@@ -78,7 +78,7 @@ if ($action eq 'process') {
 		else {
 			$id = get_string_id_for_lang("no_language", $id);
 			if (! -e "$data_root/users/$id.sto") {
-				push @errors, $Lang{error_reset_unknown_id}{$lang};
+				push @errors, lang('error_reset_unknown_id');
 			}
 			else {
 				$userid = $id;
@@ -89,11 +89,11 @@ if ($action eq 'process') {
 	elsif (($type eq 'reset') and (defined param('resetid'))) {
 
 		if (length(param('password')) < 6) {
-			push @errors, $Lang{error_invalid_password}{$lang};
+			push @errors, lang('error_invalid_password');
 		}
 
 		if (param('password') ne param('confirm_password')) {
-			push @errors, $Lang{error_different_passwords}{$lang};
+			push @errors, lang('error_different_passwords');
 		}
 
 	}
@@ -206,7 +206,7 @@ elsif ($type eq 'reset') {
 			$html .= $Lang{reset_password_reset}{$lang};
 		}
 		else {
-			display_error($Lang{error_reset_invalid_token}{$lang}, undef);
+			display_error('error_reset_invalid_token', undef);
 		}
 	}
 }

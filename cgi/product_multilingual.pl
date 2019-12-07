@@ -166,7 +166,7 @@ if ($type eq 'search_or_add') {
 else {
 	# We should have a code
 	if ((not defined $code) or ($code eq '')) {
-		display_error($Lang{no_barcode}{$lang}, 403);
+		display_error('no_barcode', 403);
 	}
 	else {
 		$product_id = product_id_for_user($User_id, $Org_id, $code);
@@ -178,7 +178,7 @@ else {
 }
 
 if (($type eq 'delete') and (not $User{moderator})) {
-	display_error($Lang{error_no_permission}{$lang}, 403);
+	display_error('error_no_permission', 403);
 }
 
 if ($User_id eq 'unwanted-bot-id') {
@@ -194,28 +194,28 @@ if (($type eq 'add') or ($type eq 'edit') or ($type eq 'delete')) {
 		my $submit_label = "login_and_" .$type . "_product";
 
 		$html = <<HTML
-<p>$Lang{login_to_add_products}{$lang}</p>
+<p>@{[ lang('login_to_add_products') ]}</p>
 
 <form method="post" action="/cgi/session.pl">
 <div class="row">
 <div class="small-12 columns">
-	<label>$Lang{login_username_email}{$lc}
+	<label>@{[ lang('login_username_email') ]}
 		<input type="text" name="user_id" autocomplete="username" />
 	</label>
 </div>
 <div class="small-12 columns">
-	<label>$Lang{password}{$lc}
+	<label>@{[ lang('password') ]}
 		<input type="password" name="password" autocomplete="current-password" />
 	</label>
 </div>
 <div class="small-12 columns">
 	<label>
 		<input type="checkbox" name="remember_me" value="on" />
-		$Lang{remember_me}{$lc}
+		@{[ lang('remember_me') ]}
 	</label>
 </div>
 </div>
-<input type="submit" name=".submit" value="$Lang{login_register_title}{$lc}" class="button small" />
+<input type="submit" name=".submit" value="@{[ lang('login_register_title') ]}" class="button small" />
 <input type="hidden" name="code" value="$code" />
 <input type="hidden" name="next_action" value="product_$type" />
 </form>
@@ -906,7 +906,7 @@ HTML
 
 		$html .= <<HTML
 <input type="checkbox" id="obsolete" name="obsolete" $checked />
-<label for="obsolete" class="checkbox_label">$Lang{obsolete}{$lang}</label>
+<label for="obsolete" class="checkbox_label">@{[ lang('obsolete') ]}</label>
 HTML
 ;
 
@@ -917,12 +917,12 @@ HTML
 
 	$html .= <<HTML
 <div data-alert class="alert-box info store-state" id="warning_3rd_party_content" style="display:none;">
-	<span>$Lang{warning_3rd_party_content}{$lang}</span>
+	<span>@{[ lang('warning_3rd_party_content') ]}</span>
  	<a href="#" class="close">&times;</a>
 </div>
 
 <div data-alert class="alert-box secondary store-state" id="licence_accept" style="display:none;">
-	<span>$Lang{licence_accept}{$lang}</span>
+	<span>@{[ lang('licence_accept') ]}</span>
  	<a href="#" class="close">&times;</a>
 </div>
 HTML
@@ -997,7 +997,7 @@ JS
 		$html .= <<HTML
 <ul id="manage_images_accordion" class="accordion" data-accordion>
   <li class="accordion-navigation">
-<a href="#manage_images_drop">@{[ display_icon('collections') ]} $Lang{manage_images}{$lc}</a>
+<a href="#manage_images_drop">@{[ display_icon('collections') ]} @{[ lang('manage_images') ]}</a>
 
 
 <div id="manage_images_drop" class="content" style="background:#eeeeee">
@@ -1006,20 +1006,20 @@ HTML
 . display_select_manage($product_ref) .
 <<HTML
 
-	<p>$Lang{manage_images_info}{$lc}</p>
-	<a id="delete_images" class="button small disabled">@{[ display_icon('delete') ]} $Lang{delete_the_images}{$lc}</a><br/>
+	<p>@{[ lang('manage_images_info') ]}</p>
+	<a id="delete_images" class="button small disabled">@{[ display_icon('delete') ]} @{[ lang('delete_the_images') ]}</a><br/>
 	<div class="row">
 		<div class="small-12 medium-5 columns">
-			<button id="move_images" class="button small disabled">@{[ display_icon('arrow_right_alt') ]} $Lang{move_images_to_another_product}{$lc}</a>
+			<button id="move_images" class="button small disabled">@{[ display_icon('arrow_right_alt') ]} @{[ lang('move_images_to_another_product') ]}</a>
 		</div>
 		<div class="small-4 medium-2 columns">
-			<label for="move_to" class="right inline">$Lang{barcode}{$lc}</label>
+			<label for="move_to" class="right inline">@{[ lang('barcode') ]}</label>
 		</div>
 		<div class="small-8 medium-5 columns">
 			<input type="text" id="move_to" name="move_to" />
 		</div>
 	</div>
-	<input type="checkbox" id="copy_data" name="copy_data"><label for="copy_data">$Lang{copy_data}{$lc}</label>
+	<input type="checkbox" id="copy_data" name="copy_data"><label for="copy_data">@{[ lang('copy_data') ]}</label>
 	<div id="moveimagesmsg"></div>
 </div>
 </li>
@@ -1274,7 +1274,7 @@ CSS
 
 	$initjs .= <<JAVASCRIPT
 \$(".select_add_language").select2({
-	placeholder: "$Lang{add_language}{$lang}",
+	placeholder: "@{[ lang('add_language') ]}",
     allowClear: true
 	}
 	).on("select2:select", function(e) {
@@ -1439,10 +1439,10 @@ HTML
 					my $id = "ingredients_text_" . ${display_lc};
 
 					$html_content_tab .= <<HTML
-<label for="$id">$Lang{ingredients_text}{$lang}</label>
+<label for="$id">@{[ lang('ingredients_text') ]}</label>
 <textarea id="$id" name="$id" lang="${display_lc}">$value</textarea>
-<p class="note">&rarr; $Lang{ingredients_text_note}{$lang}</p>
-<p class="example">$Lang{example}{$lang} $Lang{ingredients_text_example}{$lang}</p>
+<p class="note">&rarr; @{[ lang('ingredients_text_note') ]}</p>
+<p class="example">@{[ lang('example') ]} @{[ lang('ingredients_text_example') ]}</p>
 HTML
 ;
 
@@ -1497,7 +1497,7 @@ HTML
 	$html .= <<HTML
 
 <div class="fieldset">
-<legend>$Lang{product_characteristics}{$lang}</legend>
+<legend>@{[ lang('product_characteristics') ]}</legend>
 HTML
 ;
 
@@ -1541,7 +1541,7 @@ $html .= "</div><!-- fieldset -->
 
 	$html .= <<HTML
 <input type="checkbox" id="no_nutrition_data" name="no_nutrition_data" $checked />
-<label for="no_nutrition_data" class="checkbox_label">$Lang{no_nutrition_data}{$lang}</label><br/>
+<label for="no_nutrition_data" class="checkbox_label">@{[ lang('no_nutrition_data') ]}</label><br/>
 HTML
 ;
 
@@ -1635,8 +1635,8 @@ HTML
 		}
 
 		$html .= <<HTML
-<input type="radio" id="${nutrition_data_per}_100g" value="100g" name="${nutrition_data_per}" $checked_per_100g /><label for="${nutrition_data_per}_100g">$Lang{nutrition_data_per_100g}{$lang}</label>
-<input type="radio" id="${nutrition_data_per}_serving" value="serving" name="${nutrition_data_per}" $checked_per_serving /><label for="${nutrition_data_per}_serving">$Lang{nutrition_data_per_serving}{$lang}</label><br/>
+<input type="radio" id="${nutrition_data_per}_100g" value="100g" name="${nutrition_data_per}" $checked_per_100g /><label for="${nutrition_data_per}_100g">@{[ lang('nutrition_data_per_100g') ]}</label>
+<input type="radio" id="${nutrition_data_per}_serving" value="serving" name="${nutrition_data_per}" $checked_per_serving /><label for="${nutrition_data_per}_serving">@{[ lang('nutrition_data_per_serving') ]}</label><br/>
 HTML
 ;
 
@@ -1689,20 +1689,20 @@ JS
 <table id="nutrition_data_table" class="data_table" style="$tablestyle">
 <thead class="nutriment_header">
 <th>
-$Lang{nutrition_data_table}{$lang}
+@{[ lang('nutrition_data_table') ]}
 </th>
 <th class="nutriment_col" $column_display_style{"nutrition_data"}>
-$Lang{product_as_sold}{$lang}<br/>
-<span id="nutrition_data_100g" $nutrition_data_per_display_style{"nutrition_data_100g"}>$Lang{nutrition_data_per_100g}{$lang}</span>
-<span id="nutrition_data_serving" $nutrition_data_per_display_style{"nutrition_data_serving"}>$Lang{nutrition_data_per_serving}{$lang}</span>
+@{[ lang('product_as_sold') ]}<br/>
+<span id="nutrition_data_100g" $nutrition_data_per_display_style{"nutrition_data_100g"}>@{[ lang('nutrition_data_per_100g') ]}</span>
+<span id="nutrition_data_serving" $nutrition_data_per_display_style{"nutrition_data_serving"}>@{[ lang('nutrition_data_per_serving') ]}</span>
 </th>
 <th class="nutriment_col_prepared" $column_display_style{"nutrition_data_prepared"}>
-$Lang{prepared_product}{$lang}<br/>
-<span id="nutrition_data_prepared_100g" $nutrition_data_per_display_style{"nutrition_data_prepared_100g"}>$Lang{nutrition_data_per_100g}{$lang}</span>
-<span id="nutrition_data_prepared_serving" $nutrition_data_per_display_style{"nutrition_data_prepared_serving"}>$Lang{nutrition_data_per_serving}{$lang}</span>
+@{[ lang('prepared_product') ]}<br/>
+<span id="nutrition_data_prepared_100g" $nutrition_data_per_display_style{"nutrition_data_prepared_100g"}>@{[ lang('nutrition_data_per_100g') ]}</span>
+<span id="nutrition_data_prepared_serving" $nutrition_data_per_display_style{"nutrition_data_prepared_serving"}>@{[ lang('nutrition_data_per_serving') ]}</span>
 </th>
 <th>
-$Lang{unit}{$lang}
+@{[ lang('unit') ]}
 </th>
 </thead>
 
@@ -1798,7 +1798,7 @@ HTML
 		}
 		else {	# add a nutriment
 			$label = <<HTML
-<input class="nutriment_label" id="nutriment_${enid}_label" name="nutriment_${enid}_label" placeholder="$Lang{product_add_nutrient}{$lang}"/>
+<input class="nutriment_label" id="nutriment_${enid}_label" name="nutriment_${enid}_label" placeholder="@{[ lang('product_add_nutrient') ]}"/>
 HTML
 ;
 		}
@@ -2073,7 +2073,7 @@ JAVASCRIPT
 
 
 	$html .= <<HTML
-<p class="note">&rarr; $Lang{nutrition_data_table_note}{$lang}</p>
+<p class="note">&rarr; @{[ lang('nutrition_data_table_note') ]}</p>
 HTML
 ;
 
@@ -2081,15 +2081,15 @@ HTML
 	$html .= <<HTML
 <table id="ecological_data_table" class="data_table">
 <thead class="nutriment_header">
-<tr><th>$Lang{ecological_data_table}{$lang}</th>
+<tr><th>@{[ lang('ecological_data_table') ]}</th>
 <th class="nutriment_col" $column_display_style{"nutrition_data"}>
-$Lang{product_as_sold}{$lang}
+@{[ lang('product_as_sold') ]}
 </th>
 <th class="nutriment_col_prepared" $column_display_style{"nutrition_data_prepared"}>
-$Lang{prepared_product}{$lang}
+@{[ lang('prepared_product') ]}
 </th>
 <th>
-$Lang{unit}{$lang}
+@{[ lang('unit') ]}
 </th>
 </tr>
 </thead>
@@ -2101,7 +2101,7 @@ HTML
 ;
 
 	$html .= <<HTML
-<p class="note">&rarr; $Lang{ecological_data_table_note}{$lang}</p>
+<p class="note">&rarr; @{[ lang('ecological_data_table_note') ]}</p>
 HTML
 ;
 
@@ -2113,8 +2113,8 @@ HTML
 	if ($User{moderator}) {
 
 		$html .= <<HTML
-<div class=\"fieldset\" id=\"check\"><legend>$Lang{photos_and_data_check}{$lang}</legend>
-<p>$Lang{photos_and_data_check_description}{$lang}</p>
+<div class=\"fieldset\" id=\"check\"><legend>@{[ lang('photos_and_data_check') ]}</legend>
+<p>@{[ lang('photos_and_data_check_description') ]}</p>
 HTML
 ;
 
@@ -2128,7 +2128,7 @@ HTML
 
 			$recheck_html .= <<HTML
 <input type="checkbox" id="photos_and_data_rechecked" name="photos_and_data_rechecked" />
-<label for="photos_and_data_rechecked" class="checkbox_label">$Lang{i_checked_the_photos_and_data_again}{$lang}</label><br/>
+<label for="photos_and_data_rechecked" class="checkbox_label">@{[ lang('i_checked_the_photos_and_data_again') ]}</label><br/>
 HTML
 ;
 		}
@@ -2183,16 +2183,16 @@ JS
 		$html .= <<"HTML"
 <div class="row">
 	<div class="small-12 medium-12 large-8 xlarge-8 columns">
-		<input id="comment" name="comment" placeholder="$Lang{edit_comment}{$lang}" value="" type="text" class="text" />
+		<input id="comment" name="comment" placeholder="@{[ lang('edit_comment') ]}" value="" type="text" class="text" />
 	</div>
 	<div class="small-6 medium-6 large-2 xlarge-2 columns">
 		<button type="submit" name=".submit" class="button postfix small">
-			@{[ display_icon('check') ]} $Lang{save}{$lc}
+			@{[ display_icon('check') ]} @{[ lang('save') ]}
 		</button>
 	</div>
 	<div class="small-6 medium-6 large-2 xlarge-2 columns">
 		<button type="button" id="back-btn" class="button postfix small secondary">
-			@{[ display_icon('cancel') ]} $Lang{cancel}{$lc}
+			@{[ display_icon('cancel') ]} @{[ lang('cancel') ]}
 		</button>
 	</div>
 </div>
@@ -2205,7 +2205,7 @@ HTML
 <div class="small-12 medium-12 large-8 xlarge-10 columns">
 </div>
 <div class="small-12 medium-12 large-4 xlarge-2 columns">
-<input type="submit" name=".submit" value="$Lang{save}{$lc}" class="button small">
+<input type="submit" name=".submit" value="@{[ lang('save') ]}" class="button small">
 </div>
 </div>
 HTML
@@ -2227,7 +2227,7 @@ elsif (($action eq 'display') and ($type eq 'delete') and ($User{moderator})) {
 	$html .= start_multipart_form(-id=>"product_form") ;
 
 	$html .= <<HTML
-<p>$Lang{delete_product_confirm}{$lc} ? ($Lang{product_name}{$lc} : $product_ref->{product_name}, $Lang{barcode}{$lc} : $code)</p>
+<p>@{[ lang('delete_product_confirm') ]} ? (@{[ lang('product_name') ]} : $product_ref->{product_name}, @{[ lang('barcode') ]} : $code)</p>
 
 HTML
 ;
@@ -2237,7 +2237,7 @@ HTML
 	. hidden(-name=>'code', -value=>$code, -override=>1)
 	. hidden(-name=>'action', -value=>'process', -override=>1)
 	. <<HTML
-<label for="comment" style="margin-left:10px">$Lang{delete_comment}{$lang}</label>
+<label for="comment" style="margin-left:10px">@{[ lang('delete_comment') ]}</label>
 <input type="text" id="comment" name="comment" value="" />
 HTML
 	. submit(-name=>'save', -label=>lang("delete_product_page"), -class=>"button small")
@@ -2276,7 +2276,7 @@ elsif ($action eq 'process') {
 		send_notification_for_product_change($product_ref, "deleted");
 
 		my $email = <<MAIL
-$User_id $Lang{has_deleted_product}{$lc}:
+$User_id @{[ lang('has_deleted_product') ]}:
 
 $html
 

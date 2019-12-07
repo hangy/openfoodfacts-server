@@ -44,7 +44,7 @@ use ProductOpener::Lang qw/:all/;
 my $html = '';
 
 if (defined $User_id) {
-	$html = "<p>" . $Lang{hello}{$lang} . ' ' . $User{name} . separator_before_colon($lc) . "!" . "</p>";
+	$html = "<p>" . lang('hello') . ' ' . $User{name} . separator_before_colon($lc) . "!" . "</p>";
 
 	# Do not display donate link on producers platform
 	if (not $server_options{producers_platform}) {
@@ -81,7 +81,7 @@ if (defined $User_id) {
 	}
 }
 else {
-	$html = $Lang{goodbye}{$lang};
+	$html = lang('goodbye');
 }
 
 if (param('jqm')) {

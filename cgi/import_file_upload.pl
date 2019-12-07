@@ -138,7 +138,7 @@ else {
 	$html .= <<HTML
 <a href="#" class="button small expand" id="file_input_button_$id">
 <div id="file_input_div_$id">
-@{[ display_icon('arrow_upward') ]} $Lang{upload_product_data_file}{$lc}
+@{[ display_icon('arrow_upward') ]} @{[ lang('upload_product_data_file') ]}
 <input type="file" accept=".csv,.tsv,.xlsx,.xls,.ods" class="file_input" name="file_input_$id" id="file_input_$id" style="position: absolute;
 	right:0;
 	bottom:0;
@@ -155,12 +155,12 @@ else {
 </div>
 
 <div id="file_input_msg_$id" data-alert class="alert-box info" style="display:none">
-  $Lang{uploading_file}{$lang}
+  @{[ lang('uploading_file') ]}
   <a href="#" class="close">&times;</a>
 </div>
 
 <div id="file_input_error_$id" data-alert class="alert-box alert" style="display:none">
-  $Lang{upload_error}{$lang}
+  @{[ lang('upload_error') ]}
   <a href="#" class="close">&times;</a>
 </div>
 
