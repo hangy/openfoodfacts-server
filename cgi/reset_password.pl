@@ -114,7 +114,7 @@ if ($action eq 'display') {
 	$html .= $Lang{"reset_password_${type}_msg"}{$lang};
 
 	if ($#errors >= 0) {
-		$html .= "<p><b>$Lang{correct_the_following_errors}{$lang}</b></p><ul>\n";
+		$html .= "<p><b>@{[ lang('correct_the_following_errors') ]}</b></p><ul>\n";
 		foreach my $error (@errors) {
 			$html .= "<li class=\"error\">$error</li>\n";
 		}
@@ -126,15 +126,15 @@ if ($action eq 'display') {
 	if ($type eq 'send_email') {
 
 		$html .= '<label>'
-		. "$Lang{userid_or_email}{$lang}"
+		. "@{[ lang('userid_or_email') ]}"
 		. textfield(-name=>'userid_or_email', -value=>'',-override=>1)
 		. "</label>";
 	}
 	elsif ($type eq 'reset') {
 		$html .= "<table>"
-		. "\n<tr><td>$Lang{password}{$lang}</td><td>"
+		. "\n<tr><td>@{[ lang('password') ]}</td><td>"
 		. password_field(-name=>'password', -value=>'', -override=>1) . "</td></tr>"
-		. "\n<tr><td>$Lang{password_confirm}{$lang}</td><td>"
+		. "\n<tr><td>@{[ lang('password_confirm') ]}</td><td>"
 		. password_field(-name=>'confirm_password', -value=>'', -override=>1) . "</td></tr>"
 		. "</table>"
 		. hidden(-name=>'resetid', -value=>param('resetid'), -override=>1)
@@ -186,7 +186,7 @@ if ($type eq 'send_email') {
 	}
 
 	if ($i > 0) {
-		$html .= $Lang{reset_password_send_email}{$lang};
+		$html .= @{[ lang('reset_password_send_email') ]};
 	}
 
 }
@@ -203,7 +203,7 @@ elsif ($type eq 'reset') {
 
 			store("$data_root/users/$userid.sto", $user_ref);
 
-			$html .= $Lang{reset_password_reset}{$lang};
+			$html .= @{[ lang('reset_password_reset') ]};
 		}
 		else {
 			display_error('error_reset_invalid_token', undef);

@@ -330,9 +330,9 @@ JS
 <initjs>
     oTable = \$('#tagstable').dataTable({
 	language: {
-		search: "$Lang{tagstable_search}{$lang}",
+		search: "@{[ lang('tagstable_search', $lang) ]}",
 		info: "_TOTAL_ $tagtype_p",
-		infoFiltered: " - $Lang{tagstable_filtered}{$lang}"
+		infoFiltered: " - @{[ lang('tagstable_filtered', $lang) ]}"
 	},
 	paging: false
     });
@@ -467,8 +467,8 @@ HTML
 
 Highcharts.setOptions({
 	lang: {
-		months: $Lang{months}{$lang},
-		weekdays: $Lang{weekdays}{$lang}
+		months: @{[ lang('months', $lang) ]},
+		weekdays: @{[ lang('weekdays', $lang) ]}
 	}
 });
 
@@ -477,7 +477,7 @@ Highcharts.setOptions({
                 type: 'area'
             },
             title: {
-                text: '$Lang{products_stats}{$lang} - $Langs{$lang}'
+                text: '@{[ lang('products_stats', $lang) ]} - $Langs{$lang}'
             },
             subtitle: {
                 text: 'Source: <a href="https://$lc.openfoodfacts.org">'+
@@ -488,7 +488,7 @@ Highcharts.setOptions({
             },
             yAxis: {
                 title: {
-                    text: '$Lang{products_p}{$lang}'
+                    text: '@{[ lang('products_p', $lang) ]}'
                 },
                 labels: {
                     formatter: function() {
@@ -613,7 +613,7 @@ $lc = 'en';
                 type: 'area'
             },
             title: {
-                text: '$Lang{products_stats}{$lang}'
+                text: '@{[ lang('products_stats', $lang) ]}'
             },
             subtitle: {
                 text: 'Source: <a href="https://openfoodfacts.org">'+
@@ -627,7 +627,7 @@ $lc = 'en';
             },
             yAxis: {
                 title: {
-                    text: '$Lang{products_p}{$lang}'
+                    text: '@{[ lang('products_p', $lang) ]}'
                 },
                 labels: {
                     formatter: function() {

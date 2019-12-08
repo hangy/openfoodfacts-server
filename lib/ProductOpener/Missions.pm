@@ -85,15 +85,15 @@ sub gen_missions_html() {
 				$html2 .= "<img id=\"og_image\" src=\"/images/misc/$Missions{$missionid}{image}\" alt=\"$Missions{$missionid}{name}\" style=\"float:left;margin-right:20px;margin-bottom:20px;\" />\n";
 			}
 
-			$html2 .= "<p id=\"description\"><b>$Lang{mission_goal}{$lang}</b> " . $Missions{$missionid}{goal} . "</p>";
+			$html2 .= "<p id=\"description\"><b>@{[ lang('mission_goal') ]}</b> " . $Missions{$missionid}{goal} . "</p>";
 			if (defined $Missions{$missionid}{description}) {
 				$html2 .= "<p>$Missions{$missionid}{description}</p>";
 			}
 			if ($n == 0) {
-				$html2 .= "<p>$Lang{mission_accomplished_by_nobody}{$lang}</p>";
+				$html2 .= "<p>@{[ lang('mission_accomplished_by_nobody') ]}</p>";
 			}
 			elsif ($n > 0) {
-				$html2 .= "<p>$Lang{mission_accomplished_by}{$lang}</p>";
+				$html2 .= "<p>@{[ lang('mission_accomplished_by') ]}</p>";
 				foreach my $userid (sort {$missions_ref->{$missionid}{$a} <=> $missions_ref->{$missionid}{$b} } keys %{$missions_ref->{$missionid}}) {
 					$html2 .= "<a href=\"" . canonicalize_tag_link("users", get_string_id_for_lang("no_language", $userid)) . "\">$userid</a>, ";
 				}
@@ -104,7 +104,7 @@ sub gen_missions_html() {
 				$html2 .= "<p>$Missions{$missionid}{image_legend}</p>\n";
 			}
 
-			$html2 .= "<p>&rarr; <a href=\"/" . get_string_id_for_lang("no_language", lang("missions")) . "\">$Lang{all_missions}{$lang}</a></p>";
+			$html2 .= "<p>&rarr; <a href=\"/" . get_string_id_for_lang("no_language", lang("missions")) . "\">@{[ lang('all_missions') ]}</a></p>";
 
 			$missionid =~ s/(.*)\.//;
 			(-e "$data_root/lang/$lang/missions") or mkdir("$data_root/lang/$lang/missions", 0755);

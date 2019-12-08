@@ -285,8 +285,8 @@ JS
 				columns_fields[column]["tag"] = \$(this).val();
 			});
 
-			instructions += "<p>$Lang{specific_tag_label}{$lc}</p>"
-			+ "<p>$Lang{specific_tag_label_value}{$lc}</p>";
+			instructions += "<p>@{[ lang('specific_tag_label', $lc) ]}</p>"
+			+ "<p>@{[ lang('specific_tag_label_value', $lc) ]}</p>";
 		}
 JS
 ;

@@ -103,9 +103,9 @@ foreach my $l ('en') {
 <initjs>
     oTable = \$('#tagstable').DataTable({
 	language: {
-		search: "$Lang{tagstable_search}{$lang}",
+		search: "@{[ lang('tagstable_search', $lang) ]}",
 		info: "_TOTAL_ ",
-		infoFiltered: " - $Lang{tagstable_filtered}{$lang}"
+		infoFiltered: " - @{[ lang('tagstable_filtered', $lang) ]}"
 	},
 	paging: false
     });

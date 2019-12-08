@@ -155,19 +155,19 @@ sub display_user_form($$) {
 
 	my $html = '';
 
-	$html .= "\n<tr><td>$Lang{name}{$lang}</td><td>"
+	$html .= "\n<tr><td>@{[ lang('name') ]}</td><td>"
 	. textfield(-id=>'name', -name=>'name', -value=>$user_ref->{name}, -size=>80, -autocomplete=>'name', -override=>1) . "</td></tr>"
-#	. "\n<tr><td>$Lang{sex}{$lang}</td><td>"
-#	. radio_group(-name=>'sex', -values=>['f','m'], -labels=>{'f'=>$Lang{female}{$lang},'m'=>$Lang{male}{$lang}}, -default=>$user_ref->{sex}, -override=>1) . "</td></tr>"
-	. "\n<tr><td>$Lang{email}{$lang}</td><td>"
+#	. "\n<tr><td>@{[ lang('sex') ]}</td><td>"
+#	. radio_group(-name=>'sex', -values=>['f','m'], -labels=>{'f'=>@{[ lang('female') ]},'m'=>@{[ lang('male') ]}}, -default=>$user_ref->{sex}, -override=>1) . "</td></tr>"
+	. "\n<tr><td>@{[ lang('email') ]}</td><td>"
 	. textfield(-name=>'email', -value=>$user_ref->{email}, -size=>80, -autocomplete=>'email', -type=>'email', -override=>1) . "</td></tr>"
-	. "\n<tr><td>$Lang{username}{$lang}<br/><span class=\"info\">" . (($type eq 'edit') ? '': $Lang{username_info}{$lang}) . "</span></td><td>"
+	. "\n<tr><td>@{[ lang('username') ]}<br/><span class=\"info\">" . (($type eq 'edit') ? '': @{[ lang('username_info') ]}) . "</span></td><td>"
 	. (($type eq 'edit') ? $user_ref->{userid} :
 		( textfield(-id=>'userid', -name=>'userid', -value=>$user_ref->{userid}, -size=>40, -onkeyup=>"update_userid(this.value)", -autocomplete=>'username')
 			. "<br /><span id=\"useridok\" style=\"font-size:10px;\">&nbsp;</span>")) . "</td></tr>"
-	. "\n<tr><td>$Lang{password}{$lang}</td><td>"
+	. "\n<tr><td>@{[ lang('password') ]}</td><td>"
 	. password_field(-name=>'password', -value=>'', -autocomplete=>'new-password', -override=>1) . "</td></tr>"
-	. "\n<tr><td>$Lang{password_confirm}{$lang}</td><td>"
+	. "\n<tr><td>@{[ lang('password_confirm') ]}</td><td>"
 	. password_field(-name=>'confirm_password', -value=>'', -autocomplete=>'new-password', -override=>1) . "</td></tr>"
 
 
@@ -216,14 +216,14 @@ sub display_user_form_optional($) {
 
 	my $html = '';
 
-	# $html .= "\n<tr><td>$Lang{twitter}{$lang}</td><td>"
+	# $html .= "\n<tr><td>@{[ lang('twitter') ]}</td><td>"
 	# . textfield(-id=>'twitter', -name=>'twitter', -value=>$user_ref->{name}, -size=>80, -override=>1) . "</td></tr>";
 
 	if (($type eq 'add') or ($type eq 'suggest')) {
 
 		$html .=
 		"\n<tr><td colspan=\"2\">" . checkbox(-name=>'newsletter', -label=>lang("newsletter_description"), -checked=>'on') . "<br />
-		$Lang{unsubscribe_info}{$lang}</td></tr>";
+		@{[ lang('unsubscribe_info') ]}</td></tr>";
 	}
 
 	return $html;
@@ -242,12 +242,12 @@ sub display_user_form_admin_only($) {
 		return '';
 	}
 
-	# $html .= "\n<tr><td>$Lang{twitter}{$lang}</td><td>"
+	# $html .= "\n<tr><td>@{[ lang('twitter') ]}</td><td>"
 	# . textfield(-id=>'twitter', -name=>'twitter', -value=>$user_ref->{name}, -size=>80, -override=>1) . "</td></tr>";
 
 	if (($type eq 'add') or ($type eq 'edit')) {
 
-		$html .= "\n<tr><td>$Lang{organization}{$lang}</td><td>"
+		$html .= "\n<tr><td>@{[ lang('organization') ]}</td><td>"
 		. textfield(-id=>'organization', -name=>'organization', -value=>$user_ref->{org}, -size=>80, -autocomplete=>'organization', -override=>1) . "</td></tr>";
 
 		$html .= "\n<tr><td colspan=\"2\">" . lang("user_groups") . lang("sep") . ":<ul>";
@@ -281,7 +281,7 @@ sub check_user_form($$) {
 		# check that the email is not already used
 		my $emails_ref = retrieve("$data_root/users_emails.sto");
 		if (defined $emails_ref->{decode utf8=>param('email')}) {
-			push @\$errors_ref, lang('error_email_already_in_use');
+			push @$errors_ref, lang('error_email_already_in_use');
 		}
 
 		$user_ref->{email} = remove_tags_and_quote(decode utf8=>param('email'));
@@ -325,7 +325,7 @@ sub check_user_form($$) {
 
 
 	if (length($user_ref->{name}) < 2) {
-		push @\$errors_ref, lang('error_no_name');
+		push @$errors_ref, lang('error_no_name');
 	}
 
 	my $address;
@@ -334,7 +334,7 @@ sub check_user_form($$) {
 	};
 	$address = 0 if $@;
 	if (not $address) {
-		push @\$errors_ref, lang('error_invalid_email');
+		push @$errors_ref, lang('error_invalid_email');
 	}
 
 	if (($type eq 'add') or ($type eq 'suggest')) {
@@ -342,22 +342,22 @@ sub check_user_form($$) {
 		my $userid = get_string_id_for_lang("no_language", $user_ref->{userid});
 
 		if (length($user_ref->{userid}) < 2) {
-			push @\$errors_ref, lang('error_no_username');
+			push @$errors_ref, lang('error_no_username');
 		}
 		elsif (-e "$data_root/users/$userid.sto") {
-			push @\$errors_ref, lang('error_username_not_available');
+			push @$errors_ref, lang('error_username_not_available');
 		}
 		elsif ($user_ref->{userid} !~ /^[a-z0-9]+[a-z0-9\-]*[a-z0-9]+$/) {
-			push @\$errors_ref, lang('error_invalid_username');
+			push @$errors_ref, lang('error_invalid_username');
 		}
 
 		if (length(decode utf8=>param('password')) < 6) {
-			push @\$errors_ref, lang('error_invalid_password');
+			push @$errors_ref, lang('error_invalid_password');
 		}
 	}
 
 	if (param('password') ne param('confirm_password')) {
-		push @\$errors_ref, lang('error_different_passwords');
+		push @$errors_ref, lang('error_different_passwords');
 	}
 	elsif (param('password') ne '') {
 		$user_ref->{encrypted_password} = create_password_hash( encode_utf8(decode utf8=>param('password')) );

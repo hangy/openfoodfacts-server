@@ -79,15 +79,16 @@ sub separator_before_colon($) {
 # same logic can be implemented by creating the missing values for all keys
 sub lang {
 
-	my ($s) = @_;
+	my ($s, $l) = @_;
 
+	$l = $lang if ((not defined $l) or ($l eq ''));
 	my $short_l = undef;
-	if ($lang =~ /_/) {
+	if ($l =~ /_/) {
 		$short_l = $`,  # pt_pt
 	}
 
-	if (defined $Lang{$s}{$lang}) {
-		return $Lang{$s}{$lang};
+	if (defined $Lang{$s}{$l}) {
+		return $Lang{$s}{$l};
 	}
 	elsif ((defined $short_l) and (defined $Lang{$s}{$short_l}) and ($Lang{$s}{$short_l} ne '')) {
 		return $Lang{$s}{$short_l};

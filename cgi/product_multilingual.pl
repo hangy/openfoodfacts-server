@@ -1311,7 +1311,7 @@ JAVASCRIPT
 
 
 
-	$html .= "<div class=\"fieldset\"><legend>$Lang{product_image}{$lang}</legend>";
+	$html .= "<div class=\"fieldset\"><legend>@{[ lang('product_image') ]}</legend>";
 
 
 	$product_ref->{langs_order} = { fr => 0, nl => 1, en => 1, new => 2 };
@@ -1515,7 +1515,7 @@ HTML
 	$html .= "</div><!-- fieldset -->\n";
 
 
-	$html .= "<div class=\"fieldset\"><legend>$Lang{ingredients}{$lang}</legend>\n";
+	$html .= "<div class=\"fieldset\"><legend>@{[ lang('ingredients') ]}</legend>\n";
 
 	my @ingredients_fields = ("ingredients_image", "ingredients_text");
 
@@ -1528,7 +1528,7 @@ HTML
 	$html .= display_field($product_ref, "origins");
 
 $html .= "</div><!-- fieldset -->
-<div class=\"fieldset\" id=\"nutrition\"><legend>$Lang{nutrition_data}{$lang}</legend>\n";
+<div class=\"fieldset\" id=\"nutrition\"><legend>@{[ lang('nutrition_data') ]}</legend>\n";
 
 	my $checked = '';
 	my $tablestyle = 'display: table;';
@@ -1575,7 +1575,7 @@ JAVASCRIPT
 
 	my $hidden_inputs = '';
 
-	#<p class="note">&rarr; $Lang{nutrition_data_table_note}{$lang}</p>
+	#<p class="note">&rarr; @{[ lang('nutrition_data_table_note') ]}</p>
 
 	$html .= display_field($product_ref, "serving_size");
 
