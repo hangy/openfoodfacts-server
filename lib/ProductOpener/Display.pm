@@ -279,17 +279,17 @@ sub init()
 		}
 
 	}
-	elsif ($subdomain =~ /(.*?)-(.*)/) {
+	elsif ($subdomain =~ /^(?<cc>[a-z]+?)-(?:(?<short_lc>[a-z]{2,3})(?:-(?<code>[a-z]{2}))?)$/) {
 		local $log->context->{subdomain_format} = 2;
 		$log->debug("subdomain in cc-lc format - checking values", { subdomain => $subdomain, lc => $lc, cc => $cc, country => $country }) if $log->is_debug();
 
 		if (defined $country_codes{$1}) {
-			$cc = $1;
+			$cc = $+{cc};
 			$country = $country_codes{$cc};
 			$lc = $country_languages{$cc}[0]; # first official language
-			if (defined $language_codes{$2}) {
-				$lc = $2;
-				$lc =~ s/-/_/; # pt-pt -> pt_pt
+			if (defined $language_codes{$+{short_lc}}) {
+				$lc = $+{short_lc};
+				$lc .= '_' . uc($+{code}) if $+{code};
 			}
 
 			$log->debug("subdomain matches known country code", { subdomain => $subdomain, lc => $lc, cc => $cc, country => $country }) if $log->is_debug();
@@ -309,9 +309,6 @@ sub init()
 		$r->status(301);
 		return 301;
 	}
-
-
-	$lc =~ s/_.*//;     # PT_PT doest not work yet: categories
 
 	if ((not defined $lc) or (($lc !~ /^\w\w(_|-)\w\w$/) and (length($lc) != 2) )) {
 		$log->debug("replacing unknown lc with en",  { lc => $lc }) if $log->debug();
