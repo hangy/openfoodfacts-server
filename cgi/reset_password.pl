@@ -111,7 +111,7 @@ if ($action eq 'process') {
 if ($action eq 'display') {
 
 
-	$html .= $Lang{"reset_password_${type}_msg"}{$lang};
+	$html .= lang("reset_password_${type}_msg", $lang);
 
 	if ($#errors >= 0) {
 		$html .= "<p><b>@{[ lang('correct_the_following_errors') ]}</b></p><ul>\n";
@@ -217,7 +217,7 @@ elsif ($type eq 'reset') {
 
 display_new( {
 
-	title=> $Lang{'reset_password'}{$lang},
+	title=> lang('reset_password', $lang),
 	content_ref=>\$html,
 #	full_width=>1,
 });

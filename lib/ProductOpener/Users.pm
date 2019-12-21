@@ -490,7 +490,7 @@ sub init_user()
 					$user_id = undef ;
 					$log->info("bad password - input does not match stored hash", { encrypted_password => $user_ref->{'encrypted_password'} }) if $log->is_info();
 					# Trigger an error
-					return ($Lang{error_bad_login_password}{$lang}) ;
+					return (lang('error_bad_login_password', $lang));
 				}
 				# We have the right login/password
 				elsif (not defined param('no_log'))    # no need to store sessions for internal requests
@@ -573,7 +573,7 @@ sub init_user()
 				$user_id = undef ;
 				$log->info("bad user") if $log->is_info();
 				# Trigger an error
-				return ($Lang{error_bad_login_password}{$lang}) ;
+				return (lang('error_bad_login_password', $lang));
 		    }
 		}
 	}

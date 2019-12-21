@@ -5937,9 +5937,9 @@ HTML
 
 	$html .= lang("css");
 
-	my $site_name = $Lang{site_name}{$lang};
+	my $site_name = lang('site_name', $lang);
 	if ($server_options{producers_platform}) {
-		$site_name = $Lang{producers_platform}{$lc};
+		$site_name = lang('producers_platform', $lc);
 	}
 
 	# Override Google Analytics from Config.pm with server_options
@@ -6106,7 +6106,7 @@ HTML
 HTML
 ;
 	}
-	
+
 	elsif ($lc eq 'es') {
 
 		my $link = lang("donate_link");
@@ -6128,7 +6128,7 @@ HTML
 HTML
 ;
 	}
-	
+
 	elsif ($lc eq 'it') {
 
 		my $link = lang("donate_link");
@@ -6150,7 +6150,7 @@ HTML
 HTML
 ;
 	}
-	
+
 	elsif ($lc eq 'de') {
 
 		my $link = lang("donate_link");
@@ -6423,7 +6423,7 @@ HTML
 					<form action="/cgi/search.pl" class="hide-for-large-up">
 						<div class="row collapse">
 							<div class="small-9 columns">
-								<input type="text" placeholder="$Lang{search_a_product_placeholder}{$lc}" name="search_terms">
+								<input type="text" placeholder="@{[ lang('search_a_product_placeholder') ]}" name="search_terms">
 								<input name="search_simple" value="1" type="hidden">
 								<input name="action" value="process" type="hidden">
 							</div>

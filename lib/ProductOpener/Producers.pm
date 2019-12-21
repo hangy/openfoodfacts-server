@@ -536,14 +536,14 @@ sub init_other_fields_columns_names_for_lang($) {
 						$fields_columns_names_for_lang{$l}{get_string_id_for_lang("no_language", $field . " " . display_taxonomy_tag($l,'languages',$language_codes{$l}))} = {field => $field . "_$l"};
 					}
 					else {
-						$fields_columns_names_for_lang{$l}{get_string_id_for_lang("no_language", $Lang{$field}{$l})} = {field => $field };
+						$fields_columns_names_for_lang{$l}{get_string_id_for_lang("no_language", lang($field, $l))} = {field => $field };
 					}
 				}
 				elsif ($field =~ /_value_unit$/) {
 					# Column can contain value + unit, value, or unit for a specific field
 					my $field_name = $`;
 
-					my @synonyms = ($field_name, $Lang{$field_name}{$l});
+					my @synonyms = ($field_name, lang($field_name, $l));
 					if ((defined $fields_synonyms{$l}) and (defined $fields_synonyms{$l}{$field})) {
 						foreach my $synonym (@{$fields_synonyms{$l}{$field}}) {
 							push @synonyms, $synonym;
@@ -553,11 +553,11 @@ sub init_other_fields_columns_names_for_lang($) {
 					foreach my $synonym (@synonyms) {
 						$fields_columns_names_for_lang{$l}{get_string_id_for_lang("no_language", $synonym)} = {field => $field};
 
-						$fields_columns_names_for_lang{$l}{get_string_id_for_lang("no_language", $synonym . " " . $Lang{unit}{$l})} = {
+						$fields_columns_names_for_lang{$l}{get_string_id_for_lang("no_language", $synonym . " " . lang('unit', $l))} = {
 							field => $field,
 							value_unit => "unit",
 						};
-						$fields_columns_names_for_lang{$l}{get_string_id_for_lang("no_language", $Lang{unit}{$l} . " " . $synonym)} = {
+						$fields_columns_names_for_lang{$l}{get_string_id_for_lang("no_language", lang('unit', $l) . " " . $synonym)} = {
 							field => $field,
 							value_unit => "unit",
 						};

@@ -647,7 +647,7 @@ sub display_field($$) {
 
 		my $default_text = "";
 		if (defined $Lang{$field . "_tagsinput"}) {
-			$default_text = $Lang{$field . "_tagsinput"}{$lang};
+			$default_text = lang($field . "_tagsinput", $lang);
 		}
 
 		my $arrayLenght = 3;
@@ -742,22 +742,23 @@ HTML
 ;
 	}
 
-	if (defined $Lang{$fieldtype . "_note"}{$lang}) {
+	my $note = lang($fieldtype . "_note", $lang);
+	if (defined $note) {
 		$html .= <<HTML
-<p class="note">&rarr; $Lang{$fieldtype . "_note"}{$lang}</p>
+<p class="note">&rarr; $note</p>
 HTML
 ;
 	}
 
-	if (defined $Lang{$fieldtype . "_example"}{$lang}) {
-
-		my $examples = $Lang{example}{$lang};
-		if ($Lang{$fieldtype . "_example"}{$lang} =~ /,/) {
-			$examples = $Lang{examples}{$lang};
+	my $examples = lang($fieldtype . "_example", $lang);
+	if (defined $examples) {
+		my $example = lang($fieldtype . "_example", $lang);
+		if ($example =~ /,/) {
+			$examples = $examples;
 		}
 
 		$html .= <<HTML
-<p class="example">$examples $Lang{$fieldtype . "_example"}{$lang}</p>
+<p class="example">$examples $example</p>
 HTML
 ;
 	}
@@ -951,7 +952,7 @@ HTML
 
 	# Main language
 
-	$html .= "<label for=\"lang\">" . $Lang{lang}{$lang} . "</label>";
+	$html .= "<label for=\"lang\">" . lang('lang', $lang) . "</label>";
 
 	my @lang_values = @Langs;
 	push @lang_values, "other";

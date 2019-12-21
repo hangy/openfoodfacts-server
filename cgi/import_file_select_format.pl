@@ -265,7 +265,7 @@ JS
 	foreach my $tagtype ("categories", "labels") {
 
 		my $tagtype_specific = $tagtype . "_specific";
-		my $placeholder = $Lang{$tagtype . "_s"}{$lc};
+		my $placeholder = lang($tagtype . "_s", $lc);
 		$initjs .= <<JS
 		if (field == "$tagtype_specific") {
 
