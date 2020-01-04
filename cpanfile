@@ -18,7 +18,6 @@ requires 'Graphics::Color::RGB'; # libgraphics-color-perl
 requires 'Graphics::Color::HSL'; # libgraphics-color-perl
 requires 'Barcode::ZBar'; # libbarcode-zbar-perl
 requires 'XML::FeedPP'; # libxml-feedpp-perl
-requires 'URI::Find'; # liburi-find-perl
 requires 'XML::Simple'; # libxml-simple-perl
 requires 'experimental'; # libexperimental-perl
 requires 'Apache2::Request'; # libapache2-request-perl

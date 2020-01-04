@@ -29,7 +29,6 @@ BEGIN
 	use vars       qw(@ISA @EXPORT @EXPORT_OK %EXPORT_TAGS);
 	@EXPORT = qw();            # symbols to export by default
 	@EXPORT_OK = qw(
-					&startup
 					&init
 					&analyze_request
 
@@ -143,18 +142,6 @@ use Log::Any '$log', default_adapter => 'Stderr';
 
 use Apache2::RequestRec ();
 use Apache2::Const ();
-
-use URI::Find;
-
-my $uri_finder = URI::Find->new(sub {
-      my($uri, $orig_uri) = @_;
-	  if ($uri =~ /\http/) {
-		return qq|<a href="$uri">$orig_uri</a>|;
-	  }
-	  else {
-		return $orig_uri;
-	  }
-});
 
 # Record the modification date of files like CSS files so that Display.pm can add ?v=[modification date]
 # to the request in order to make sure the browser will not served an old cached version
@@ -887,28 +874,6 @@ sub remove_tags_except_links($) {
 
 	return $s;
 }
-
-
-sub display_form($) {
-
-	my $s = shift;
-
-	# Activate links
-
-	$s =~ s/<a href="h/<a href="protectedh/g;
-
-	$uri_finder->find(\$s);
-
-	$s =~ s/<a href="protectedh/<a href="h/g;
-
-	# Change line feeds to <br> and <p>..</p>
-
-	$s =~ s/\n(\n+)/<\/p>\n<p>/g;
-	$s =~ s/\n/<br \/>\n/g;
-
-	return "<p>$s</p>";
-}
-
 
 sub _get_date($) {
 
