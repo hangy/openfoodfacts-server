@@ -1,7 +1,7 @@
 ﻿# This file is part of Product Opener.
 #
 # Product Opener
-# Copyright (C) 2011-2019 Association Open Food Facts
+# Copyright (C) 2011-2020 Association Open Food Facts
 # Contact: contact@openfoodfacts.org
 # Address: 21 rue des Iles, 94100 Saint-Maur des Fossés, France
 #
@@ -40,6 +40,7 @@ BEGIN
 					%CanonicalLang
 					%Langs
 					@Langs
+					%LinkPaths
 
 					&lang
 					%lang_lc
@@ -237,13 +238,20 @@ if (-e $path) {
 		$Langs{$l} = $Lang{"language_" . $l}{$l};	# Name of the language in the language itself
 	}
 
-	$log->info("Loaded languaged", { langs => (scalar @Langs) }) if $log->is_info();
+	$log->info("Loaded languages", { langs => (scalar @Langs) }) if $log->is_info();
 	sleep(1);
 }
 else {
 	$log->warn("File does not exist, \%Lang will be empty. Run scripts/build_lang.pm to fix this.", { path => $path }) if $log->is_warn();
 }
 
+%LinkPaths = { };
+foreach my $key (keys %Lang) {
+	next unless $key =~ /^link_(?<lnk>.*)$/;
+	foreach my $l (@Langs) {
+		$LinkPaths{$key}{$l} = get_fileid(lang($+{lnk}), 0, $l);
+	}
+}
 
 # Tags types to path components in URLS: in ascii, lowercase, unaccented,
 # transliterated (in Roman characters)

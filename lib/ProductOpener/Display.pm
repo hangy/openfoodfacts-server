@@ -137,6 +137,8 @@ use Storable qw(freeze);
 use Digest::MD5 qw(md5_hex);
 use boolean;
 use Excel::Writer::XLSX;
+use Text::Xslate;
+use File::Spec;
 
 use Log::Any '$log', default_adapter => 'Stderr';
 
@@ -187,6 +189,16 @@ use vars qw();
 
 $static_subdomain = format_subdomain('static');
 $world_subdomain = format_subdomain('world');
+
+our $tx = Text::Xslate->new(
+    function => {
+        lang => \&Lang::lang,
+    },
+	cache => {
+        level => 2,
+    },
+	cache_dir => File::Spec->tmpdir(),
+);
 
 sub init()
 {
