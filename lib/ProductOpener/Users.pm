@@ -1,7 +1,7 @@
 ﻿# This file is part of Product Opener.
 #
 # Product Opener
-# Copyright (C) 2011-2019 Association Open Food Facts
+# Copyright (C) 2011-2020 Association Open Food Facts
 # Contact: contact@openfoodfacts.org
 # Address: 21 rue des Iles, 94100 Saint-Maur des Fossés, France
 #
@@ -77,6 +77,7 @@ BEGIN
 					&check_session
 
 					&generate_token
+					&get_user_groups
 
 					);	# symbols to export on request
 	%EXPORT_TAGS = (all => [@EXPORT_OK]);
@@ -1051,6 +1052,17 @@ sub save_user() {
 	if (defined $User_id) {
 		store("$data_root/users/$User_id.sto", \%User);
 	}
+}
+
+sub get_user_groups {
+	my $user_ref = (@_);
+
+	my @result = ();
+	foreach my $group (@user_groups) {
+		push @result, $group if $user_ref->{$group};
+	}
+
+	return @result;
 }
 
 1;

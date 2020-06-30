@@ -6231,9 +6231,16 @@ sub display_new($) {
 		$og_type = $request_ref->{og_type};
 	}
 
+	my @user_groups = get_user_groups(\%User);
+	my $user_groups_html = '';
+	foreach my $group (@user_groups) {
+		$group =~ tr/_/-/;
+		$user_groups_html .= " data-user-group-$group=\"1\"";
+	}
+
 	my $html = <<HTML
 <!doctype html>
-<html class="no-js" lang="$lang" data-serverdomain="$server_domain">
+<html class="no-js" lang="$lang" data-serverdomain="$server_domain" $user_groups_html>
 <head>
 <meta charset="utf-8">
 
