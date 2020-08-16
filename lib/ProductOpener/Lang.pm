@@ -1,7 +1,7 @@
 ﻿# This file is part of Product Opener.
 #
 # Product Opener
-# Copyright (C) 2011-2019 Association Open Food Facts
+# Copyright (C) 2011-2020 Association Open Food Facts
 # Contact: contact@openfoodfacts.org
 # Address: 21 rue des Iles, 94100 Saint-Maur des Fossés, France
 #
@@ -26,8 +26,7 @@ use Exporter    qw< import >;
 
 BEGIN
 {
-	use vars       qw(@ISA @EXPORT @EXPORT_OK %EXPORT_TAGS);
-	@EXPORT = qw();	# symbols to export by default
+	use vars       qw(@ISA @EXPORT_OK %EXPORT_TAGS);
 	@EXPORT_OK = qw(
 					$lang
 					$lc
@@ -253,8 +252,8 @@ else {
 my ($tag_type_singular_ref, $tag_type_plural_ref)
     = ProductOpener::I18N::split_tags(
         ProductOpener::I18N::read_po_files("$data_root/po/tags/"));
-%tag_type_singular = %$tag_type_singular_ref;
-%tag_type_plural   = %$tag_type_plural_ref;
+%tag_type_singular = %{$tag_type_singular_ref};
+%tag_type_plural   = %{$tag_type_plural_ref};
 
 my @debug_taxonomies = ("categories", "labels", "additives");
 
@@ -342,7 +341,7 @@ sub build_lang($) {
 
 	# Initialize %Langs and @Langs and add language names to %Lang
 
-	%Langs = %$Languages_ref;
+	%Langs = %{$Languages_ref};
 	@Langs = sort keys %{$Languages_ref};
 	foreach my $l (@Langs) {
 		$Lang{"language_" . $l} = $Languages_ref->{$l};

@@ -1,7 +1,7 @@
 # This file is part of Product Opener.
 #
 # Product Opener
-# Copyright (C) 2011-2019 Association Open Food Facts
+# Copyright (C) 2011-2020 Association Open Food Facts
 # Contact: contact@openfoodfacts.org
 # Address: 21 rue des Iles, 94100 Saint-Maur des Fossés, France
 #
@@ -40,8 +40,7 @@ use Exporter    qw< import >;
 
 BEGIN
 {
-	use vars       qw(@ISA @EXPORT @EXPORT_OK %EXPORT_TAGS);
-	@EXPORT = qw();	    # symbols to export by default
+	use vars       qw(@ISA @EXPORT_OK %EXPORT_TAGS);
 	@EXPORT_OK = qw(
 					%Nutriments
 					%nutriments_labels
@@ -214,38 +213,38 @@ sub normalize_nutriment_value_and_modifier($$) {
 	my $value_ref = shift;
 	my $modifier_ref = shift;
 
-	return if not defined $$value_ref;
+	return if not defined ${$value_ref};
 
-	if ($$value_ref =~ /nan/i) {
-		$$value_ref = '';
+	if (${$value_ref} =~ /nan/i) {
+		${$value_ref} = '';
 	}
 
-	if ($$value_ref =~ /(\&lt;=|<=|\N{U+2264})( )?/) {
-		$$value_ref =~ s/(\&lt;=|<=|\N{U+2264})( )?//;
+	if (${$value_ref} =~ /(\&lt;=|<=|\N{U+2264})( )?/) {
+		${$value_ref} =~ s/(\&lt;=|<=|\N{U+2264})( )?//;
 		$modifier_ref = "\N{U+2264}";
 	}
-	if ($$value_ref =~ /(\&lt;|<|max|maxi|maximum|inf|inférieur|inferieur|less)( )?/) {
-		$$value_ref =~ s/(\&lt;|<|min|minimum|max|maxi|maximum|environ)( )?//;
-		$$modifier_ref = '<';
+	if (${$value_ref} =~ /(\&lt;|<|max|maxi|maximum|inf|inférieur|inferieur|less)( )?/) {
+		${$value_ref} =~ s/(\&lt;|<|min|minimum|max|maxi|maximum|environ)( )?//;
+		${$modifier_ref} = '<';
 	}
-	if ($$value_ref =~ /(\&gt;=|>=|\N{U+2265})/) {
-		$$value_ref =~ s/(\&gt;=|>=|\N{U+2265})( )?//;
+	if (${$value_ref} =~ /(\&gt;=|>=|\N{U+2265})/) {
+		${$value_ref} =~ s/(\&gt;=|>=|\N{U+2265})( )?//;
 		$modifier_ref = "\N{U+2265}";
 	}
-	if ($$value_ref =~ /(\&gt;|>|min|mini|minimum|greater|more)/) {
-		$$value_ref =~ s/(\&gt;|>|min|mini|minimum|greater|more)( )?//;
-		$$modifier_ref = '>';
+	if (${$value_ref} =~ /(\&gt;|>|min|mini|minimum|greater|more)/) {
+		${$value_ref} =~ s/(\&gt;|>|min|mini|minimum|greater|more)( )?//;
+		${$modifier_ref} = '>';
 	}
-	if ($$value_ref =~ /(env|environ|about|~|≈)/) {
-		$$value_ref =~ s/(env|environ|about|~|≈)( )?//;
-		$$modifier_ref = '~';
+	if (${$value_ref} =~ /(env|environ|about|~|≈)/) {
+		${$value_ref} =~ s/(env|environ|about|~|≈)( )?//;
+		${$modifier_ref} = '~';
 	}
-	if ($$value_ref =~ /trace|traces/) {
-		$$value_ref = 0;
-		$$modifier_ref = '~';
+	if (${$value_ref} =~ /trace|traces/) {
+		${$value_ref} = 0;
+		${$modifier_ref} = '~';
 	}
-	if ($$value_ref !~ /\./) {
-		$$value_ref =~ s/,/\./;
+	if (${$value_ref} !~ /\./) {
+		${$value_ref} =~ s/,/\./;
 	}
 }
 
@@ -5174,7 +5173,7 @@ sub compute_nutrient_levels($) {
 
 
 	foreach my $nutrient_level_ref (@nutrient_levels) {
-		my ($nid, $low, $high) = @$nutrient_level_ref;
+		my ($nid, $low, $high) = @{$nutrient_level_ref};
 
 		# divide low and high per 2 for drinks
 
@@ -5222,7 +5221,7 @@ sub create_nutrients_level_taxonomy() {
 	my $nutrient_levels_taxonomy = '';
 
 	foreach my $nutrient_level_ref (@nutrient_levels) {
-		my ($nid, $low, $high) = @$nutrient_level_ref;
+		my ($nid, $low, $high) = @{$nutrient_level_ref};
 		foreach my $level ('low', 'moderate', 'high') {
 			$nutrient_levels_taxonomy .= "\n" . 'en:' . sprintf($Lang{nutrient_in_quantity}{en}, $Nutriments{$nid}{en}, $Lang{$level . "_quantity"}{en}) . "\n";
 			foreach my $l (sort keys %Langs) {
@@ -5808,8 +5807,17 @@ sub assign_categories_properties_to_product($) {
 	$product_ref->{categories_properties_tags} = [];
 
 	# Simple properties
+	
+	push @{$product_ref->{categories_properties_tags}}, "all-products";
+	
+	if (defined $product_ref->{categories}) {
+		push @{$product_ref->{categories_properties_tags}}, "categories-known";
+	}
+	else {
+		push @{$product_ref->{categories_properties_tags}}, "categories-unknown";
+	}
 
-	foreach my $property ("agribalyse_food_code:en", "agribalyse_proxy_food_code:en", "ciqual_food_code:en:") {
+	foreach my $property ("agribalyse_food_code:en", "agribalyse_proxy_food_code:en", "ciqual_food_code:en") {
 
 		my $property_name = $property;
 		$property_name =~ s/:en$//;
@@ -5822,23 +5830,25 @@ sub assign_categories_properties_to_product($) {
 					$product_ref->{categories_properties}{$property} = $properties{categories}{$categoryid}{$property};
 					last;
 				}
-				if (defined $product_ref->{categories_properties}{$property}) {
-					push @{$product_ref->{categories_properties_tags}}, get_string_id_for_lang("no_language", $property_name . "-" . $product_ref->{categories_properties}{$property});
-					push @{$product_ref->{categories_properties_tags}}, get_string_id_for_lang("no_language", $property_name . "-" . "known");					
-				}
-				else {
-					push @{$product_ref->{categories_properties_tags}}, get_string_id_for_lang("no_language", $property_name . "-" . "unknown");
-				}				
-			}
-			if ((defined $product_ref->{categories_properties}{"agribalyse_food_code:en"}) or (defined $product_ref->{categories_properties}{"agribalyse_proxy_food_code:en"})) {
-				push @{$product_ref->{categories_properties_tags}}, get_string_id_for_lang("no_language", "agribalyse" . "-" . "known");
-			}
-			else {
-				push @{$product_ref->{categories_properties_tags}}, get_string_id_for_lang("no_language", "agribalyse" . "-" . "unknown");
 			}
 		}
+		
+		if (defined $product_ref->{categories_properties}{$property}) {
+			push @{$product_ref->{categories_properties_tags}}, get_string_id_for_lang("no_language", $property_name . "-" . $product_ref->{categories_properties}{$property});
+			push @{$product_ref->{categories_properties_tags}}, get_string_id_for_lang("no_language", $property_name . "-" . "known");					
+		}
+		else {
+			push @{$product_ref->{categories_properties_tags}}, get_string_id_for_lang("no_language", $property_name . "-" . "unknown");
+		}				
 	}
-
+	if ((defined $product_ref->{categories_properties}{"agribalyse_food_code:en"}) or (defined $product_ref->{categories_properties}{"agribalyse_proxy_food_code:en"})) {
+		push @{$product_ref->{categories_properties_tags}}, get_string_id_for_lang("no_language", "agribalyse" . "-" . "known");
+		push @{$product_ref->{categories_properties_tags}}, get_string_id_for_lang("no_language", "agribalyse" . "-"
+			. ($product_ref->{categories_properties}{"agribalyse_food_code:en"} || $product_ref->{categories_properties}{"agribalyse_proxy_food_code:en"}));
+	}
+	else {
+		push @{$product_ref->{categories_properties_tags}}, get_string_id_for_lang("no_language", "agribalyse" . "-" . "unknown");
+	}
 }
 
 1;

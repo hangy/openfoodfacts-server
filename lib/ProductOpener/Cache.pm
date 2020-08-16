@@ -1,7 +1,7 @@
 ﻿# This file is part of Product Opener.
 #
 # Product Opener
-# Copyright (C) 2011-2019 Association Open Food Facts
+# Copyright (C) 2011-2020 Association Open Food Facts
 # Contact: contact@openfoodfacts.org
 # Address: 21 rue des Iles, 94100 Saint-Maur des Fossés, France
 #
@@ -26,8 +26,7 @@ use Exporter    qw< import >;
 
 BEGIN
 {
-	use vars       qw(@ISA @EXPORT @EXPORT_OK %EXPORT_TAGS);
-	@EXPORT = qw();            # symbols to export by default
+	use vars       qw(@ISA @EXPORT_OK %EXPORT_TAGS);
 	@EXPORT_OK = qw(
 					&get_multi_objects
 					
@@ -64,9 +63,9 @@ use vars qw();
 sub get_multi_objects($)
 {
 	my $keys_ref = shift;
-	my $values_ref = $memd->get_multi(keys %$keys_ref);
+	my $values_ref = $memd->get_multi(keys %{$keys_ref});
 
-	foreach my $key (keys %$keys_ref) {
+	foreach my $key (keys %{$keys_ref}) {
 		if (not defined $values_ref->{$key}) {
 			if ($key =~ /\/blogs\/(.*)$/) {
 				my $blog_ref = retrieve("$data_root/index/blogs/$1/blog.sto");

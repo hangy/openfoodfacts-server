@@ -1,7 +1,7 @@
 # This file is part of Product Opener.
 #
 # Product Opener
-# Copyright (C) 2011-2019 Association Open Food Facts
+# Copyright (C) 2011-2020 Association Open Food Facts
 # Contact: contact@openfoodfacts.org
 # Address: 21 rue des Iles, 94100 Saint-Maur des Fossés, France
 #
@@ -65,8 +65,7 @@ use Text::Fuzzy;
 
 BEGIN
 {
-	use vars       qw(@ISA @EXPORT @EXPORT_OK %EXPORT_TAGS);
-	@EXPORT = qw();            # symbols to export by default
+	use vars       qw(@ISA @EXPORT_OK %EXPORT_TAGS);
 	@EXPORT_OK = qw(
 
 		&import_csv_file
@@ -409,7 +408,7 @@ sub import_csv_file($) {
 	my %seen_columns = ();
 	my @column_names = ();
 
-	foreach my $column (@$columns_ref) {
+	foreach my $column (@{$columns_ref}) {
 		if (defined $seen_columns{$column}) {
 			$seen_columns{$column}++;
 			push @column_names, $column . "." . $seen_columns{$column};
@@ -639,7 +638,7 @@ EMAIL
 
 		my %param_langs = ();
 
-		foreach my $field (keys %$imported_product_ref) {
+		foreach my $field (keys %{$imported_product_ref}) {
 			if (($field =~ /^(.*)_(\w\w)$/) and (defined $language_fields{$1})) {
 				$param_langs{$2} = 1;
 			}
@@ -677,7 +676,7 @@ EMAIL
 
 		# We can have source specific fields of the form : sources_fields:org-database-usda:fdc_category
 		# Transfer them directly
-		foreach my $field (sort keys %$imported_product_ref) {
+		foreach my $field (sort keys %{$imported_product_ref}) {
 			if ($field =~ /^sources_fields:([a-z0-9-]+):/) {
 				my $source_id = $1;
 				my $source_field = $';

@@ -1,7 +1,7 @@
 # This file is part of Product Opener.
 #
 # Product Opener
-# Copyright (C) 2011-2019 Association Open Food Facts
+# Copyright (C) 2011-2020 Association Open Food Facts
 # Contact: contact@openfoodfacts.org
 # Address: 21 rue des Iles, 94100 Saint-Maur des Fossés, France
 #
@@ -57,8 +57,7 @@ use Exporter    qw< import >;
 
 BEGIN
 {
-	use vars qw(@ISA @EXPORT @EXPORT_OK %EXPORT_TAGS);
-	@EXPORT = qw();            # symbols to export by default
+	use vars       qw(@ISA @EXPORT_OK %EXPORT_TAGS);
 	@EXPORT_OK = qw(
 		&extract_ingredients_from_image
 
@@ -992,7 +991,7 @@ sub parse_ingredients_text($) {
 												$processing .= ", " . $processingid;
 											}
 											else {
-												$processing = $$processingid;
+												$processing = ${$processingid};
 											}
 											$debug_ingredients and $log->debug("between is a processing", { between => $between, processing => $processingid }) if $log->is_debug();
 											$between = '';
@@ -1081,8 +1080,8 @@ sub parse_ingredients_text($) {
 
 			# if we have nothing before, then we can be in the case where between applies to the last ingredient
 			# e.g. if we have "Vegetables (97%) (Potatoes, Tomatoes)"
-			if (($before =~ /^\s*$/) and ($between !~ /^\s*$/) and ((scalar @$ingredients_ref) > 0)) {
-				my $last_ingredient = (scalar @$ingredients_ref) - 1;
+			if (($before =~ /^\s*$/) and ($between !~ /^\s*$/) and ((scalar @{$ingredients_ref}) > 0)) {
+				my $last_ingredient = (scalar @{$ingredients_ref}) - 1;
 				$debug_ingredients and $log->debug("between applies to last ingredient", { between => $between, last_ingredient => $ingredients_ref->[$last_ingredient]{text }}) if $log->is_debug();
 
 				(defined $ingredients_ref->[$last_ingredient]{ingredients}) or $ingredients_ref->[$last_ingredient]{ingredients} = [];
@@ -1270,6 +1269,7 @@ sub parse_ingredients_text($) {
 								'contenir|présence',	# présence exceptionnelle de ... peut contenir ... noyaux etc.
 								'^soit ',	# soit 20g de beurre reconstitué
 								'en proportions variables',
+								'en proportion variable',
 								'^équivalent ', # équivalent à 20% de fruits rouges
 								'^malgré ', # malgré les soins apportés...
 								'^il est possible', # il est possible qu'il contienne...
@@ -1290,12 +1290,19 @@ sub parse_ingredients_text($) {
 								'^Tuote on valmistettu linjalla', # Tuote on valmistettu linjalla, jossa käsitellään myös muita viljoja.
 								'^Leivottu tuotantolinjalla', # Leivottu tuotantolinjalla, jossa käsitellään myös muita viljoja.
 								'^jota käytetään leivonnassa', # Sisältää pienen määrän vehnää, jota käytetään leivonnassa alus- ja päällijauhona.
+								'vaihtelevina osuuksina',
 							],
 							
 							'nl' => [
 								'in wisselende verhoudingen',
 								'harde fractie',
+								'o.a.',
 							],
+							
+							'sv' => [
+								'varierande proportion',
+							],
+							
 
 						);
 						if (defined $ignore_regexps{$product_lc}) {
@@ -1345,7 +1352,7 @@ sub parse_ingredients_text($) {
 					# will cause issues for the mongodb ingredients_tags index, just drop them
 
 					if (length($ingredient{id}) < 500) {
-						push @$ingredients_ref, \%ingredient;
+						push @{$ingredients_ref}, \%ingredient;
 
 						if ($between ne '') {
 							# Ingredient has sub-ingredients
@@ -1535,7 +1542,7 @@ sub delete_ingredients_percent_values($) {
 
 	my $ingredients_ref = shift;
 
-	foreach my $ingredient_ref (@$ingredients_ref) {
+	foreach my $ingredient_ref (@{$ingredients_ref}) {
 
 		delete $ingredient_ref->{percent_min};
 		delete $ingredient_ref->{percent_max};
@@ -1638,7 +1645,7 @@ sub init_percent_values($$$) {
 	my $total_max = shift;
 	my $ingredients_ref = shift;
 
-	foreach my $ingredient_ref (@$ingredients_ref) {
+	foreach my $ingredient_ref (@{$ingredients_ref}) {
 		if (defined $ingredient_ref->{percent}) {
 			$ingredient_ref->{percent_min} = $ingredient_ref->{percent};
 			$ingredient_ref->{percent_max} = $ingredient_ref->{percent};
@@ -1667,9 +1674,9 @@ sub set_percent_max_values($$$) {
 	my $sum_of_maxs_before = 0;
 
 	my $i = 0;
-	my $n = scalar @$ingredients_ref;
+	my $n = scalar @{$ingredients_ref};
 
-	foreach my $ingredient_ref (@$ingredients_ref) {
+	foreach my $ingredient_ref (@{$ingredients_ref}) {
 
 		$i++;
 
@@ -1756,9 +1763,9 @@ sub set_percent_min_values($$$) {
 	my $sum_of_maxs_after = 0;
 
 	my $i = 0;
-	my $n = scalar @$ingredients_ref;
+	my $n = scalar @{$ingredients_ref};
 
-	foreach my $ingredient_ref (reverse @$ingredients_ref) {
+	foreach my $ingredient_ref (reverse @{$ingredients_ref}) {
 
 		$i++;
 
@@ -1825,9 +1832,9 @@ sub set_percent_sub_ingredients($) {
 	my $changed = 0;
 
 	my $i = 0;
-	my $n = scalar @$ingredients_ref;
+	my $n = scalar @{$ingredients_ref};
 
-	foreach my $ingredient_ref (@$ingredients_ref) {
+	foreach my $ingredient_ref (@{$ingredients_ref}) {
 
 		$i++;
 
@@ -2260,15 +2267,35 @@ sub normalize_allergens_enumeration($$$) {
 
 my %phrases_before_ingredients_list = (
 
-en => [
-'ingredient(s?)',
+az => [
+'Tarkibi',
+],
+
+bg => [
+'Съставки',
+'Състав',
+],
+
+bs => [
+'Sastoji',
+],
+
+ca => [
+'Ingredient(s)?',
+'composició',
 ],
 
 cs => [
 'složení',
 ],
 
+da => [
+'N(æ|ae)ringsindhold',
+'indeholder',
+],
+
 de => [
+'Zusammensetzung',
 'zutat(en)?',
 ],
 
@@ -2278,16 +2305,22 @@ dk => [
 
 el => [
 'Συστατικά',
-'ΣΥΣΤΑΤΙΚΑ'
+],
+
+en => [
+'composition',
+'ingredient(s?)',
 ],
 
 es => [
+'composición',
 'ingredientes',
 ],
 
 fi => [
 'aine(?:kse|s?osa)t(?:\s*\/\s*ingredienser)?',
 'valmistusaineet',
+'koostumus',
 ],
 
 fr => [
@@ -2297,40 +2330,111 @@ fr => [
 ],
 
 hr => [
+'Sastojci',
+],
+
+hu => [
 '(ö|ő|o)sszetev(ö|ő|o)k',
+'összetétel',
+],
+
+id => [
+'komposisi',
+],
+
+is => [
+'inneald',
+'Innihaldslýsing',
 ],
 
 it => [
 'ingredienti',
+'composizione',
 ],
 
-is => [
-'Innihaldslýsing',
+kk => [
+'Курамы',
+],
+
+ky => [
+'Курамы',
+],
+
+lt => [
+'Sudedamosios dalys',
+'Sudėtis',
+],
+
+lv => [
+'sastāv(s|dalas)',
 ],
 
 nl => [
 'ingredi(e|ë)nten',
+'samenstelling',
+'bestanddelen',
 ],
 
-pt => [
-'ingredientes',
+nb => [
+'Ingredienser',
 ],
 
 pl => [
 'składniki',
+'skład',
+],
+
+pt => [
+'ingredientes',
+'composição',
+],
+
+ro => [
+'ingrediente',
+'compoziţie',
+],
+
+ru => [
+'coctaB',
+'Ингредиенты',
 ],
 
 si => [
 'sestavine',
 ],
 
-ru => [
-'Состав',
-'Ингредиенты',
+sk => [
+'obsahuje',
+'zloženie',
+],
+sl => [
+'vsebuje',
+'sestavine',
+],
+
+sr => [
+'Sastojci',
 ],
 
 sv => [
 'ingredienser',
+'innehåll(er)?',
+],
+
+tg => [
+'Таркиб',
+],
+
+th => [
+'ส่วนประกอบ',
+],
+
+uz => [
+'Tarkib',
+],
+
+zh => [
+'配料',
 ],
 
 );
@@ -2350,29 +2454,27 @@ cs => [
 
 da => [
 'INGREDIENSER',
-'N(æ|ae)ringsindhold',
 ],
 
 de => [
 'ZUTAT(EN)?',
 ],
 
-da => [
-'N(æ|ae)ringsindhold',
+el => [
+'ΣΥΣΤΑΤΙΚΑ'
 ],
 
 es => [
-'INGREDIENTES',
+'INGREDIENTE(S)?',
 ],
 
 fi => [
 'AINE(?:KSE|S?OSA)T(?:\s*\/\s*INGREDIENSER)?',
-'VALMISTUSAINEET'
+'VALMISTUSAINEET',
 ],
 
 fr => [
 'INGR(E|É)(D|0|O)IENTS',
-'INGR(E|É)DIENT',
 ],
 
 hu => [
@@ -2380,7 +2482,6 @@ hu => [
 ],
 
 it => [
-
 'INGREDIENTI(\s*)',
 ],
 
@@ -2388,30 +2489,23 @@ nl => [
 'INGREDI(E|Ë)NTEN(\s*)',
 ],
 
-pt => [
-'INGREDIENTES(\s*)',
-],
-
 pl => [
 'SKŁADNIKI(\s*)',
 ],
 
-
-ro => [
-'Ingrediente'
+pt => [
+'INGREDIENTES(\s*)',
 ],
+
 
 si => [
 'SESTAVINE',
 ],
 
-sv => [
-'INGREDIENSER',
-],
-
 vi => [
 'THANH PHAN',
 ],
+
 
 );
 
@@ -2437,21 +2531,29 @@ de => [
 'Durchschnittliche N(â|a|ä)hrwerte',
 'DURCHSCHNITTLICHE NÄHRWERTE',
 'Durchschnittliche N(â|a|ä)hrwert(angaben|angabe)',
+'Kakao: \d\d\s?% mindestens.',
 'N(â|a|ä)hrwert(angaben|angabe|information|tabelle)', #Nährwertangaben pro 100g
 'N(â|a|ä)hrwerte je',
 'Nâhrwerte',
 'mindestens',
 'k(u|ü)hl und trocken lagern',
+'Rinde nicht zum Verzehr geeignet.',
 'Vor W(â|a|ä)rme und Feuchtigkeit sch(u|ü)tzen',
 'Unge(ö|o)ffnet bei max.',
+'Unter Schutzatmosphäre verpackt',
 'verbrauchen bis',
 'Vorbereitung Tipps',
 'zu verbrauchen bis',
 '100 (ml|g) enthalten durchschnittlich',
+'\d\d\d\sg\s\w*\swerden aus\s\d\d\d\sg\s\w*\shergestellt', # 100 g Salami werden aus 120 g Schweinefleisch hergestellt. 
+],
+
+el => [
+'ΔΙΑΘΡΕΠΤΙΚΗ ΕΠΙΣΗΜΑΝΣΗ', #Nutritional labelling
+'ΔΙΤΡΟΦΙΚΕΣ ΠΗΡΟΦΟΡΙΕΣ',
 ],
 
 en => [
-
 'nutritional values',
 'after opening',
 'nutrition values',
@@ -2460,6 +2562,7 @@ en => [
 'of which saturated fat',
 '((\d+)(\s?)kJ\s+)?(\d+)(\s?)kcal',
 'once opened keep in the refrigerator',
+'Store in a cool, dry place',
 '(dist(\.)?|distributed|sold)(\&|and|sold| )* (by|exclusively)',
 #'Best before',
 #'See bottom of tin',
@@ -2554,6 +2657,8 @@ fr => [
 'N(o|ò)us vous conseillons',
 'Non ouvert,',
 'Sans conservateur',
+'(Utilisation: |Préparation: )?Servir frais',
+'Temps de Cuisson',
 'tenir à l\'abri',
 'Teneur en matière grasse',
 '(Chocolat: )?teneur en cacao',
@@ -2644,10 +2749,6 @@ ro => [
 ],
 
 
-el => [
-'ΔΙΑΘΡΕΠΤΙΚΗ ΕΠΙΣΗΜΑΝΣΗ', #Nutritional labelling
-'ΔΙΤΡΟΦΙΚΕΣ ΠΗΡΟΦΟΡΙΕΣ',
-],
 
 vi => [
 'GI(Á|A) TR(Ị|I) DINH D(Ư|U)(Ỡ|O)NG (TRONG|TRÊN)',
@@ -2669,6 +2770,10 @@ fr => [
 
 # phrases that can be removed
 my %ignore_phrases = (
+de => [
+'\d\d?\s?%\sFett\si(\.|,)\s?Tr(\.|,)?', # 45 % Fett i.Tr.
+"inklusive",
+],
 en => [
 "na|n/a|not applicable",
 ],
@@ -2977,8 +3082,12 @@ sub separate_additive_class($$$$$) {
 		$after2 = $`;
 	}
 
-	if (exists_taxonomy_tag("additives", canonicalize_taxonomy_tag($product_lc, "additives", $after) )
-		or ((defined $after2) and exists_taxonomy_tag("additives", canonicalize_taxonomy_tag($product_lc, "additives", $after2) ))
+	# also check that we are not separating an actual ingredient
+	# e.g. acide acétique -> acide : acétique
+
+	if (	(not exists_taxonomy_tag("additives", canonicalize_taxonomy_tag($product_lc, "additives", $additive_class . " " . $after))) 
+ 	and (exists_taxonomy_tag("additives", canonicalize_taxonomy_tag($product_lc, "additives", $after) )
+		or ((defined $after2) and exists_taxonomy_tag("additives", canonicalize_taxonomy_tag($product_lc, "additives", $after2) )))
 	) {
 		#print STDERR "separate_additive_class - after is an additive\n";
 		return $additive_class . " : ";
@@ -3175,7 +3284,7 @@ sub preparse_ingredients_text($$) {
 
 	# Canonicalize additives to remove the dash that can make further parsing break
 	# Match E + number + letter a to h + i to xv, followed by a space or separator
-	$text =~ s/(\b)e( |-|\.)?$additivesregexp(\b|\s|,|\.|;|\/|-|\\|$)/replace_additive($3,$6,$9) . $12/ieg;
+	$text =~ s/(\b)e( |-|\.)?$additivesregexp(\b|\s|,|\.|;|\/|-|\\|\)|\]|$)/replace_additive($3,$6,$9) . $12/ieg;
 
 	# E100 et E120 -> E100, E120
 	$text =~ s/\be($additivesregexp)$and/e$1, /ig;
@@ -3195,7 +3304,9 @@ sub preparse_ingredients_text($$) {
 	# e.g. "regulatory kwasowości: kwas cytrynowy i cytryniany sodu." -> "kwas" means acid / acidifier.
 	if (defined $additives_classes_regexps{$product_lc}) {
 		my $regexp = $additives_classes_regexps{$product_lc};
-		$text =~ s/\b($regexp)(\s+)(:?)(?!\(| \()/separate_additive_class($product_lc,$1,$2,$3,$')/ieg;
+		# negative look ahead so that the additive class is not preceded by other words
+		# e.g. "de l'acide" should not match "acide"
+		$text =~ s/(?<!\w( |'))\b($regexp)(\s+)(:?)(?!\(| \()/separate_additive_class($product_lc,$2,$3,$4,$')/ieg;
 	}
 
 	# dash with 1 missing space
@@ -3497,7 +3608,11 @@ sub preparse_ingredients_text($$) {
 			$text =~ s/($prefixregexp)\s?(:|\(|\[)\s?($suffixregexp)\b(\s?(\)|\]))/normalize_enumeration($product_lc,$1,$5)/ieg;
 
 			# Huiles végétales de palme, de colza et de tournesol
+			# Carbonate de magnésium, fer élémentaire -> should not trigger carbonate de fer élémentaire.
+			# TODO 18/07/2020 remove when we have a better solution
+			$text =~ s/fer élémentaire/fer_élémentaire/g;
 			$text =~ s/($prefixregexp)(:|\(|\[| | de | d')+((($suffixregexp)($symbols_regexp|\s)*( |\/| \/ | - |,|, | et | de | et de | et d'| d')+)+($suffixregexp)($symbols_regexp|\s)*)\b(\s?(\)|\]))?/normalize_enumeration($product_lc,$1,$5)/ieg;
+			$text =~ s/fer_élémentaire/fer élémentaire/g;			
 		}
 
 		# Caramel ordinaire et curcumine
@@ -4551,7 +4666,7 @@ sub add_fruits($) {
 
 	my $fruits = 0;
 
-	foreach my $ingredient_ref (@$ingredients_ref) {
+	foreach my $ingredient_ref (@{$ingredients_ref}) {
 
 		my $nutriscore_fruits_vegetables_nuts = get_inherited_property("ingredients", $ingredient_ref->{id}, "nutriscore_fruits_vegetables_nuts:en");
 

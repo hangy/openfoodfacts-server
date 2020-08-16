@@ -1,7 +1,7 @@
 # This file is part of Product Opener.
 #
 # Product Opener
-# Copyright (C) 2011-2019 Association Open Food Facts
+# Copyright (C) 2011-2020 Association Open Food Facts
 # Contact: contact@openfoodfacts.org
 # Address: 21 rue des Iles, 94100 Saint-Maur des Fossés, France
 #
@@ -54,8 +54,7 @@ use Text::Fuzzy;
 
 BEGIN
 {
-	use vars       qw(@ISA @EXPORT @EXPORT_OK %EXPORT_TAGS);
-	@EXPORT = qw();            # symbols to export by default
+	use vars       qw(@ISA @EXPORT_OK %EXPORT_TAGS);
 	@EXPORT_OK = qw(
 
 		%fields
@@ -260,7 +259,7 @@ sub assign_main_language_of_product($$$) {
 
 	if ((not defined $product_ref->{lc}) or (not defined $product_ref->{"product_name_" . $product_ref->{lc}})) {
 
-		foreach my $possible_lc (@$lcs_ref) {
+		foreach my $possible_lc (@{$lcs_ref}) {
 			if ((defined $product_ref->{"product_name_" . $possible_lc}) and ($product_ref->{"product_name_" . $possible_lc} !~ /^\s*$/)) {
 				$log->info("assign_main_language_of_product: assigning value", { lc => $possible_lc}) if $log->is_info();
 				assign_value($product_ref, "lc", $possible_lc);
@@ -281,7 +280,7 @@ sub assign_countries_for_product($$$) {
 	my $lcs_ref = shift;
 	my $default_country = shift;
 
-	foreach my $possible_lc (keys %$lcs_ref) {
+	foreach my $possible_lc (keys %{$lcs_ref}) {
 		if (defined $product_ref->{"product_name_" . $possible_lc}) {
 			assign_value($product_ref,"countries", $lcs_ref->{$possible_lc});
 			$log->info("assign_countries_for_product: found lc - assigning value", { lc => $possible_lc, countries => $lcs_ref->{$possible_lc}}) if $log->is_info();
@@ -372,7 +371,7 @@ sub match_specific_taxonomy_tags($$$$) {
 
 	if ((defined $product_ref->{$source}) and ($product_ref->{$source} ne "")) {
 
-		foreach my $tagid (@$tags_ref) {
+		foreach my $tagid (@{$tags_ref}) {
 
 			$log->trace("match_specific_taxonomy_tags - looping through tags", { tagid => $tagid}) if $log->is_trace();
 
@@ -741,7 +740,7 @@ sub clean_fields($) {
 
 	$log->debug("clean_fields - start", {  }) if $log->is_debug();
 
-	foreach my $field (keys %$product_ref) {
+	foreach my $field (keys %{$product_ref}) {
 
 		# If we have generic_name but not product_name, also assign generic_name to product_name
 		if (($field =~ /^generic_name_(\w\w)$/) and (not defined $product_ref->{"product_name_" . $1})) {
@@ -755,7 +754,7 @@ sub clean_fields($) {
 	# Populate the quantity / weight fields from their quantity_value_unit, quantity_value, quantity_unit etc. components
 	clean_weights($product_ref);
 
-	foreach my $field (keys %$product_ref) {
+	foreach my $field (keys %{$product_ref}) {
 
 		# Split the generic name from the ingredient list
 		# Warning: this should be done only once, on the producers platform, when we import product data from a producer
@@ -777,7 +776,7 @@ sub clean_fields($) {
 		}
 	}
 
-	foreach my $field (keys %$product_ref) {
+	foreach my $field (keys %{$product_ref}) {
 
 		$log->debug("clean_fields", { field=>$field, value=>$product_ref->{$field} }) if $log->is_debug();
 
@@ -1167,7 +1166,7 @@ sub load_xml_file($$$$) {
 		$product_ref = get_or_create_product_for_code($code);
 	}
 
-	foreach my $field_mapping_ref (@$xml_fields_mapping_ref) {
+	foreach my $field_mapping_ref (@{$xml_fields_mapping_ref}) {
 		my $source = $field_mapping_ref->[0];
 		my $target = $field_mapping_ref->[1];
 
@@ -1562,7 +1561,7 @@ sub recursive_list($$) {
 		closedir (DH);
 	}
 	else {
-		push @$list_ref, $arg;
+		push @{$list_ref}, $arg;
 	}
 }
 
@@ -1687,19 +1686,19 @@ sub extract_nutrition_facts_from_text($$$$$) {
 
 		if ($text_lc eq "en") {
 			if ($text =~ /^\s*(for|per) ((1|a|one) )?serving (of )?\(? ?(\d+((\.|,)\d+)? ?(g|kg|mg|µg|l|dl|cl|ml))/i) {
-				$$nutrition_data_per_ref = "serving";
-				$$serving_size_ref = $5;
+				${$nutrition_data_per_ref} = "serving";
+				${$serving_size_ref} = $5;
 			}
 		}
 		elsif ($text_lc eq "fr") {
 			if ($text =~ /^\s*(à la |a la |pour |par |)(1 |une )?portion (de |d'environ )?\(? ?(\d+((\.|,)\d+)? ?(g|kg|mg|µg|l|dl|cl|ml))/i) {
-				$$nutrition_data_per_ref = "serving";
-				$$serving_size_ref = $4;
+				${$nutrition_data_per_ref} = "serving";
+				${$serving_size_ref} = $4;
 			}
 			# Pour un carré de 10.7g :
 			if ($text =~ /^\s*(pour )(\D+) ?(de |d'environ )?\(? ?(\d+((\.|,)\d+)? ?(g|kg|mg|µg|l|dl|cl|ml))/i) {
-				$$nutrition_data_per_ref = "serving";
-				$$serving_size_ref = $4;
+				${$nutrition_data_per_ref} = "serving";
+				${$serving_size_ref} = $4;
 			}
 		}
 

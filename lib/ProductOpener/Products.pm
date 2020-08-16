@@ -1,7 +1,7 @@
 # This file is part of Product Opener.
 #
 # Product Opener
-# Copyright (C) 2011-2019 Association Open Food Facts
+# Copyright (C) 2011-2020 Association Open Food Facts
 # Contact: contact@openfoodfacts.org
 # Address: 21 rue des Iles, 94100 Saint-Maur des Fossés, France
 #
@@ -65,8 +65,7 @@ use Exporter    qw< import >;
 
 BEGIN
 {
-	use vars       qw(@ISA @EXPORT @EXPORT_OK %EXPORT_TAGS);
-	@EXPORT = qw();            # symbols to export by default
+	use vars       qw(@ISA @EXPORT_OK %EXPORT_TAGS);
 	@EXPORT_OK = qw(
 		&normalize_code
 		&assign_new_code
@@ -212,8 +211,8 @@ sub assign_new_code() {
 	my $code = 2000000000001; # Codes beginning with 2 are for internal use
 
 	my $internal_code_ref = retrieve("$data_root/products/internal_code.sto");
-	if ((defined $internal_code_ref) and ($$internal_code_ref > $code)) {
-		$code = $$internal_code_ref;
+	if ((defined $internal_code_ref) and (${$internal_code_ref} > $code)) {
+		$code = ${$internal_code_ref};
 	}
 
 	my $product_id = product_id_for_owner($Owner_id, $code);
@@ -802,7 +801,7 @@ sub change_product_server_or_code($$$) {
 	}
 
 	$new_code = normalize_code($new_code);
-	if ($new_code !~ /^\d{8,24}$/) {
+	if ($new_code !~ /^\d{4,24}$/) {
 		display_error($Lang{invalid_barcode}{$lang}, 403);
 	}
 	else {
@@ -1038,7 +1037,7 @@ sub store_product($$) {
 	if (not defined $changes_ref) {
 		$changes_ref = [];
 	}
-	my $current_rev = scalar @$changes_ref;
+	my $current_rev = scalar @{$changes_ref};
 	if ($rev != $current_rev) {
 		# The product was updated after the form was loaded..
 
@@ -1073,7 +1072,7 @@ sub store_product($$) {
 		delete $product_ref->{owners_tags};
 	}
 
-	push @$changes_ref, {
+	push @{$changes_ref}, {
 		userid => $User_id,
 		ip => remote_addr(),
 		t => $product_ref->{last_modified_t},
@@ -1115,7 +1114,7 @@ sub store_product($$) {
 	# make sure nutrient values are numbers
 	make_sure_numbers_are_stored_as_numbers($product_ref);
 
-	my $change_ref = @$changes_ref[-1];
+	my $change_ref = $changes_ref->[-1];
 	my $diffs = $change_ref->{diffs};
 	my %diffs = %{$diffs};
 	if ((!$diffs) or (!keys %diffs)) {
@@ -1502,7 +1501,7 @@ sub replace_user_id_in_product($$$) {
 
 	my $revs = 0;
 
-	foreach my $change_ref (@$changes_ref) {
+	foreach my $change_ref (@{$changes_ref}) {
 
 		if ((defined $change_ref->{userid}) and ($change_ref->{userid} eq $user_id)) {
 			$change_ref->{userid} = $new_user_id;
@@ -1600,7 +1599,7 @@ sub find_and_replace_user_id_in_products($$) {
 	my $or = [];
 
 	foreach my $users_field (@users_fields) {
-		push @$or, { $users_field => $user_id };
+		push @{$or}, { $users_field => $user_id };
 	}
 
 	my $query_ref = {'$or' => $or};
@@ -1647,7 +1646,7 @@ sub compute_product_history_and_completeness($$$$) {
 	$log->debug("compute_product_history_and_completeness", { code => $code, product_id => $product_id } ) if $log->is_debug();
 
 	# Keep track of the last user who modified each field
-	%$blame_ref = ();
+	%{$blame_ref} = ();
 
 	return if not defined $changes_ref;
 
@@ -1707,7 +1706,7 @@ sub compute_product_history_and_completeness($$$$) {
 
 	my %changed_by = ();
 
-	foreach my $change_ref (@$changes_ref) {
+	foreach my $change_ref (@{$changes_ref}) {
 		$revs++;
 		my $rev = $change_ref->{rev};
 		if (not defined $rev) {
@@ -2027,7 +2026,7 @@ sub add_back_field_values_removed_by_user($$$$) {
 
 	my $revs = 0;
 
-	foreach my $change_ref (@$changes_ref) {
+	foreach my $change_ref (@{$changes_ref}) {
 		$revs++;
 		my $rev = $change_ref->{rev};
 		if (not defined $rev) {
@@ -2292,7 +2291,7 @@ sub compute_languages($) {
 
 	# check all the fields of the product
 
-	foreach my $field (keys %$product_ref) {
+	foreach my $field (keys %{$product_ref}) {
 
 		if (($field =~ /_([a-z]{2})$/) and (defined $language_fields{$`}) and ($product_ref->{$field} ne '')) {
 			my $language_code = $1;

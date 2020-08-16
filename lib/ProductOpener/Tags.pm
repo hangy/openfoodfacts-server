@@ -46,8 +46,7 @@ use Exporter    qw< import >;
 
 BEGIN
 {
-	use vars       qw(@ISA @EXPORT @EXPORT_OK %EXPORT_TAGS);
-	@EXPORT = qw();            # symbols to export by default
+	use vars       qw(@ISA @EXPORT_OK %EXPORT_TAGS);
 	@EXPORT_OK = qw(
 
 					&canonicalize_tag2
@@ -170,7 +169,7 @@ binmode STDERR, ":encoding(UTF-8)";
 
 %tags_fields = (packaging => 1, brands => 1, categories => 1, labels => 1, origins => 1, manufacturing_places => 1, emb_codes => 1,
  allergens => 1, traces => 1, purchase_places => 1, stores => 1, countries => 1, states=>1, codes=>1, debug => 1,
- environment_impact_level=>1, data_sources => 1, teams => 1, ciqual_food_name => 1,
+ environment_impact_level=>1, data_sources => 1, teams => 1, categories_properties => 1,
  editors => 1, photographers => 1, informers => 1, checkers => 1, correctors => 1);
 %hierarchy_fields = ();
 
@@ -2221,9 +2220,9 @@ sub get_taxonomy_tag_and_link_for_lang($$$) {
 	my $display_lc_prefix = "";
 	my $display_tag = $display;
 
-	if ($display =~ /^(\w\w:)/) {
+	if ($display =~ /^((\w\w):)/) {
 		$display_lc_prefix = $1;
-		$display_lc = $1;
+		$display_lc = $2;
 		$display_tag = $';
 	}
 
@@ -2409,7 +2408,7 @@ sub display_tags_hierarchy($$) {
 	my $html = '';
 	my $images = '';
 	if (defined $tags_ref) {
-		foreach my $tag (@$tags_ref) {
+		foreach my $tag (@{$tags_ref}) {
 			$html .= display_tag_link($tagtype, $tag) . ", ";
 
 #			print STDERR "abbio - lc: $lc - tagtype: $tagtype - tag: $tag\n";
@@ -2448,7 +2447,7 @@ sub display_tags_hierarchy_taxonomy($$$) {
 	my $html = '';
 	my $images = '';
 	if (defined $tags_ref) {
-		foreach my $tag (@$tags_ref) {
+		foreach my $tag (@{$tags_ref}) {
 			$html .= display_taxonomy_tag_link($target_lc, $tagtype, $tag) . ", ";
 
 			my $img;
@@ -2840,24 +2839,24 @@ sub generate_spellcheck_candidates($$) {
 
 		# delete
 		if ($i < $l) {
-			push @$candidates_ref, $left . substr($right, 1);
+			push @{$candidates_ref}, $left . substr($right, 1);
 		}
 
 		foreach my $c ("a".."z") {
 
 			# insert
-			push @$candidates_ref, $left . $c . $right;
+			push @{$candidates_ref}, $left . $c . $right;
 
 			# replace
 			if ($i < $l) {
-				push @$candidates_ref, $left . $c . substr($right, 1);
+				push @{$candidates_ref}, $left . $c . substr($right, 1);
 			}
 		}
 
 		if (($i > 0) and ($i < $l)) {
-			push @$candidates_ref, $left . "-" . $right;
+			push @{$candidates_ref}, $left . "-" . $right;
 			if ($i < ($l - 1)) {
-				push @$candidates_ref, $left . "-" . substr($right, 1);
+				push @{$candidates_ref}, $left . "-" . substr($right, 1);
 			}
 		}
 	}
@@ -3292,7 +3291,7 @@ foreach my $l (@Langs) {
 	$lang = $l;
 
 	foreach my $nutrient_level_ref (@nutrient_levels) {
-		my ($nid, $low, $high) = @$nutrient_level_ref;
+		my ($nid, $low, $high) = @{$nutrient_level_ref};
 
 		foreach my $level ('low', 'moderate', 'high') {
 			my $fmt = lang("nutrient_in_quantity");

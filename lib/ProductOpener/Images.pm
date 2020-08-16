@@ -1,7 +1,7 @@
 # This file is part of Product Opener.
 #
 # Product Opener
-# Copyright (C) 2011-2019 Association Open Food Facts
+# Copyright (C) 2011-2020 Association Open Food Facts
 # Contact: contact@openfoodfacts.org
 # Address: 21 rue des Iles, 94100 Saint-Maur des Fossés, France
 #
@@ -26,8 +26,7 @@ use Exporter    qw< import >;
 
 BEGIN
 {
-	use vars       qw(@ISA @EXPORT @EXPORT_OK %EXPORT_TAGS);
-	@EXPORT = qw();            # symbols to export by default
+	use vars       qw(@ISA @EXPORT_OK %EXPORT_TAGS);
 	@EXPORT_OK = qw(
 					&display_image_form
 					&process_image_form
@@ -412,7 +411,7 @@ sub process_search_image_form($) {
 			if (defined $code) {
 				$code = normalize_code($code);
 			}
-			$$filename_ref = "$data_root/tmp/$filename.$extension";
+			${$filename_ref} = "$data_root/tmp/$filename.$extension";
 		}
 	}
 	return $code;
@@ -542,9 +541,9 @@ sub process_image_upload($$$$$$$) {
 	
 	if (($file_size > 0) and (defined $images_ref->{$file_size})) {
 		$log->debug("we have already received an image with the same size", {file_size => $file_size, imgid => $images_ref->{$file_size}}) if $log->is_debug();
-		$$imgid_ref = $images_ref->{$file_size};
+		${$imgid_ref} = $images_ref->{$file_size};
 		$debug .= " - we have already received an image with this file size: $file_size - imgid: $$imgid_ref";
-		$$debug_string_ref = $debug;
+		${$debug_string_ref} = $debug;
 		return -3;		
 	}
 
@@ -663,9 +662,9 @@ sub process_image_upload($$$$$$$) {
 								unlink $img_orig;
 								unlink $img_jpg;
 								rmdir ("$product_www_root/images/products/$path/$imgid.lock");
-								$$imgid_ref = $i;
+								${$imgid_ref} = $i;
 								$debug .= " - we already have an image with this file size: $size - imgid: $i";
-								$$debug_string_ref = $debug;
+								${$debug_string_ref} = $debug;
 								return -3;
 							}
 							else {
@@ -688,7 +687,7 @@ sub process_image_upload($$$$$$$) {
 				unlink "$product_www_root/images/products/$path/$imgid.$extension";
 				rmdir ("$product_www_root/images/products/$path/$imgid.lock");
 				$debug .= " - image too small - width: " . $source->Get('width') . " - height: " . $source->Get('height');
-				$$debug_string_ref = $debug;
+				${$debug_string_ref} = $debug;
 				return -4;
 			}
 
@@ -797,12 +796,12 @@ sub process_image_upload($$$$$$$) {
 	$log->info("upload processed", { imgid => $imgid, imagefield => $imagefield }) if $log->is_info();
 
 	if ($imgid > 0) {
-		$$imgid_ref = $imgid;
+		${$imgid_ref} = $imgid;
 	}
 	else {
-		$$imgid_ref = $imgid;
+		${$imgid_ref} = $imgid;
 		# Pass back a debug message
-		$$debug_string_ref = $debug;
+		${$debug_string_ref} = $debug;
 	}
 
 	return $imgid;
@@ -1067,7 +1066,7 @@ sub process_image_crop($$$$$$$$$$$) {
 		my %seen;
 		while (@q) {
 			my $p = pop @q;
-			my ($x,$y) = @$p;
+			my ($x,$y) = @{$p};
 			$seen{$x . ',' . $y} and next;
 			$seen{$x . ',' . $y} = 1;
 			(($x < 0) or ($x >= $w) or ($y < 0) or ($y > $h)) and next;

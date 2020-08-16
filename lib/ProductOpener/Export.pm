@@ -1,7 +1,7 @@
 # This file is part of Product Opener.
 #
 # Product Opener
-# Copyright (C) 2011-2019 Association Open Food Facts
+# Copyright (C) 2011-2020 Association Open Food Facts
 # Contact: contact@openfoodfacts.org
 # Address: 21 rue des Iles, 94100 Saint-Maur des Fossés, France
 #
@@ -82,8 +82,7 @@ use Log::Any qw($log);
 
 BEGIN
 {
-	use vars       qw(@ISA @EXPORT @EXPORT_OK %EXPORT_TAGS);
-	@EXPORT = qw();            # symbols to export by default
+	use vars       qw(@ISA @EXPORT_OK %EXPORT_TAGS);
 	@EXPORT_OK = qw(
 
 		&export_csv
@@ -201,7 +200,7 @@ sub export_csv($) {
 
 			my $group_number = 0;
 
-			foreach my $group_ref (@$fields_groups_ref) {
+			foreach my $group_ref (@{$fields_groups_ref}) {
 
 				$group_number++;
 				my $item_number = 0;
@@ -343,7 +342,7 @@ sub export_csv($) {
 	}
 	else {
 		# The fields to export are specified by the fields parameter
-		@sorted_populated_fields = @$fields_ref;
+		@sorted_populated_fields = @{$fields_ref};
 	}
 
 	# Extra fields such as Nova or Nutri-Score that do not originate from users or producers but are computed
