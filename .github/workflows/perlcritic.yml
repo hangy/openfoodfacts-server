@@ -2,9 +2,17 @@ name: Perl Critic
 
 on:
   push:
-    branches: [ master ]
+    branches:
+      - master
+      - hangy-patch-1
+      - harsh-critic-annotated
+      - harsh-critic
   pull_request:
-    branches: [ master ]
+    branches:
+      - master
+      - hangy-patch-1
+      - harsh-critic-annotated
+      - harsh-critic
 
 jobs:
   perlcritic:
