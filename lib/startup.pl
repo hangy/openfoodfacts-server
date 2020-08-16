@@ -38,6 +38,7 @@ $SIG{'USR2'} = sub {
 };
 
 use CGI ();
+use CGI ();
 CGI->compile(':all');
 
 use Storable ();
