@@ -20,7 +20,7 @@ jobs:
     steps:
     - uses: actions/checkout@v2
     - name: Perl Critic
-      uses: hangy/action-perlcritic@2d80e25060a9f567aa7f1c4464bb84384545c7da
+      uses: hangy/action-perlcritic@fb069b7476ba24a431e959831b044baf7386663b
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       with:
