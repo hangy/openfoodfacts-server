@@ -46,7 +46,7 @@ BEGIN
 	use vars qw(@ISA @EXPORT_OK %EXPORT_TAGS);
 	@EXPORT_OK = qw(
 		&check_quality_food
-	);	# symbols to export on request
+		);    # symbols to export on request
 	%EXPORT_TAGS = (all => [@EXPORT_OK]);
 }
 
@@ -425,6 +425,8 @@ sub detect_categories ($) {
 			}
 		}
 	}
+
+	return;
 }
 
 =head2 check_nutrition_grades( PRODUCT_REF )
@@ -459,6 +461,7 @@ sub check_nutrition_grades($) {
 		}
 	}
 
+	return;
 }
 
 =head2 check_carbon_footprint( PRODUCT_REF )
@@ -491,6 +494,8 @@ sub check_carbon_footprint($) {
 			push @{$product_ref->{data_quality_info_tags}}, "en:carbon-footprint-from-known-ingredients-more-than-from-meat-or-fish";
 		}
 	}
+
+	return;
 }
 
 =head2 check_nutrition_data( PRODUCT_REF )
@@ -637,6 +642,8 @@ sub check_nutrition_data($) {
 	if ( $is_dried_product && ( $no_nutrition_data || not( $nutrition_data_prepared && $has_prepared_data ) )  ) {
 		push @{$product_ref->{data_quality_warnings_tags}}, "en:missing-nutrition-data-prepared-with-category-dried-products-to-be-rehydrated";
 	}
+
+	return;
 }
 
 
@@ -661,7 +668,7 @@ sub compare_nutrition_facts_with_products_from_same_category($) {
 	my $i = @{$product_ref->{categories_tags}} - 1;
 
 	while (($i >= 0)
-		and	not ((defined $categories_nutriments_ref->{$product_ref->{categories_tags}[$i]})
+		and     not ((defined $categories_nutriments_ref->{$product_ref->{categories_tags}[$i]})
 			and (defined $categories_nutriments_ref->{$product_ref->{categories_tags}[$i]}{nutriments}))) {
 		$i--;
 	}
@@ -707,6 +714,8 @@ sub compare_nutrition_facts_with_products_from_same_category($) {
 			}
 		}
 	}
+
+	return;
 }
 
 
@@ -865,9 +874,15 @@ sub check_ingredients($) {
 						push @{$product_ref->{data_quality_warnings_tags}}, "en:ingredients-" . $display_lc . "-includes-fr-nutrition-facts";
 					}
 
-					if ($product_ref->{$ingredients_text_lc} =~ /(à conserver)|(conditions de )|(à consommer )|(plus d'info)|consigne/is) {
+					if ( $product_ref->{$ingredients_text_lc}
+						=~ /(à conserver)|(conditions de )|(à consommer )|(plus d'info)|consigne/is
+						)
+					{
 
-						push @{$product_ref->{data_quality_warnings_tags}}, "en:ingredients-" . $display_lc . "-includes-fr-instructions";
+						push @{ $product_ref->{data_quality_warnings_tags} },
+							  "en:ingredients-"
+							. $display_lc
+							. "-includes-fr-instructions";
 					}
 				#}
 			}
@@ -888,6 +903,7 @@ sub check_ingredients($) {
 		push @{$product_ref->{data_quality_warnings_tags}}, 'en:organic-ingredients-but-no-organic-label';
 	}
 
+	return;
 }
 
 =head2 check_quantity( PRODUCT_REF )
@@ -948,6 +964,8 @@ sub check_quantity($) {
 			push @{$product_ref->{data_quality_warnings_tags}}, "en:serving-size-in-mg";
 		}
 	}
+
+	return;
 }
 
 =head2 check_categories( PRODUCT_REF )
@@ -984,6 +1002,8 @@ sub check_categories($) {
 	if (has_tag($product_ref, "categories", "en:plant-milks") and has_tag($product_ref, "categories", "en:dairies")) {
 		push @{$product_ref->{data_quality_warnings_tags}}, "en:incompatible-categories-plant-milk-and-dairy";
 	}
+
+	return;
 }
 
 
@@ -1010,6 +1030,8 @@ sub compare_nutriscore_with_value_from_producer($) {
 			}
 		}
 	}
+
+	return;
 }
 
 
@@ -1033,6 +1055,8 @@ sub check_ingredients_percent_analysis($) {
 
 		delete $product_ref->{ingredients_percent_analysis};
 	}
+
+	return;
 }
 
 =head2 check_quality_food( PRODUCT_REF )
@@ -1055,6 +1079,8 @@ sub check_quality_food($) {
 	detect_categories($product_ref);
 	check_categories($product_ref);
 	compare_nutriscore_with_value_from_producer($product_ref);
+
+	return;
 }
 
 1;

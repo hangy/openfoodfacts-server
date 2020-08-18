@@ -28,10 +28,10 @@ BEGIN
 {
 	use vars       qw(@ISA @EXPORT_OK %EXPORT_TAGS);
 	@EXPORT_OK = qw(
-					%ingredients_classes
-					%ingredients_classes_sorted
+		%ingredients_classes
+		%ingredients_classes_sorted
 
-					);	# symbols to export on request
+		);    # symbols to export on request
 	%EXPORT_TAGS = (all => [@EXPORT_OK]);
 }
 

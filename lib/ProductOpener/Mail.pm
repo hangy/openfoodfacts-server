@@ -28,11 +28,11 @@ BEGIN
 {
 	use vars       qw(@ISA @EXPORT_OK %EXPORT_TAGS);
 	@EXPORT_OK = qw(
-					&send_email
-					&send_email_to_admin
-					&send_email_to_producers_admin
+		&send_email
+		&send_email_to_admin
+		&send_email_to_producers_admin
 
-					);	# symbols to export on request
+		);    # symbols to export on request
 	%EXPORT_TAGS = (all => [@EXPORT_OK]);
 }
 
@@ -56,14 +56,14 @@ sub send_email($$$)
 	$text =~ s/<NAME>/$name/g;
  
 	eval {
-	Email::Stuffer
-    ->from(lang("site_name") . " <$contact_email>")
-    ->to($name . " <$email>")
-    ->subject($subject)	
-    ->text_body($text)	
-    ->send;	
+		Email::Stuffer
+			->from( lang("site_name") . " <$contact_email>" )
+			->to( $name . " <$email>" )
+			->subject($subject)
+			->text_body($text)
+			->send;
 	};
-	
+
     return $@ ? 1 : 0;
     
 }
@@ -74,14 +74,14 @@ sub send_email_to_admin($$)
 	my $text = shift;
 
 	eval {
-	Email::Stuffer
-    ->from(lang("site_name") . " <$contact_email>")
-    ->to(lang("site_name") . " <$admin_email>")
-    ->subject($subject)	
-    ->text_body($text)	
-    ->send;	
+		Email::Stuffer
+			->from( lang("site_name") . " <$contact_email>" )
+			->to( lang("site_name") . " <$admin_email>" )
+			->subject($subject)
+			->text_body($text)
+			->send;
 	};
-	
+
     return $@ ? 1 : 0;
 }
 
@@ -91,14 +91,14 @@ sub send_email_to_producers_admin($$)
 	my $text = shift;
 
 	eval {
-	Email::Stuffer
-    ->from(lang("site_name") . " <$contact_email>")
-    ->to(lang("site_name") . " <$producers_email>")
-    ->subject($subject)	
-    ->text_body($text)	
-    ->send;	
+		Email::Stuffer
+			->from( lang("site_name") . " <$contact_email>" )
+			->to( lang("site_name") . " <$producers_email>" )
+			->subject($subject)
+			->text_body($text)
+			->send;
 	};
-	
+
     return $@ ? 1 : 0;
 }
 

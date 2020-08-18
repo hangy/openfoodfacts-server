@@ -28,18 +28,17 @@ BEGIN
 {
 	use vars       qw(@ISA @EXPORT_OK %EXPORT_TAGS);
 	@EXPORT_OK = qw(
-					&normalize
-					&decode_html
-					&decode_html_utf8
-					&decode_html_entities
+		&normalize
+		&decode_html
+		&decode_html_utf8
+		&decode_html_entities
 
+		&normalize
 
-					&normalize
+		$memd
+		%texts
 
-					$memd
-					%texts
-
-					);	# symbols to export on request
+		);    # symbols to export on request
 	%EXPORT_TAGS = (all => [@EXPORT_OK]);
 }
 
@@ -72,10 +71,11 @@ use HTML::Entities qw(decode_entities);
 
 # Initialize exported variables
 
-$memd = new Cache::Memcached::Fast {
-	'servers' => [ "127.0.0.1:11211" ],
-	'utf8' => 1,
-};
+$memd = Cache::Memcached::Fast->new(
+	{   'servers' => ["127.0.0.1:11211"],
+		'utf8'    => 1,
+	}
+);
 
 %texts = ();
 

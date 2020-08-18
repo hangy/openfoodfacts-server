@@ -46,19 +46,19 @@ BEGIN
 {
 	use vars       qw(@ISA @EXPORT_OK %EXPORT_TAGS);
 	@EXPORT_OK = qw(
-	
-					&retrieve_org
-					&store_org
-					&create_org
-					&retrieve_or_create_org
-					&add_user_to_org
-					&remove_user_from_org
-					
-					&org_name
-					&org_url
-					&org_link
 
-					);	# symbols to export on request
+		&retrieve_org
+		&store_org
+		&create_org
+		&retrieve_or_create_org
+		&add_user_to_org
+		&remove_user_from_org
+
+		&org_name
+		&org_url
+		&org_link
+
+		);    # symbols to export on request
 	%EXPORT_TAGS = (all => [@EXPORT_OK]);
 }
 
@@ -132,6 +132,8 @@ sub store_org($) {
 	defined $org_ref->{org_id} or die("Missing org_id");
 
 	store("$data_root/orgs/" . $org_ref->{org_id} . ".sto", $org_ref);
+
+	return;
 }
 
 
@@ -164,15 +166,15 @@ sub create_org($$) {
 	my $org_id = get_string_id_for_lang("no_language", $org_id_or_name);
 
 	$log->debug("create_org", { $org_id_or_name => $org_id_or_name, org_id => $org_id } ) if $log->is_debug();
-		
+
 	my $org_ref = {
 		created_t => time(),
-		creator => $creator,
-		org_id => $org_id,
-		org_name => $org_id_or_name,
-		admins => {},
-		members => {},
-	};	
+		creator   => $creator,
+		org_id    => $org_id,
+		org_name  => $org_id_or_name,
+		admins    => {},
+		members   => {},
+	};
 
 	store_org($org_ref);
 	
@@ -182,7 +184,9 @@ org_id: $org_id
 org_name: $org_id_or_name
 EMAIL
 ;
-	send_email_to_producers_admin("Org created - creator: $creator - org: $org_id", $admin_mail_body);		
+	send_email_to_producers_admin(
+		"Org created - creator: $creator - org: $org_id",
+		$admin_mail_body );
 
 	return $org_ref;
 }
@@ -274,6 +278,8 @@ sub add_user_to_org($$$) {
 	}
 
 	store_org($org_ref);
+
+	return;
 }
 
 
@@ -324,6 +330,8 @@ sub remove_user_from_org($$$) {
 	}
 
 	store_org($org_ref);
+
+	return;
 }
 
 

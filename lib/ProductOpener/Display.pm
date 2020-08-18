@@ -43,79 +43,79 @@ BEGIN
 {
 	use vars       qw(@ISA @EXPORT_OK %EXPORT_TAGS);
 	@EXPORT_OK = qw(
-					&startup
-					&init
-					&analyze_request
+		&startup
+		&init
+		&analyze_request
 
-					&remove_tags
-					&remove_tags_and_quote
-					&remove_tags_except_links
-					&xml_escape
-					&display_form
-					&display_date
-					&display_date_tag
-					&display_pagination
-					&get_packager_code_coordinates
-					&display_icon
+		&remove_tags
+		&remove_tags_and_quote
+		&remove_tags_except_links
+		&xml_escape
+		&display_form
+		&display_date
+		&display_date_tag
+		&display_pagination
+		&get_packager_code_coordinates
+		&display_icon
 
-					&display_structured_response
-					&display_new
-					&display_text
-					&display_points
-					&display_mission
-					&display_tag
-					&display_field
-					&display_error
-					&gen_feeds
+		&display_structured_response
+		&display_new
+		&display_text
+		&display_points
+		&display_mission
+		&display_tag
+		&display_field
+		&display_error
+		&gen_feeds
 
-					&add_product_nutriment_to_stats
-					&compute_stats_for_products
-					&display_nutrition_table
-					&display_product
-					&display_product_api
-					&display_product_history
-					&search_and_display_products
-					&search_and_export_products
-					&search_and_graph_products
-					&search_and_map_products
-					&display_recent_changes
-					&add_tag_prefix_to_link
+		&add_product_nutriment_to_stats
+		&compute_stats_for_products
+		&display_nutrition_table
+		&display_product
+		&display_product_api
+		&display_product_history
+		&search_and_display_products
+		&search_and_export_products
+		&search_and_graph_products
+		&search_and_map_products
+		&display_recent_changes
+		&add_tag_prefix_to_link
 
-					&display_ingredient_analysis
-					&display_ingredients_analysis_details
-					&display_ingredients_analysis
+		&display_ingredient_analysis
+		&display_ingredients_analysis_details
+		&display_ingredients_analysis
 
-					&count_products
+		&count_products
 
-					@search_series
+		@search_series
 
-					$admin
-					$memd
-					$default_request_ref
+		$admin
+		$memd
+		$default_request_ref
 
-					$scripts
-					$initjs
-					$styles
-					$header
-					$bodyabout
-					$debug_template
+		$scripts
+		$initjs
+		$styles
+		$header
+		$bodyabout
+		$debug_template
 
-					$original_subdomain
-					$subdomain
-					$formatted_subdomain
-					$static_subdomain
-					$world_subdomain
-					$test
-					@lcs
-					$cc
-					$country
-					$tt
+		$original_subdomain
+		$subdomain
+		$formatted_subdomain
+		$static_subdomain
+		$world_subdomain
+		$test
+		@lcs
+		$cc
+		$country
+		$tt
 
-					$nutriment_table
+		$nutriment_table
 
-					%file_timestamps
+		%file_timestamps
 
-					);	# symbols to export on request
+		);    # symbols to export on request
 	%EXPORT_TAGS = (all => [@EXPORT_OK]);
 }
 
@@ -239,20 +239,22 @@ if (defined $options{export_limit}) {
 }
 
 # Initialize the Template module
-$tt = Template->new({
-	INCLUDE_PATH => $data_root . '/templates',
-	INTERPOLATE => 1,
-	EVAL_PERL => 1,
-	STAT_TTL => 60,	# cache templates in memory for 1 min before checking if the source changed
-	COMPILE_EXT => '.ttc',	# compile templates to Perl code for much faster reload
-	COMPILE_DIR => $data_root . '/tmp/templates',
-});
+$tt = Template->new(
+	{   INCLUDE_PATH => $data_root . '/templates',
+		INTERPOLATE  => 1,
+		EVAL_PERL    => 1,
+		STAT_TTL     => 60,                              # cache templates in memory for 1 min before checking if the source changed
+		COMPILE_EXT  => '.ttc',                          # compile templates to Perl code for much faster reload
+		COMPILE_DIR  => $data_root . '/tmp/templates',
+	}
+);
 
 # Initialize exported variables
-$memd = new Cache::Memcached::Fast {
-	'servers' => $memd_servers,
-	'utf8' => 1,
-};
+$memd = Cache::Memcached::Fast->new(
+	{   'servers' => $memd_servers,
+		'utf8'    => 1,
+	}
+);
 
 $default_request_ref = {
 	page=>1,
@@ -340,7 +342,7 @@ sub init()
 
 	$subdomain =~ s/\..*//;
 
-	$original_subdomain = $subdomain;	# $subdomain can be changed if there are cc and/or lc overrides
+	$original_subdomain = $subdomain;    # $subdomain can be changed if there are cc and/or lc overrides
 
 
 	$log->debug("initializing request", { subdomain => $subdomain }) if $log->is_debug();
@@ -526,6 +528,8 @@ CSS
 	}
 
 	$log->debug("owner, org and user", { private_products => $server_options{private_products}, owner_id => $Owner_id, user_id => $User_id, org_id => $Org_id }) if $log->is_debug();
+
+	return;
 }
 
 # component was specified as en:product, fr:produit etc.
@@ -644,7 +648,7 @@ sub analyze_request($)
 		$request_ref->{current_link} = '';
 	}
 	# Root + page number, ex: https://world.openfoodfacts.org/2
-	elsif (($#components == 0) and ($components[$#components] =~ /^\d+$/)) {
+	elsif (($#components == 0) and ($components[-1] =~ /^\d+$/)) {
 		$request_ref->{page} = pop @components;
 		$request_ref->{current_link} = '';
 		$request_ref->{text} = 'index';
@@ -740,7 +744,7 @@ sub analyze_request($)
 		my $canon_rel_url_suffix = '';
 
 		#check if last field is number
-		if (($#components >=1) and ($components[$#components] =~ /^\d+$/)) {
+		if (($#components >=1) and ($components[-1] =~ /^\d+$/)) {
 			#if first field or third field is tags (plural) then last field is page number
 			if (defined $tag_type_from_plural{$lc}{$components[0]} or defined $tag_type_from_plural{"en"}{$components[0]} or defined $tag_type_from_plural{$lc}{$components[2]} or defined $tag_type_from_plural{"en"}{$components[2]}) {
 			$request_ref->{page} = pop @components;
@@ -749,7 +753,7 @@ sub analyze_request($)
 		}
 		# list of tags? (plural of tagtype must be the last field)
 
-		$log->debug("checking last component", { last_component => $components[$#components], is_plural => $tag_type_from_plural{$lc}{$components[$#components]} }) if $log->is_debug();
+		$log->debug("checking last component", { last_component => $components[-1], is_plural => $tag_type_from_plural{$lc}{$components[-1]} }) if $log->is_debug();
 
 		# list of (categories) tags with stats for a nutriment
 		if (($#components == 1) and (defined $tag_type_from_plural{$lc}{$components[0]}) and ($tag_type_from_plural{$lc}{$components[0]} eq "categories")
@@ -764,14 +768,14 @@ sub analyze_request($)
 			$log->debug("request looks like a list of tags - categories with nutrients", { groupby => $request_ref->{groupby_tagtype}, stats_nid => $request_ref->{stats_nid} }) if $log->is_debug();
 		}
 
-		if (defined $tag_type_from_plural{$lc}{$components[$#components]}) {
+		if (defined $tag_type_from_plural{$lc}{$components[-1]}) {
 
 			$request_ref->{groupby_tagtype} = $tag_type_from_plural{$lc}{pop @components};
 			$canon_rel_url_suffix .= "/" . $tag_type_plural{$request_ref->{groupby_tagtype}}{$lc};
 			$log->debug("request looks like a list of tags", { groupby => $request_ref->{groupby_tagtype}, lc => $lc }) if $log->is_debug();
 		}
 		# also try English tagtype
-		elsif (defined $tag_type_from_plural{"en"}{$components[$#components]}) {
+		elsif (defined $tag_type_from_plural{"en"}{$components[-1]}) {
 
 			$request_ref->{groupby_tagtype} = $tag_type_from_plural{"en"}{pop @components};
 			# use $lc for canon url
@@ -896,7 +900,7 @@ sub analyze_request($)
 			display_error(lang("error_invalid_address"), 404);
 		}
 
-		if (($#components >=0) and ($components[$#components] =~ /^\d+$/)) {
+		if (($#components >=0) and ($components[-1] =~ /^\d+$/)) {
 			$request_ref->{page} = pop @components;
 		}
 
@@ -1398,6 +1402,8 @@ sub set_cache_results($$){
 	my $results = shift;
 	$log->debug("Setting value for MongoDB query key", { key => $key }) if $log->is_debug();
 	$memd->set($key, $results, 3600) or $log->debug("Could not set value for MongoDB query key", { key => $key });
+
+	return;
 }
 
 sub query_list_of_tags($$) {
@@ -1710,7 +1716,7 @@ sub display_list_of_tags($$) {
 			$log->debug("Found tag prefix for main_link " . Dumper($request_ref)) if $log->is_debug();
 		}
 
-		my %products = ();	# number of products by tag, used for histogram of nutrition grades colors
+		my %products = ();    # number of products by tag, used for histogram of nutrition grades colors
 
 		$log->debug("going through all tags", {}) if $log->is_debug();
 
@@ -1855,15 +1861,21 @@ sub display_list_of_tags($$) {
 			else {
 				$link = canonicalize_tag_link($tagtype, $tagid);
 
-				if (not (($tagtype eq 'photographers') or ($tagtype eq 'editors') or ($tagtype eq 'informers') or ($tagtype eq 'correctors') or ($tagtype eq 'checkers'))) {
-					$css_class = "tag";	# not sure if it's needed
+				if (not(   ( $tagtype eq 'photographers' )
+						or ( $tagtype eq 'editors' )
+						or ( $tagtype eq 'informers' )
+						or ( $tagtype eq 'correctors' )
+						or ( $tagtype eq 'checkers' ) )
+					)
+				{
+					$css_class = "tag";    # not sure if it's needed
 				}
 			}
 
 			my $extra_td = '';
 
 			my $icid = $tagid;
-			$icid =~ s/^(.*)://;	# additives
+			$icid =~ s/^(.*)://;    # additives
 
 			my $risk_level;
 			if ($tagtype eq 'additives') {
@@ -1931,11 +1943,11 @@ sub display_list_of_tags($$) {
 			$html .= "</td>\n<td style=\"text-align:right\">$products</td>" . $td_nutriments . $extra_td . "</tr>\n";
 
 			my $tagentry = {
-				id => $tagid,
-				name => $display,
-				url => $formatted_subdomain . $product_link,
-				products => $products + 0, # + 0 to make the value numeric
-				known => $known,	# 1 if the ingredient exists in the taxonomy, 0 if not
+				id       => $tagid,
+				name     => $display,
+				url      => $formatted_subdomain . $product_link,
+				products => $products + 0,                          # + 0 to make the value numeric
+				known    => $known,                                 # 1 if the ingredient exists in the taxonomy, 0 if not
 			};
 
 			if (($#sameAs >= 0)) {
@@ -2330,12 +2342,12 @@ sub display_list_of_tags_translate($$) {
 		use Data::Dumper;
 		print STDERR Dumper($users_translations_ref);
 
-		my %products = ();	# number of products by tag, used for histogram of nutrition grades colors
+		my %products = ();    # number of products by tag, used for histogram of nutrition grades colors
 
 		$log->debug("going through all tags") if $log->is_debug();
 
-		my $i = 0;	# Number of tags
-		my $j = 0;	# Number of tags displayed
+		my $i = 0;    # Number of tags
+		my $j = 0;    # Number of tags displayed
 
 		my $to_be_translated = 0;
 		my $translated = 0;
@@ -2370,15 +2382,17 @@ sub display_list_of_tags_translate($$) {
 			$log->debug("display_list_of_tags_translate - tagf_ref", $tag_ref) if $log->is_debug();
 
 			# Keep only known tags that do not have a translation in the current lc
-			if (not $tag_ref->{known}) {
-				$log->debug("display_list_of_tags_translate - entry $tagid is not known") if $log->is_debug();									
+			if ( not $tag_ref->{known} ) {
+				$log->debug(
+					"display_list_of_tags_translate - entry $tagid is not known"
+				) if $log->is_debug();
 				next;
 			}
-						
+
 			if ((not $request_ref->{translate} eq "all") and
 				((defined $tag_ref->{display_lc}) and (($tag_ref->{display_lc} eq $lc) or ($tag_ref->{display_lc} ne "en")))) {
-					
-				$log->debug("display_list_of_tags_translate - entry $tagid already has a translation to $lc") if $log->is_debug();					
+
+				$log->debug("display_list_of_tags_translate - entry $tagid already has a translation to $lc") if $log->is_debug();
 				next;
 			}
 
@@ -2547,8 +2561,8 @@ HEADER
 
 sub display_points_ranking($$) {
 
-	my $tagtype = shift;	# users or countries
-	my $tagid = shift;
+	my $tagtype = shift;    # users or countries
+	my $tagid   = shift;
 
 	local $log->context->{tagtype} = $tagtype;
 	local $log->context->{tagid} = $tagid;
@@ -2786,6 +2800,7 @@ HEADER
 
 	display_new($request_ref);
 
+	return;
 }
 
 # See issue 1960
@@ -3699,7 +3714,7 @@ HTML
 
 			my $tag_html .= display_tags_hierarchy_taxonomy($lc, $tagtype, [$canon_tagid]);
 
-			$tag_html =~ s/.*<\/a>(<br \/>)?//;	# remove link, keep only tag logo
+			$tag_html =~ s/.*<\/a>(<br \/>)?//;    # remove link, keep only tag logo
 
 			$html .= $tag_html;
 
@@ -3848,6 +3863,7 @@ HTML
 
 	display_new($request_ref);
 
+	return;
 }
 
 
@@ -3889,13 +3905,17 @@ sub add_country_and_owner_filters_to_query($$) {
 	# Owner filter
 
 	# Restrict the products to the owner on databases with private products
-	if ((defined $server_options{private_products}) and ($server_options{private_products})) {
-		if ($Owner_id ne 'all') {	# Administrator mode to see all products
+	if (    ( defined $server_options{private_products} )
+		and ( $server_options{private_products} ) )
+	{
+		if ( $Owner_id ne 'all' ) {    # Administrator mode to see all products
 			$query_ref->{owners_tags} = $Owner_id;
 		}
 	}
 
 	$log->debug("request_ref: ". Dumper($request_ref)."query_ref: ". Dumper($query_ref)) if $log->is_debug();
+
+	return;
 }
 
 
@@ -4272,7 +4292,7 @@ sub search_and_display_products($$$$$) {
 					$i++;
 					if ((defined $request_ref->{api_version}) and ($request_ref->{api_version} > 1)) {
 						# Keep only nested ingredients, delete sub-ingredients that have been flattened and added at the end
-						if (not exists $ingredient_ref->{rank})	{
+						if (not exists $ingredient_ref->{rank}) {
 							# delete this ingredient and ingredients after
 							while (scalar @{$product_ref->{ingredients}} >= $i) {
 								pop @{$product_ref->{ingredients}};
@@ -4561,7 +4581,7 @@ sub search_and_export_products($$$) {
 
 		foreach (@{$nutriments_tables{$nutriment_table}}) {
 
-			my $nid = $_;	# Copy instead of alias
+			my $nid = $_;    # Copy instead of alias
 
 			$nid =~/^#/ and next;
 
@@ -4609,7 +4629,7 @@ sub search_and_export_products($$$) {
 
 		my $uri = format_subdomain($subdomain);
 
-		my $j = 0;	# Row number
+		my $j = 0;    # Row number
 
 		foreach my $product_ref (@products) {
 
@@ -4677,7 +4697,7 @@ sub search_and_export_products($$$) {
 
 			foreach (@{$nutriments_tables{$nutriment_table}}) {
 
-				my $nid = $_;	# Copy instead of alias
+				my $nid = $_;    # Copy instead of alias
 
 				$nid =~/^#/ and next;
 
@@ -5461,13 +5481,13 @@ sub search_and_graph_products($$$) {
 
 	if ($graph_ref->{axis_y} ne 'products_n') {
 
-		$fields_ref	= {
-			lc => 1,
-			code => 1,
-			product_name => 1,
+		$fields_ref = {
+			lc                 => 1,
+			code               => 1,
+			product_name       => 1,
 			"product_name_$lc" => 1,
-			labels_tags => 1,
-			images => 1,
+			labels_tags        => 1,
+			images             => 1,
 		};
 
 		# For the producer platform, we also need the owner
@@ -5887,6 +5907,8 @@ HTML
 			'content'=>$content,
 		};
 	}
+
+	return;
 }
 
 sub display_my_block($)
@@ -5971,6 +5993,7 @@ HTML
 		};
 	}
 
+	return;
 }
 
 
@@ -5989,6 +6012,8 @@ sub display_on_the_blog($)
 		};
 		close $IN;
 	}
+
+	return;
 }
 
 
@@ -6003,6 +6028,8 @@ sub display_top_block($)
 			'content'=>lang("top_content"),
 		};
 	}
+
+	return;
 }
 
 
@@ -6019,6 +6046,8 @@ sub display_bottom_block($)
 			'content'=> $html,
 		};
 	}
+
+	return;
 }
 
 
@@ -6894,6 +6923,8 @@ HTML
 	print $html;
 
 	$log->debug("display done", { lc => $lc, lang => $lang, mongodb => $mongodb, data_root => $data_root }) if $log->is_debug();
+
+	return;
 }
 
 
@@ -6962,6 +6993,8 @@ HTML
 			'title'=>$title,
 			'content'=>$html,
 	};
+
+	return;
 }
 
 
@@ -7418,7 +7451,7 @@ CSS
 
 	# Check that the titleid is the right one
 
-	if ((not defined $rev) and	(
+	if ((not defined $rev) and  (
 			(($titleid ne '') and ((not defined $request_ref->{titleid}) or ($request_ref->{titleid} ne $titleid))) or
 			(($titleid eq '') and ((defined $request_ref->{titleid}) and ($request_ref->{titleid} ne ''))) )) {
 		$request_ref->{redirect} = $request_ref->{canon_url};
@@ -8032,6 +8065,8 @@ HTML
 	$log->trace("displayed product") if $log->is_trace();
 
 	display_new($request_ref);
+
+	return;
 }
 
 sub display_product_jqm ($) # jquerymobile
@@ -8403,7 +8438,7 @@ HTML
 	my $creator =  $product_ref->{creator} ;
 
 	# Remove links for iOS (issues with twitter / facebook badges loading in separate windows..)
-	$html =~ s/<a ([^>]*)href="([^"]+)"([^>]*)>/<span $1$3>/g;	# replace with a span to keep class for color of additives etc.
+	$html =~ s/<a ([^>]*)href="([^"]+)"([^>]*)>/<span $1$3>/g;    # replace with a span to keep class for color of additives etc.
 	$html =~ s/<\/a>/<\/span>/g;
 	$html =~ s/<span >/<span>/g;
 	$html =~ s/<span  /<span /g;
@@ -8444,6 +8479,7 @@ HTML
 
 	$log->trace("displayed product on jquery mobile") if $log->is_trace();
 
+	return;
 }
 
 
@@ -8600,13 +8636,13 @@ sub display_nutrient_levels($) {
 
 
 	# do not compute a score for coffee, tea etc.
-	if (	(has_tag($product_ref, "categories", "en:alcoholic-beverages"))
-		or	(has_tag($product_ref, "categories", "en:coffees"))
-		or	(has_tag($product_ref, "categories", "en:teas"))
-		or	(has_tag($product_ref, "categories", "en:teas"))
-		or	(has_tag($product_ref, "categories", "fr:levure"))
-		or	(has_tag($product_ref, "categories", "fr:levures"))
-		) {
+	if (   ( has_tag( $product_ref, "categories", "en:alcoholic-beverages" ) )
+		or ( has_tag( $product_ref, "categories", "en:coffees" ) )
+		or ( has_tag( $product_ref, "categories", "en:teas" ) )
+		or ( has_tag( $product_ref, "categories", "en:teas" ) )
+		or ( has_tag( $product_ref, "categories", "fr:levure" ) )
+		or ( has_tag( $product_ref, "categories", "fr:levures" ) ) )
+	{
 
 			return "";
 	}
@@ -8741,12 +8777,12 @@ sub add_product_nutriment_to_stats($$$) {
 
 sub compute_stats_for_products($$$$$$) {
 
-	my $stats_ref = shift;	# where we will store the stats
-	my $nutriments_ref = shift;	# values for some nutriments
-	my $count = shift;	# total number of products (including products that have no values for the nutriments we are interested in)
-	my $n = shift;	# number of products with defined values for specified nutriments
-	my $min_products = shift; # min number of products needed to compute stats
-	my $id = shift;	# id (e.g. category id)
+	my $stats_ref      = shift;    # where we will store the stats
+	my $nutriments_ref = shift;    # values for some nutriments
+	my $count          = shift;    # total number of products (including products that have no values for the nutriments we are interested in)
+	my $n              = shift;    # number of products with defined values for specified nutriments
+	my $min_products   = shift;    # min number of products needed to compute stats
+	my $id             = shift;    # id (e.g. category id)
 
 
 	$stats_ref->{stats} = 1;
@@ -8820,6 +8856,7 @@ sub compute_stats_for_products($$$$$$) {
 
 	}
 
+	return;
 }
 
 
@@ -9195,13 +9232,13 @@ JS
 
 		foreach my $col (@cols) {
 
-			$values = '';	# Value for row
-			$values2 = '';	# Value for extra row (e.g. after the row for salt, we add an extra row for sodium)
+			$values  = '';    # Value for row
+			$values2 = '';    # Value for extra row (e.g. after the row for salt, we add an extra row for sodium)
 			my $col_class = '';
-			my $percent = '';
+			my $percent   = '';
 
-			my $rdfa = '';	# RDFA property for row
-			my $rdfa2 = '';	# RDFA property for extra row
+			my $rdfa  = '';    # RDFA property for row
+			my $rdfa2 = '';    # RDFA property for extra row
 
 			my $col_type;
 
@@ -9209,7 +9246,7 @@ JS
 				$col_class = ' ' . $col_class{$col} ;
 			}
 
-			if ($col =~ /compare_(.*)/) {	#comparisons
+			if ( $col =~ /compare_(.*)/ ) {    #comparisons
 
 				$col_type = "comparison";
 
@@ -9672,7 +9709,7 @@ HTML
 							push @{$compact_product_ref->{$field}} , display_taxonomy_tag($target_lc, $tagtype, $tagid);
 						}
 					}
-				}				
+				}
 
 				if ((not defined $compact_product_ref->{$field}) and (defined $product_ref->{$field})) {
 					$compact_product_ref->{$field} = $product_ref->{$field};
@@ -9708,7 +9745,7 @@ HTML
 				$i++;
 				if ((defined $request_ref->{api_version}) and ($request_ref->{api_version} > 1)) {
 					# Keep only nested ingredients, delete sub-ingredients that have been flattened and added at the end
-					if (not exists $ingredient_ref->{rank})	{
+					if ( not exists $ingredient_ref->{rank} ) {
 						# delete this ingredient and ingredients after
 						while (scalar @{$product_ref->{ingredients}} >= $i) {
 							pop @{$product_ref->{ingredients}};
@@ -9748,6 +9785,8 @@ HTML
 	$request_ref->{structured_response} = \%response;
 
 	display_structured_response($request_ref);
+
+	return;
 }
 
 sub display_rev_info {
@@ -9930,6 +9969,8 @@ sub add_images_urls_to_product($) {
 			}
 		}
 	}
+
+	return;
 }
 
 
@@ -9965,8 +10006,9 @@ sub display_structured_response($)
 		}
 
 
-		my $xml = "<?xml version=\"1.0\" encoding=\"UTF-8\" standalone=\"yes\"?>\n"
-		. $xs->XMLout($request_ref->{structured_response}); 	# noattr -> force nested elements instead of attributes
+		my $xml
+			= "<?xml version=\"1.0\" encoding=\"UTF-8\" standalone=\"yes\"?>\n"
+			. $xs->XMLout( $request_ref->{structured_response} );    # noattr -> force nested elements instead of attributes
 
 		my $status = $request_ref->{status};
 		if (defined $status) {
@@ -10084,6 +10126,7 @@ XML
 
 	print header( -type => 'application/rss+xml', -charset => 'utf-8', -access_control_allow_origin => '*' ) . $xml;
 
+	return;
 }
 
 sub display_recent_changes {
@@ -10192,6 +10235,7 @@ sub display_recent_changes {
 	$request_ref->{title} = lang("recent_changes");
 	display_new($request_ref);
 
+	return;
 }
 
 sub display_change($$) {
@@ -10318,6 +10362,8 @@ sub display_ingredient_analysis($$$) {
 	}
 
 	${$ingredients_list_ref} .= "</ol>\n";
+
+	return;
 }
 
 
@@ -10347,7 +10393,7 @@ sub display_ingredients_analysis_details($) {
 	foreach my $ingredient_ref (@{$product_ref->{ingredients}}) {
 		$i++;
 		# Keep only nested ingredients, delete sub-ingredients that have been flattened and added at the end
-		if (not exists $ingredient_ref->{rank})	{
+		if ( not exists $ingredient_ref->{rank} ) {
 			# delete this ingredient and ingredients after
 			while (scalar @{$product_ref->{ingredients}} >= $i) {
 				pop @{$product_ref->{ingredients}};

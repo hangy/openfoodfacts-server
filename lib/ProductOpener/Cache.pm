@@ -28,10 +28,10 @@ BEGIN
 {
 	use vars       qw(@ISA @EXPORT_OK %EXPORT_TAGS);
 	@EXPORT_OK = qw(
-					&get_multi_objects
-					
-					$memd
-	);	# symbols to export on request
+		&get_multi_objects
+
+		$memd
+		);    # symbols to export on request
 	%EXPORT_TAGS = (all => [@EXPORT_OK]);
 }
 
@@ -46,10 +46,11 @@ use Log::Any qw($log);
 
 # Initialize exported variables
 
-$memd = new Cache::Memcached::Fast {
-	'servers' => $memd_servers,
-	'utf8' => 1,
-};
+$memd = Cache::Memcached::Fast->new(
+	{   'servers' => $memd_servers,
+		'utf8'    => 1,
+	}
+);
 
 # Initialize internal variables
 # - using my $variable; is causing problems with mod_perl, it looks
@@ -81,14 +82,17 @@ sub get_multi_objects($)
 			}
 			elsif ($key =~ /\/tags\/(.*)$/) {
 				my $tag_ref = retrieve("$data_root/index/tags/$1/tag.sto");
-				if (defined $tag_ref) {
+				if ( defined $tag_ref ) {
 					$values_ref->{$key} = {
 						canon_tag => $tag_ref->{canon_tag},
-						color => $tag_ref->{color2},					
+						color     => $tag_ref->{color2},
 					};
-					$log->debug("Cache::get_multi_objects - retrieved from disk", { key => $key }) if $log->is_debug();
-					$memd->set($key, $values_ref->{$key});
-				}			
+					$log->debug(
+						"Cache::get_multi_objects - retrieved from disk",
+						{ key => $key } )
+						if $log->is_debug();
+					$memd->set( $key, $values_ref->{$key} );
+				}
 			}
 		}
 		else {
