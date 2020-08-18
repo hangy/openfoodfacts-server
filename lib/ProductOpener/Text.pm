@@ -51,12 +51,12 @@ BEGIN
 {
 	use vars       qw(@ISA @EXPORT_OK %EXPORT_TAGS);
 	@EXPORT_OK = qw(
-					&normalize_percentages
+		&normalize_percentages
 
-					&get_decimal_formatter
-					&get_percent_formatter
+		&get_decimal_formatter
+		&get_percent_formatter
 
-					);	# symbols to export on request
+		);    # symbols to export on request
 	%EXPORT_TAGS = (all => [@EXPORT_OK]);
 }
 
