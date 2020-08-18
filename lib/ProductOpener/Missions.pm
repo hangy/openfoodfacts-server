@@ -28,10 +28,10 @@ BEGIN
 {
 	use vars       qw(@ISA @EXPORT_OK %EXPORT_TAGS);
 	@EXPORT_OK = qw(
-			&gen_missions_html
-			&compute_missions
-			&compute_missions_for_user
-					);	# symbols to export on request
+		&gen_missions_html
+		&compute_missions
+		&compute_missions_for_user
+		);    # symbols to export on request
 	%EXPORT_TAGS = (all => [@EXPORT_OK]);
 }
 
@@ -118,6 +118,8 @@ sub gen_missions_html() {
 		 print $OUT $html;
 		 close $OUT;
 	}
+
+	return;
 }
 
 
@@ -153,6 +155,8 @@ sub compute_missions() {
 	}
 
 	store("$data_root/missions.sto", $missions_ref);
+
+	return;
 }
 
 

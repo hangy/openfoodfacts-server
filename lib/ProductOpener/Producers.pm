@@ -63,14 +63,14 @@ BEGIN
 		&generate_import_export_columns_groups_for_select2
 
 		&convert_file
-		
+
 		&export_and_import_to_public_database
 
 		&import_csv_file_task
 		&export_csv_file_task
 		&import_products_categories_from_public_database_task
 
-					);	# symbols to export on request
+		);    # symbols to export on request
 	%EXPORT_TAGS = (all => [@EXPORT_OK]);
 }
 
@@ -143,7 +143,7 @@ A reference to an array of rows, containing each an array of column values
 
 sub load_csv_or_excel_file($) {
 
-	my $file = shift;	# path and file name
+	my $file = shift;    # path and file name
 
 	my $headers_ref;
 	my $rows_ref = [];
@@ -178,7 +178,7 @@ sub load_csv_or_excel_file($) {
 
 		$log->debug("opening CSV file", { file => $file, extension => $extension }) if $log->is_debug();
 
-		my $csv_options_ref = { binary => 1 , sep_char => $separator };	# should set binary attribute.
+		my $csv_options_ref = { binary => 1, sep_char => $separator };    # should set binary attribute.
 
 		my $csv = Text::CSV->new ( $csv_options_ref )
 			or die("Cannot use CSV: " . Text::CSV->error_diag ());
@@ -219,7 +219,7 @@ sub load_csv_or_excel_file($) {
 
 		system("ssconvert", $file, $file . ".csv");
 
-		my $csv_options_ref = { binary => 1 , sep_char => "," };	# should set binary attribute.
+		my $csv_options_ref = { binary => 1, sep_char => "," };    # should set binary attribute.
 
 		$log->debug("opening CSV file with Text::CSV", { file => $file . ".csv", extension => $extension }) if $log->is_debug();
 
@@ -288,10 +288,10 @@ sub load_csv_or_excel_file($) {
 
 sub convert_file($$$$) {
 
-	my $default_values_ref = shift;	# default values for lc, countries
-	my $file = shift;	# path and file name
+	my $default_values_ref  = shift;    # default values for lc, countries
+	my $file                = shift;    # path and file name
 	my $columns_fields_file = shift;
-	my $converted_file = shift;
+	my $converted_file      = shift;
 
 	my $load_results_ref = load_csv_or_excel_file($file);
 
@@ -494,7 +494,7 @@ en => {
 es => {
 	product_name_es => ["nombre", "nombre producto", "nombre del producto"],
 	ingredients_text_es => ["ingredientes", "lista ingredientes", "lista de ingredientes"],
-	net_weight_value_unit => ["peso unitrario", "peso unitario"],	# Yuka
+	net_weight_value_unit => ["peso unitrario", "peso unitario"],   # Yuka
 	"energy-kcal_100g_value_unit" => ["calorias"],
 },
 
@@ -611,6 +611,8 @@ sub init_fields_columns_names_for_lang($) {
 	(! -e "$data_root/debug") and mkdir("$data_root/debug", 0755) or $log->warn("Could not create debug dir", { dir => "$data_root/debug", error=> $!}) if $log->is_warn();
 
 	store("$data_root/debug/fields_columns_names_$l.sto", $fields_columns_names_for_lang{$l});
+
+	return;
 }
 
 
@@ -766,6 +768,8 @@ sub init_nutrients_columns_names_for_lang($) {
 			}
 		}
 	}
+
+	return;
 }
 
 
@@ -904,6 +908,8 @@ sub init_other_fields_columns_names_for_lang($) {
 			}
 		}
 	}
+
+	return;
 }
 
 
@@ -1012,6 +1018,8 @@ sub compute_statistics_and_examples($$$) {
 
 		$row++;
 	}
+
+	return;
 }
 
 
@@ -1254,7 +1262,7 @@ JSON
 				if ((defined $language_fields{$field}) or (($group_id eq "images") and ($field =~ /image_(front|ingredients|nutrition)/))) {
 
 					foreach my $l (@{$lcs_ref}) {
-						my $language = "";	# Don't specify the language if there is just one
+						my $language = "";    # Don't specify the language if there is just one
 						if (@{$lcs_ref} > 1) {
 							$language = " (" . display_taxonomy_tag($lc,'languages',$language_codes{$l}) . ")";
 						}
@@ -1307,13 +1315,13 @@ sub export_and_import_to_public_database($) {
 
 	# First export the data locally
 
-	$args_ref->{user_id} = $user_id;
-	$args_ref->{org_id} = $Org_id;
-	$args_ref->{owner_id} = $Owner_id;
-	$args_ref->{csv_file} = $exported_file;
-	$args_ref->{export_id} = $export_id;
-	$args_ref->{comment} = "Import from producers platform";
-	$args_ref->{include_images_paths} = 1;	# Export file paths to images
+	$args_ref->{user_id}              = $user_id;
+	$args_ref->{org_id}               = $Org_id;
+	$args_ref->{owner_id}             = $Owner_id;
+	$args_ref->{csv_file}             = $exported_file;
+	$args_ref->{export_id}            = $export_id;
+	$args_ref->{comment}              = "Import from producers platform";
+	$args_ref->{include_images_paths} = 1;                                  # Export file paths to images
 
 
 	if (defined $Org_id) {
@@ -1328,18 +1336,20 @@ sub export_and_import_to_public_database($) {
 			$args_ref->{manufacturer} = 0;
 			$args_ref->{global_values} = { data_sources => "Apps, " . $Org_id};
 		}
-		elsif ($Org_id =~ /^database-/) {
+		elsif ( $Org_id =~ /^database-/ ) {
 			$args_ref->{manufacturer} = 0;
-			$args_ref->{global_values} = { data_sources => "Databases, " . $Org_id};
-		}	
+			$args_ref->{global_values}
+				= { data_sources => "Databases, " . $Org_id };
+		}
 		elsif ($Org_id =~ /^label-/) {
 			$args_ref->{manufacturer} = 0;
 			$args_ref->{global_values} = { data_sources => "Labels, " . $Org_id};
 		}
 		else {
 			$args_ref->{manufacturer} = 1;
-			$args_ref->{global_values} = { data_sources => "Producers, Producer - " . $Org_id};
-		}		
+			$args_ref->{global_values}
+				= { data_sources => "Producers, Producer - " . $Org_id };
+		}
 	}
 	else {
 		$args_ref->{no_source} = 1;
@@ -1416,6 +1426,8 @@ sub import_csv_file_task() {
 	ProductOpener::Import::import_csv_file($args_ref);
 
 	$job->finish("done");
+
+	return;
 }
 
 
@@ -1452,6 +1464,8 @@ sub export_csv_file_task() {
 	close($log);
 
 	$job->finish("done");
+
+	return;
 }
 
 
@@ -1479,6 +1493,8 @@ sub import_products_categories_from_public_database_task() {
 	close($log);
 
 	$job->finish("done");
+
+	return;
 }
 
 

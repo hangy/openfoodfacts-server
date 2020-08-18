@@ -1,4 +1,4 @@
-﻿# This file is part of Product Opener.
+# This file is part of Product Opener.
 #
 # Product Opener
 # Copyright (C) 2011-2020 Association Open Food Facts
@@ -28,26 +28,26 @@ BEGIN
 {
 	use vars       qw(@ISA @EXPORT_OK %EXPORT_TAGS);
 	@EXPORT_OK = qw(
-					$lang
-					$lc
+		$lang
+		$lc
 
-					%tag_type_singular
-					%tag_type_from_singular
-					%tag_type_plural
-					%tag_type_from_plural
-					%Lang
-					%CanonicalLang
-					%Langs
-					@Langs
+		%tag_type_singular
+		%tag_type_from_singular
+		%tag_type_plural
+		%tag_type_from_plural
+		%Lang
+		%CanonicalLang
+		%Langs
+		@Langs
 
-					&lang
-					%lang_lc
+		&lang
+		%lang_lc
 
-					&init_languages
+		&init_languages
 
-					&separator_before_colon
+		&separator_before_colon
 
-					);	# symbols to export on request
+		);    # symbols to export on request
 	%EXPORT_TAGS = (all => [@EXPORT_OK]);
 }
 
@@ -212,6 +212,7 @@ PO
 	}
 
 
+	return;
 }
 
 #generate_po_files("common", \%Lang);
@@ -228,12 +229,12 @@ if (-e $path) {
 	$log->info("Loaded \%Lang", { path => $path }) if $log->is_info();
 
 	# Initialize @Langs and $lang_lc
-	@Langs = sort keys %{$Lang{site_name}};	# any existing key can be used, as %Lang should contain values for all languages for all keys
-	%Langs = ();
+	@Langs = sort keys %{ $Lang{site_name} }; # any existing key can be used, as %Lang should contain values for all languages for all keys
+	%Langs   = ();
 	%lang_lc = ();
 	foreach my $l (@Langs) {
 		$lang_lc{$l} = $l;
-		$Langs{$l} = $Lang{"language_" . $l}{$l};	# Name of the language in the language itself
+		$Langs{$l}   = $Lang{ "language_" . $l }{$l};    # Name of the language in the language itself
 	}
 
 	$log->info("Loaded languaged", { langs => (scalar @Langs) }) if $log->is_info();
@@ -475,6 +476,8 @@ sub build_lang($) {
 
 		$Lang{weekdays}{$l} = encode_json(\@weekdays);
 	}
+
+	return;
 } # build_lang
 
 sub build_json {
@@ -523,6 +526,8 @@ sub build_json {
 	}
 
 	$log->info("I18N JSON completed") if $log->is_info();
+
+	return;
 }
 
 1;
