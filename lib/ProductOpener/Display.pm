@@ -161,6 +161,7 @@ use Digest::MD5 qw(md5_hex);
 use boolean;
 use Excel::Writer::XLSX;
 use Template;
+use Data::Dumper;
 
 use Log::Any '$log', default_adapter => 'Stderr';
 
@@ -2339,8 +2340,7 @@ sub display_list_of_tags_translate($$) {
 
 		load_users_translations_for_lc($users_translations_ref, $tagtype, $lc);
 
-		require Data::Dumper;
-		print STDERR Data::Dumper->Dumper($users_translations_ref);
+		print STDERR Dumper($users_translations_ref);
 
 		my %products = ();    # number of products by tag, used for histogram of nutrition grades colors
 
@@ -4974,7 +4974,7 @@ JS
 
 				$r = int ($r / $matching_series);
 				$g = int ($g / $matching_series);
-				$b = int ($b / $matching_series);
+				$b = int ($b / $matching_series); ## no critic (RequireLocalizedPunctuationVars)
 
 				$series_data .= <<JS
 {
@@ -5322,7 +5322,7 @@ sub display_histogram($$) {
 
 			$r = int ($r / $matching_series);
 			$g = int ($g / $matching_series);
-			$b = int ($b / $matching_series);
+			$b = int ($b / $matching_series); ## no critic (RequireLocalizedPunctuationVars)
 
 			$series_data .= <<JS
 			{
