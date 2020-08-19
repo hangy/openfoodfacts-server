@@ -30,6 +30,7 @@ BEGIN
 	@EXPORT_OK = qw(
 		$lang
 		$lc
+		$text_direction
 
 		%tag_type_singular
 		%tag_type_from_singular
@@ -83,7 +84,7 @@ sub lang($) {
 
 	my $short_l = undef;
 	if ($lang =~ /_/) {
-		$short_l = $`,  # pt_pt
+		$short_l = $`;  # pt_pt
 	}
 
 	if (defined $Lang{$s}{$lang}) {
@@ -412,7 +413,7 @@ sub build_lang($) {
 
 				my $short_l = undef;
 				if ($l =~ /_/) {
-					$short_l = $`,  # pt_pt
+					$short_l = $`;  # pt_pt
 				}
 
 				if (not defined $Lang{$key}{$l}) {
@@ -455,7 +456,7 @@ sub build_lang($) {
 	my @locale_codes = DateTime::Locale->codes;
 	foreach my $l (@Langs) {
 		my $locale;
-		if ( grep $_ eq $l, @locale_codes ) {
+		if ( grep { $_ eq $l } @locale_codes ) {
 			$locale = DateTime::Locale->load($l);
 		}
 		else {
@@ -496,7 +497,7 @@ sub build_json {
 
 		my $short_l = undef;
 		if ($l =~ /_/) {
-			$short_l = $`,  # pt_pt
+			$short_l = $`;  # pt_pt
 		}
 
 		my %result = ();
