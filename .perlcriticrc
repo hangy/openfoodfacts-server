@@ -10,3 +10,4 @@ equivalent_modules = Modern::Perl
 equivalent_modules = Modern::Perl
 
 [-Modules::RequireFilenameMatchesPackage]
+
