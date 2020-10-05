@@ -422,6 +422,16 @@ a[aria-controls="idOfLeftMenu"] {
   float: right;
 }
 
+.rev_summary {
+  .rev_previous {
+    margin-right: 2em;
+  }
+
+  .rev_next {
+    margin-left: 2em;
+  }
+}
+
 html[dir="rtl"] {
   .tab-bar-section.middle {
     left: 0;
@@ -446,4 +456,22 @@ html[dir="rtl"] {
   .search_and_links {
     float: left;
   }
+
+  .rev_summary {
+    .rev_previous {
+      margin-left: 2em;
+    }
+
+    .rev_next {
+      margin-right: 2em;
+    }
+  }
 }
+
+.match_icons {
+  height:48px;
+  margin-right:4px;
+}
+
+.additives_efsa_evaluation_overexposure_risk_high { color:red }
+.additives_efsa_evaluation_overexposure_risk_moderate { color:#ff6600 }

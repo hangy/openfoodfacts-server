@@ -3,7 +3,7 @@
 # This file is part of Product Opener.
 #
 # Product Opener
-# Copyright (C) 2011-2019 Association Open Food Facts
+# Copyright (C) 2011-2020 Association Open Food Facts
 # Contact: contact@openfoodfacts.org
 # Address: 21 rue des Iles, 94100 Saint-Maur des Fossés, France
 #
@@ -20,10 +20,10 @@
 # You should have received a copy of the GNU Affero General Public License
 # along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
-use CGI::Carp qw(fatalsToBrowser);
-
-use strict;
+use Modern::Perl '2017';
 use utf8;
+
+use CGI::Carp qw(fatalsToBrowser);
 
 binmode(STDOUT, ":encoding(UTF-8)");
 
@@ -51,6 +51,7 @@ use Encode;
 use JSON::PP;
 use Time::Local;
 use XML::Rules;
+use HTML::Entities qw/decode_entities/;
 
 $lc = "fr";
 $country = "en:france";
@@ -263,7 +264,7 @@ print STDERR "importing products\n";
 			if ($code eq '') {
 				print STDERR "empty code\n";
 				require Data::Dumper;
-				print STDERR Data::Dumper->Dumper($fleurymichon_product_ref);
+				print STDERR Data::Dumper::Dumper($fleurymichon_product_ref);
 				exit;
 			}
 
@@ -591,9 +592,7 @@ BOO_JOE_ROB => "Joël Robuchon"
 					$debug and print STDERR "ingredients 2 : $params{$ingredients_fields{$field}} \n";
 
 
-					require HTML::Entities;
-					$params{ $ingredients_fields{$field} }
-						= HTML::Entities->decode_entities(
+					$params{ $ingredients_fields{$field} } = decode_entities(
 						$params{ $ingredients_fields{$field} } );
 
 					$debug and print STDERR "ingredients 3 : $params{$ingredients_fields{$field}} \n";

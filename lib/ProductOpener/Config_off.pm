@@ -671,6 +671,7 @@ $options{import_export_fields_groups} = [
 	[   "other",
 		[   "nutriscore_score_producer",
 			"nutriscore_grade_producer",
+			"nova_group_producer",
 			"conservation_conditions",
 			"warning",
 			"preparation",
@@ -687,6 +688,66 @@ $options{import_export_fields_groups} = [
 		]
 	],
 ];
+
+# Used to generate the list of possible product attributes, which is
+# used to display the possible choices for user preferences
+$options{attribute_groups} = [
+	[
+		"nutritional_quality",
+		["nutriscore",
+		"low_salt", "low_sugars", "low_fat", "low_saturated_fat",
+		],
+	],
+	[
+		"processing",
+		["nova","additives"]
+	],
+	[
+		"labels",
+		["labels_organic", "labels_fair_trade"]
+	],
+	[
+		"allergens",
+		["allergens_gluten", "allergens_milk", "allergens_eggs"],
+	]
+];
+
+# Used to generate the sample import file for the producers platform
+# possible values: mandatory, recommended, optional.
+# when not specified, fields are considered optional
+$options{import_export_fields_importance} = {
+	
+	# default values for groups
+	nutrition_group => "mandatory",
+	images_group => "mandatory",
+	ingredients_group => "mandatory",
+	
+	# values for fields
+	code => "mandatory",
+	lc => "mandatory",
+	product_name => "mandatory",
+	generic_name => "recommended",
+	quantity => "mandatory",
+	serving_size => "recommended",
+	packaging => "recommended",
+	brands => "mandatory",
+	categories => "mandatory",
+	labels => "mandatory",
+	countries => "recommended",
+	obsolete => "mandatory",
+	obsolete_since_date => "recommended",
+	
+	origins => "mandatory",
+	emb_codes => "recommended",
+	
+	recycling_instructions_to_recycle => "recommended",
+	recycling_instructions_to_discard => "recommended",
+	
+	image_other_url => "optional",
+	
+	alcohol_100g_value_unit => "optional",
+
+};
 
 
 # for ingredients OCR, we use tesseract-ocr

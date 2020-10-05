@@ -1,9 +1,9 @@
 #!/usr/bin/perl
 
-use CGI::Carp qw(fatalsToBrowser);
-
-use strict;
+use Modern::Perl '2017';
 use utf8;
+
+use CGI::Carp qw(fatalsToBrowser);
 
 use ProductOpener::Config qw/:all/;
 use ProductOpener::Store qw/:all/;
@@ -149,7 +149,7 @@ my %codes = ();
 						}
 
 						require File::Copy;
-						File::Copy->move( "$dir/$file",
+						File::Copy::move( "$dir/$file",
 							"$www_root/old-images/products/$path/" )
 							or die("could not move: $!\n");
 
