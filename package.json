@@ -42,7 +42,7 @@
     "@webcomponents/webcomponentsjs": "2.5.0",
     "@yaireo/tagify": "^3.21.0",
     "blueimp-file-upload": "^10.31.0",
-    "cropperjs": "^1.5.10",
+    "cropperjs": "^1.5.11",
     "foundation-sites": "5.5.3",
     "highcharts": "^8.2.2",
     "jquery-cropper": "^1.0.1",
@@ -54,7 +54,7 @@
     "leaflet.markercluster": "1.4.1",
     "osmtogeojson": "^3.0.0-beta.4",
     "papaparse": "^5.3.0",
-    "snyk": "^1.455.0"
+    "snyk": "^1.456.0"
   },
   "devDependencies": {
     "eslint": "^7.20.0",
