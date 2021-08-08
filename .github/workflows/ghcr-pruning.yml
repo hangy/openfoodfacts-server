@@ -1,0 +1,31 @@
+name: "Prune old Docker images"
+
+on: workflow_dispatch
+
+jobs:
+  Prune:
+    name: "Prune Images"
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Prune backend
+        uses: vlaurin/action-ghcr-prune@main
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+          organization: openfoodfacts
+          container: backend
+          dry-run: true
+          older-than: 90 # days
+          keep-last: 2
+          untagged: true
+
+      - name: Prune frontend
+        uses: vlaurin/action-ghcr-prune@main
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+          organization: openfoodfacts
+          container: frontend
+          dry-run: true
+          older-than: 90 # days
+          keep-last: 2
+          untagged: true
