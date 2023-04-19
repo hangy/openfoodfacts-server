@@ -10,8 +10,12 @@
       
         <link rel="canonical" href="https://openfoodfacts.github.io/openfoodfacts-server/">
       
+      
+      
+        <link rel="next" href="api/">
+      
       <link rel="icon" href="assets/images/favicon.png">
-      <meta name="generator" content="mkdocs-1.3.1, mkdocs-material-8.5.4">
+      <meta name="generator" content="mkdocs-1.4.2, mkdocs-material-9.1.6">
     
     
       
@@ -19,11 +23,10 @@
       
     
     
-      <link rel="stylesheet" href="assets/stylesheets/main.80dcb947.min.css">
+      <link rel="stylesheet" href="assets/stylesheets/main.ded33207.min.css">
       
         
-        <link rel="stylesheet" href="assets/stylesheets/palette.cbb835fc.min.css">
-        
+        <link rel="stylesheet" href="assets/stylesheets/palette.a0c5b2b5.min.css">
       
       
 
@@ -54,7 +57,7 @@
     
     
     
-    <body dir="ltr" data-md-color-scheme="" data-md-color-primary="none" data-md-color-accent="none">
+    <body dir="ltr" data-md-color-scheme="default" data-md-color-primary="" data-md-color-accent="">
   
     
     
@@ -64,7 +67,7 @@
     <div data-md-component="skip">
       
         
-        <a href="#open-food-facts-product-opener-web-server" class="md-skip">
+        <a href="#product-opener-open-food-facts-web-server-documentation" class="md-skip">
           Skip to content
         </a>
       
@@ -76,7 +79,9 @@
     
       
 
-<header class="md-header" data-md-component="header">
+  
+
+<header class="md-header md-header--shadow" data-md-component="header">
   <nav class="md-header__inner md-grid" aria-label="Header">
     <a href="." title="Product Opener (Open Food Facts Server)" class="md-header__button md-logo" aria-label="Product Opener (Open Food Facts Server)" data-md-component="logo">
       
@@ -97,7 +102,7 @@
         <div class="md-header__topic" data-md-component="header-topic">
           <span class="md-ellipsis">
             
-              Home
+              Product Opener (Open Food Facts web server) documentation
             
           </span>
         </div>
@@ -132,7 +137,7 @@
           <div class="md-search-result__meta">
             Initializing search
           </div>
-          <ol class="md-search-result__list"></ol>
+          <ol class="md-search-result__list" role="presentation"></ol>
         </div>
       </div>
     </div>
@@ -144,7 +149,7 @@
         <a href="https://github.com/openfoodfacts/openfoodfacts-server" title="Go to repository" class="md-source" data-md-component="source">
   <div class="md-source__icon md-icon">
     
-    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc.--><path d="M439.55 236.05 244 40.45a28.87 28.87 0 0 0-40.81 0l-40.66 40.63 51.52 51.52c27.06-9.14 52.68 16.77 43.39 43.68l49.66 49.66c34.23-11.8 61.18 31 35.47 56.69-26.49 26.49-70.21-2.87-56-37.34L240.22 199v121.85c25.3 12.54 22.26 41.85 9.08 55a34.34 34.34 0 0 1-48.55 0c-17.57-17.6-11.07-46.91 11.25-56v-123c-20.8-8.51-24.6-30.74-18.64-45L142.57 101 8.45 235.14a28.86 28.86 0 0 0 0 40.81l195.61 195.6a28.86 28.86 0 0 0 40.8 0l194.69-194.69a28.86 28.86 0 0 0 0-40.81z"/></svg>
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!--! Font Awesome Free 6.4.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2023 Fonticons, Inc.--><path d="M439.55 236.05 244 40.45a28.87 28.87 0 0 0-40.81 0l-40.66 40.63 51.52 51.52c27.06-9.14 52.68 16.77 43.39 43.68l49.66 49.66c34.23-11.8 61.18 31 35.47 56.69-26.49 26.49-70.21-2.87-56-37.34L240.22 199v121.85c25.3 12.54 22.26 41.85 9.08 55a34.34 34.34 0 0 1-48.55 0c-17.57-17.6-11.07-46.91 11.25-56v-123c-20.8-8.51-24.6-30.74-18.64-45L142.57 101 8.45 235.14a28.86 28.86 0 0 0 0 40.81l195.61 195.6a28.86 28.86 0 0 0 40.8 0l194.69-194.69a28.86 28.86 0 0 0 0-40.81z"/></svg>
   </div>
   <div class="md-source__repository">
     GitHub
@@ -189,7 +194,7 @@
       <a href="https://github.com/openfoodfacts/openfoodfacts-server" title="Go to repository" class="md-source" data-md-component="source">
   <div class="md-source__icon md-icon">
     
-    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc.--><path d="M439.55 236.05 244 40.45a28.87 28.87 0 0 0-40.81 0l-40.66 40.63 51.52 51.52c27.06-9.14 52.68 16.77 43.39 43.68l49.66 49.66c34.23-11.8 61.18 31 35.47 56.69-26.49 26.49-70.21-2.87-56-37.34L240.22 199v121.85c25.3 12.54 22.26 41.85 9.08 55a34.34 34.34 0 0 1-48.55 0c-17.57-17.6-11.07-46.91 11.25-56v-123c-20.8-8.51-24.6-30.74-18.64-45L142.57 101 8.45 235.14a28.86 28.86 0 0 0 0 40.81l195.61 195.6a28.86 28.86 0 0 0 40.8 0l194.69-194.69a28.86 28.86 0 0 0 0-40.81z"/></svg>
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!--! Font Awesome Free 6.4.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2023 Fonticons, Inc.--><path d="M439.55 236.05 244 40.45a28.87 28.87 0 0 0-40.81 0l-40.66 40.63 51.52 51.52c27.06-9.14 52.68 16.77 43.39 43.68l49.66 49.66c34.23-11.8 61.18 31 35.47 56.69-26.49 26.49-70.21-2.87-56-37.34L240.22 199v121.85c25.3 12.54 22.26 41.85 9.08 55a34.34 34.34 0 0 1-48.55 0c-17.57-17.6-11.07-46.91 11.25-56v-123c-20.8-8.51-24.6-30.74-18.64-45L142.57 101 8.45 235.14a28.86 28.86 0 0 0 0 40.81l195.61 195.6a28.86 28.86 0 0 0 40.8 0l194.69-194.69a28.86 28.86 0 0 0 0-40.81z"/></svg>
   </div>
   <div class="md-source__repository">
     GitHub
@@ -210,163 +215,15 @@
   
     <li class="md-nav__item md-nav__item--active">
       
-      <input class="md-nav__toggle md-toggle" data-md-toggle="toc" type="checkbox" id="__toc">
+      <input class="md-nav__toggle md-toggle" type="checkbox" id="__toc">
       
       
         
       
-      
-        <label class="md-nav__link md-nav__link--active" for="__toc">
-          Home
-          <span class="md-nav__icon md-icon"></span>
-        </label>
       
       <a href="." class="md-nav__link md-nav__link--active">
-        Home
+        Product Opener (Open Food Facts web server) documentation
       </a>
-      
-        
-
-<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
-  
-  
-  
-    
-  
-  
-    <label class="md-nav__title" for="__toc">
-      <span class="md-nav__icon md-icon"></span>
-      Table of contents
-    </label>
-    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
-      
-        <li class="md-nav__item">
-  <a href="#tests" class="md-nav__link">
-    Tests
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#what-is-product-opener" class="md-nav__link">
-    What is Product Opener?
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#what-is-open-food-facts" class="md-nav__link">
-    What is Open Food Facts?
-  </a>
-  
-    <nav class="md-nav" aria-label="What is Open Food Facts?">
-      <ul class="md-nav__list">
-        
-          <li class="md-nav__item">
-  <a href="#a-food-product-database" class="md-nav__link">
-    A food product database
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#made-by-everyone" class="md-nav__link">
-    Made by everyone
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#for-everyone" class="md-nav__link">
-    For everyone
-  </a>
-  
-</li>
-        
-      </ul>
-    </nav>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#priorities" class="md-nav__link">
-    Priorities
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#how-do-i-get-started" class="md-nav__link">
-    How do I get started?
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#contribution-guidelines" class="md-nav__link">
-    Contribution guidelines
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#reporting-problems-or-asking-for-a-feature" class="md-nav__link">
-    Reporting problems or asking for a feature
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#translate-open-food-facts-in-your-language" class="md-nav__link">
-    Translate Open Food Facts in your language
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#helping-with-html-and-css" class="md-nav__link">
-    Helping with HTML and CSS
-  </a>
-  
-    <nav class="md-nav" aria-label="Helping with HTML and CSS">
-      <ul class="md-nav__list">
-        
-          <li class="md-nav__item">
-  <a href="#who-do-i-talk-to" class="md-nav__link">
-    Who do I talk to?
-  </a>
-  
-</li>
-        
-      </ul>
-    </nav>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#contributors" class="md-nav__link">
-    Contributors
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#backers" class="md-nav__link">
-    Backers
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#sponsors" class="md-nav__link">
-    Sponsors
-  </a>
-  
-</li>
-      
-    </ul>
-  
-</nav>
       
     </li>
   
@@ -383,20 +240,21 @@
     <li class="md-nav__item md-nav__item--nested">
       
       
-        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_2" type="checkbox" id="__nav_2" >
+      
+      
+      <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_2" >
       
       
       
-      
-        <label class="md-nav__link" for="__nav_2">
-          Explanations
+        <label class="md-nav__link" for="__nav_2" id="__nav_2_label" tabindex="0">
+          Api
           <span class="md-nav__icon md-icon"></span>
         </label>
       
-      <nav class="md-nav" aria-label="Explanations" data-md-level="1">
+      <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_2_label" aria-expanded="false">
         <label class="md-nav__title" for="__nav_2">
           <span class="md-nav__icon md-icon"></span>
-          Explanations
+          Api
         </label>
         <ul class="md-nav__list" data-md-scrollfix>
           
@@ -406,8 +264,8 @@
   
   
     <li class="md-nav__item">
-      <a href="explanations/packaging-data/" class="md-nav__link">
-        Packaging data
+      <a href="api/" class="md-nav__link">
+        Introduction to Open Food Facts API documentation
       </a>
     </li>
   
@@ -420,8 +278,120 @@
   
   
     <li class="md-nav__item">
-      <a href="explanations/pro-dev-setup/" class="md-nav__link">
-        Docker Setup of pro platform for development
+      <a href="api/intro-robotoff/" class="md-nav__link">
+        Introduction to the Robotoff Project
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="api/tutorial-dev-journey/" class="md-nav__link">
+        Tutorial - developer journey
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="api/tutorial-off-api/" class="md-nav__link">
+        Tutorial on using the Open Food Facts API
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="api/tutorial-uploading-photo-to-a-product/" class="md-nav__link">
+        Tutorial on uploading images to the Open Food Facts API
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="api/how-to-download-images/" class="md-nav__link">
+        How to download product images
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="api/explain-knowledge-panels/" class="md-nav__link">
+        Explanation on Knowledge panels
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="api/ref-cheatsheet/" class="md-nav__link">
+        Reference: API CheatSheet
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="api/ref-v2/" class="md-nav__link">
+        Reference OpenAPI documentation for v2
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="api/ref-v3/" class="md-nav__link">
+        Reference OpenAPI documentation for v3
       </a>
     </li>
   
@@ -445,20 +415,21 @@
     <li class="md-nav__item md-nav__item--nested">
       
       
-        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_3" type="checkbox" id="__nav_3" >
+      
+      
+      <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_3" >
       
       
       
-      
-        <label class="md-nav__link" for="__nav_3">
-          How to guides
+        <label class="md-nav__link" for="__nav_3" id="__nav_3_label" tabindex="0">
+          Dev
           <span class="md-nav__icon md-icon"></span>
         </label>
       
-      <nav class="md-nav" aria-label="How to guides" data-md-level="1">
+      <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_3_label" aria-expanded="false">
         <label class="md-nav__title" for="__nav_3">
           <span class="md-nav__icon md-icon"></span>
-          How to guides
+          Dev
         </label>
         <ul class="md-nav__list" data-md-scrollfix>
           
@@ -468,8 +439,8 @@
   
   
     <li class="md-nav__item">
-      <a href="how-to-guides/deploy/" class="md-nav__link">
-        Prod environment deployment guide
+      <a href="dev/" class="md-nav__link">
+        Introduction to Product Opener developer documentation
       </a>
     </li>
   
@@ -482,8 +453,8 @@
   
   
     <li class="md-nav__item">
-      <a href="how-to-guides/docker-developer-guide/" class="md-nav__link">
-        Docker Developer's Guide
+      <a href="dev/how-to-deploy/" class="md-nav__link">
+        How to deploy to Prod environment
       </a>
     </li>
   
@@ -496,8 +467,8 @@
   
   
     <li class="md-nav__item">
-      <a href="how-to-guides/pro-development/" class="md-nav__link">
-        Developing on the producers platform
+      <a href="dev/how-to-develop-producer-platform/" class="md-nav__link">
+        How to develop on the producers platform
       </a>
     </li>
   
@@ -510,8 +481,8 @@
   
   
     <li class="md-nav__item">
-      <a href="how-to-guides/use-direnv/" class="md-nav__link">
-        Use direnv
+      <a href="dev/how-to-develop-using-docker/" class="md-nav__link">
+        How to use Docker to Develop - a guide
       </a>
     </li>
   
@@ -524,8 +495,8 @@
   
   
     <li class="md-nav__item">
-      <a href="how-to-guides/use-gitpod/" class="md-nav__link">
-        Using Gitpod for Remote Development
+      <a href="dev/how-to-learn-perl/" class="md-nav__link">
+        How can I learn the Perl programming language?
       </a>
     </li>
   
@@ -538,8 +509,8 @@
   
   
     <li class="md-nav__item">
-      <a href="how-to-guides/use-repl/" class="md-nav__link">
-        Using Repl
+      <a href="dev/how-to-quick-start-guide/" class="md-nav__link">
+        How to setup the Dev environment (quick start guide)
       </a>
     </li>
   
@@ -552,8 +523,8 @@
   
   
     <li class="md-nav__item">
-      <a href="how-to-guides/use-vscode/" class="md-nav__link">
-        Using VSCode
+      <a href="dev/how-to-update-agribalyse-ecoscore/" class="md-nav__link">
+        How to update Agribalyse (Ecoscore)
       </a>
     </li>
   
@@ -566,56 +537,8 @@
   
   
     <li class="md-nav__item">
-      <a href="how-to-guides/using-pages-from-openfoodfacts-web/" class="md-nav__link">
-        Using pages from openfoodfacts-web
-      </a>
-    </li>
-  
-
-            
-          
-        </ul>
-      </nav>
-    </li>
-  
-
-    
-      
-      
-      
-
-  
-  
-  
-    
-    <li class="md-nav__item md-nav__item--nested">
-      
-      
-        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_4" type="checkbox" id="__nav_4" >
-      
-      
-      
-      
-        <label class="md-nav__link" for="__nav_4">
-          Introduction
-          <span class="md-nav__icon md-icon"></span>
-        </label>
-      
-      <nav class="md-nav" aria-label="Introduction" data-md-level="1">
-        <label class="md-nav__title" for="__nav_4">
-          <span class="md-nav__icon md-icon"></span>
-          Introduction
-        </label>
-        <ul class="md-nav__list" data-md-scrollfix>
-          
-            
-              
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="introduction/api/" class="md-nav__link">
-        Open Food Facts API Documentation
+      <a href="dev/how-to-use-direnv/" class="md-nav__link">
+        How to use direnv
       </a>
     </li>
   
@@ -628,8 +551,8 @@
   
   
     <li class="md-nav__item">
-      <a href="introduction/dev-environment-quick-start-guide/" class="md-nav__link">
-        Dev environment quick start guide
+      <a href="dev/how-to-use-gitpod/" class="md-nav__link">
+        How to using Gitpod for Remote Development
       </a>
     </li>
   
@@ -642,56 +565,8 @@
   
   
     <li class="md-nav__item">
-      <a href="introduction/knowledge-panels/" class="md-nav__link">
-        Knowledge panels
-      </a>
-    </li>
-  
-
-            
-          
-        </ul>
-      </nav>
-    </li>
-  
-
-    
-      
-      
-      
-
-  
-  
-  
-    
-    <li class="md-nav__item md-nav__item--nested">
-      
-      
-        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_5" type="checkbox" id="__nav_5" >
-      
-      
-      
-      
-        <label class="md-nav__link" for="__nav_5">
-          Reference
-          <span class="md-nav__icon md-icon"></span>
-        </label>
-      
-      <nav class="md-nav" aria-label="Reference" data-md-level="1">
-        <label class="md-nav__title" for="__nav_5">
-          <span class="md-nav__icon md-icon"></span>
-          Reference
-        </label>
-        <ul class="md-nav__list" data-md-scrollfix>
-          
-            
-              
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="reference/api/" class="md-nav__link">
-        OpenAPI documentation
+      <a href="dev/how-to-use-pages-from-openfoodfacts-web/" class="md-nav__link">
+        How to use pages from openfoodfacts-web
       </a>
     </li>
   
@@ -704,7 +579,105 @@
   
   
     <li class="md-nav__item">
-      <a href="reference/perl/" class="md-nav__link">
+      <a href="dev/how-to-use-repl/" class="md-nav__link">
+        How to use Perl REPL (re.pl)
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="dev/how-to-use-vscode/" class="md-nav__link">
+        How to use VSCode
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="dev/how-to-write-and-run-tests/" class="md-nav__link">
+        How to write and run tests
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="dev/explain-packaging-data/" class="md-nav__link">
+        Explanation on packaging data
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="dev/explain-pro-dev-setup/" class="md-nav__link">
+        Explanation on Docker Setup of pro platform for development
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="dev/explain-taxonomy-build-cache/" class="md-nav__link">
+        Explanation on Taxonomy Build Cache
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="dev/ref-docker-commands/" class="md-nav__link">
+        Reference Docker / Makefile commands
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="dev/ref-perl-pod/" class="md-nav__link">
         Perl reference documentation
       </a>
     </li>
@@ -712,48 +685,14 @@
 
             
           
-        </ul>
-      </nav>
-    </li>
-  
-
-    
-      
-      
-      
-
-  
-  
-  
-    
-    <li class="md-nav__item md-nav__item--nested">
-      
-      
-        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_6" type="checkbox" id="__nav_6" >
-      
-      
-      
-      
-        <label class="md-nav__link" for="__nav_6">
-          Tutorials
-          <span class="md-nav__icon md-icon"></span>
-        </label>
-      
-      <nav class="md-nav" aria-label="Tutorials" data-md-level="1">
-        <label class="md-nav__title" for="__nav_6">
-          <span class="md-nav__icon md-icon"></span>
-          Tutorials
-        </label>
-        <ul class="md-nav__list" data-md-scrollfix>
-          
             
               
   
   
   
     <li class="md-nav__item">
-      <a href="tutorials/using-the-OFF-API-tutorial/" class="md-nav__link">
-        Using the Open Food Facts API
+      <a href="dev/ref-perl/" class="md-nav__link">
+        Reference Perl code documentation
       </a>
     </li>
   
@@ -786,138 +725,6 @@
     
   
   
-    <label class="md-nav__title" for="__toc">
-      <span class="md-nav__icon md-icon"></span>
-      Table of contents
-    </label>
-    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
-      
-        <li class="md-nav__item">
-  <a href="#tests" class="md-nav__link">
-    Tests
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#what-is-product-opener" class="md-nav__link">
-    What is Product Opener?
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#what-is-open-food-facts" class="md-nav__link">
-    What is Open Food Facts?
-  </a>
-  
-    <nav class="md-nav" aria-label="What is Open Food Facts?">
-      <ul class="md-nav__list">
-        
-          <li class="md-nav__item">
-  <a href="#a-food-product-database" class="md-nav__link">
-    A food product database
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#made-by-everyone" class="md-nav__link">
-    Made by everyone
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#for-everyone" class="md-nav__link">
-    For everyone
-  </a>
-  
-</li>
-        
-      </ul>
-    </nav>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#priorities" class="md-nav__link">
-    Priorities
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#how-do-i-get-started" class="md-nav__link">
-    How do I get started?
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#contribution-guidelines" class="md-nav__link">
-    Contribution guidelines
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#reporting-problems-or-asking-for-a-feature" class="md-nav__link">
-    Reporting problems or asking for a feature
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#translate-open-food-facts-in-your-language" class="md-nav__link">
-    Translate Open Food Facts in your language
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#helping-with-html-and-css" class="md-nav__link">
-    Helping with HTML and CSS
-  </a>
-  
-    <nav class="md-nav" aria-label="Helping with HTML and CSS">
-      <ul class="md-nav__list">
-        
-          <li class="md-nav__item">
-  <a href="#who-do-i-talk-to" class="md-nav__link">
-    Who do I talk to?
-  </a>
-  
-</li>
-        
-      </ul>
-    </nav>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#contributors" class="md-nav__link">
-    Contributors
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#backers" class="md-nav__link">
-    Backers
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#sponsors" class="md-nav__link">
-    Sponsors
-  </a>
-  
-</li>
-      
-    </ul>
-  
 </nav>
                   </div>
                 </div>
@@ -930,111 +737,21 @@
                 
                   
 
-  <a href="https://github.com/openfoodfacts/openfoodfacts-server/blob/main/docs/index.md" title="Edit this page" class="md-content__button md-icon">
-    
-    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20.71 7.04c.39-.39.39-1.04 0-1.41l-2.34-2.34c-.37-.39-1.02-.39-1.41 0l-1.84 1.83 3.75 3.75M3 17.25V21h3.75L17.81 9.93l-3.75-3.75L3 17.25Z"/></svg>
-  </a>
+  
+  
 
 
-<p><picture>
-  <source media="(prefers-color-scheme: dark)" srcset="https://static.openfoodfacts.org/images/logos/off-logo-horizontal-dark.png?refresh_github_cache=1">
-  <source media="(prefers-color-scheme: light)" srcset="https://static.openfoodfacts.org/images/logos/off-logo-horizontal-light.png?refresh_github_cache=1">
-  <img height="48" src="https://static.openfoodfacts.org/images/logos/off-logo-horizontal-light.svg">
-</picture></p>
-<h1 id="open-food-facts-product-opener-web-server">Open Food Facts - Product Opener (Web Server)<a class="headerlink" href="#open-food-facts-product-opener-web-server" title="Permanent link">#</a></h1>
-<p><a href="http://opensource.box.com/badges"><img alt="Project Status" src="http://opensource.box.com/badges/active.svg" /></a>
-<a href="https://translate.openfoodfacts.org/"><img alt="Crowdin" src="https://d322cqt584bo4o.cloudfront.net/openfoodfacts/localized.svg" /></a>
-<a href="https://www.codetriage.com/openfoodfacts/openfoodfacts-server"><img alt="Open Source Helpers" src="https://www.codetriage.com/openfoodfacts/openfoodfacts-server/badges/users.svg" /></a>
-<a href="#backers"><img alt="Backers on Open Collective" src="https://opencollective.com/openfoodfacts-server/backers/badge.svg" /></a>
-<a href="#sponsors"><img alt="Sponsors on Open Collective" src="https://opencollective.com/openfoodfacts-server/sponsors/badge.svg" /></a></p>
-<h2 id="tests">Tests<a class="headerlink" href="#tests" title="Permanent link">#</a></h2>
-<p><a href="https://github.com/openfoodfacts/openfoodfacts-server/actions/workflows/pull_request.yml"><img alt="Pull Requests" src="https://github.com/openfoodfacts/openfoodfacts-server/actions/workflows/pull_request.yml/badge.svg" /></a></p>
-<h2 id="what-is-product-opener">What is Product Opener?<a class="headerlink" href="#what-is-product-opener" title="Permanent link">#</a></h2>
-<p><strong>Product Opener</strong> is the server software for <strong>Open Food Facts</strong> and <strong>Open Beauty Facts</strong>. It is released under the AGPL license and is being developed in Perl, HTML and JavaScript as <a href="https://en.wikipedia.org/wiki/Free_and_open-source_software">Free and Open-Source Software</a>.</p>
-<p>It works together with <a href="https://github.com/openfoodfacts/robotoff">Robotoff</a>, Open Food Facts' AI system (in Python, which can also be installed locally) and the <a href="https://github.com/openfoodfacts/smooth-app">Open Food Facts apps</a> (which can work with your local instance after enabling dev mode)</p>
-<h2 id="what-is-open-food-facts">What is Open Food Facts?<a class="headerlink" href="#what-is-open-food-facts" title="Permanent link">#</a></h2>
-<h3 id="a-food-product-database">A food product database<a class="headerlink" href="#a-food-product-database" title="Permanent link">#</a></h3>
-<p>Open Food Facts is a database of food products with ingredients, allergens, nutritional facts and all the tidbits of information that is available on various product labels.</p>
-<h3 id="made-by-everyone">Made by everyone<a class="headerlink" href="#made-by-everyone" title="Permanent link">#</a></h3>
-<p>Open Food Facts is a non-profit association of volunteers.
-25.000+ contributors like you have added 1.7 million + products from 150 countries using our Android, iPhone or Windows Phone app or their camera to scan barcodes and upload pictures of products and their labels.</p>
-<h3 id="for-everyone">For everyone<a class="headerlink" href="#for-everyone" title="Permanent link">#</a></h3>
-<p>Data about food is of public interest and has to be open (i.e available to everyone). The complete database is published as open data and can be reused by anyone and for any use. Check-out the cool reuses or make your own!</p>
+<h1 id="product-opener-open-food-facts-web-server-documentation">Product Opener (Open Food Facts web server) documentation<a class="headerlink" href="#product-opener-open-food-facts-web-server-documentation" title="Permanent link">#</a></h1>
+<p>Welcome to the documentation of <strong>Product Opener</strong>, the web server at the heart of <strong><a href="https://world.openfoodfacts.org/">Open Food Facts</a></strong> project. </p>
+<p>It also powers the sibling <strong>Open [<a href="https://world.openbeautyfacts.org/">Beauty</a>|<a href="https://world.openpetfoodfacts.org/">Pet Food</a>|<a href="https://world.openproductsfacts.org/">Products</a>] Facts</strong> projects</p>
 <ul>
-<li><a href="https://world.openfoodfacts.org">https://world.openfoodfacts.org</a></li>
-</ul>
-<h2 id="priorities">Priorities<a class="headerlink" href="#priorities" title="Permanent link">#</a></h2>
-<ul>
-<li><a href="https://github.com/openfoodfacts/openfoodfacts-server/issues/7374">Top issues</a></li>
-<li><a href="https://github.com/openfoodfacts/openfoodfacts-server/labels/P0,P1">P1 problems</a></li>
-<li><a href="https://github.com/openfoodfacts/openfoodfacts-server/labels/P1%20candidate">P1 candidates</a></li>
-<li>Please add roadmaps here</li>
-</ul>
-<!-- ## Libraries used -->
-
-<h2 id="how-do-i-get-started">How do I get started?<a class="headerlink" href="#how-do-i-get-started" title="Permanent link">#</a></h2>
-<ul>
-<li>Join us on Slack at <a href="https://openfoodfacts.slack.com/">https://openfoodfacts.slack.com/</a> in the channels: <code>#api</code>, <code>#productopener</code>, <code>#dev</code>.</li>
-<li><a href="https://openfoodfacts.github.io/api-documentation/">API Documentation</a></li>
-<li><a href="https://openfoodfacts.github.io/openfoodfacts-server/reference/api/">NEW API Documentation (WIP)</a> (<a href="https://github.com/openfoodfacts/openfoodfacts-server/tree/main/docs/reference/api.yml">source</a>)</li>
+<li>If you want to use the API or are interested in the data, look at <a href="api/">API documentation</a></li>
 </ul>
 <ul>
-<li>
-<p>Developer documentation:</p>
-<ul>
-<li><a href="introduction/dev-environment-quick-start-guide/">Quick start guide (Docker)</a></li>
-<li><a href="how-to-guides/docker-developer-guide/">Developer guide (Docker)</a></li>
-<li><a href="how-to-guides/use-gitpod/">Developer guide (Gitpod)</a></li>
-<li>Configuration [TBA]</li>
-<li>Dependencies [TBA]</li>
-<li>Database configuration [TBA]</li>
-<li>How to run tests [TBA]</li>
-<li><a href="https://openfoodfacts.github.io/reference/perl/">Perl modules documentation (POD)</a></li>
+<li>If you are a developer, look at <a href="dev/">Developer documentation</a></li>
 </ul>
-</li>
-</ul>
-<p>Note: documentation follows the <a href="https://diataxis.fr/">Diátaxis Framework</a></p>
-<h2 id="contribution-guidelines">Contribution guidelines<a class="headerlink" href="#contribution-guidelines" title="Permanent link">#</a></h2>
-<p>If you're new to Open-Source, we recommend you to check out our <a href="https://github.com/openfoodfacts/openfoodfacts-server/blob/master/CONTRIBUTING.md"><em>Contributing Guidelines</em></a>. Feel free to fork the project and send us a pull request.</p>
-<ul>
-<li>Writing tests</li>
-<li>Code review</li>
-<li>Other guidelines</li>
-<li>Please add new features to the CHANGELOG.md file before or after merge to make testing easier</li>
-</ul>
-<h2 id="reporting-problems-or-asking-for-a-feature">Reporting problems or asking for a feature<a class="headerlink" href="#reporting-problems-or-asking-for-a-feature" title="Permanent link">#</a></h2>
-<p>Have a bug or a feature request? Please search for existing and closed issues. If your problem or idea is not addressed yet, please <a href="https://github.com/openfoodfacts/openfoodfacts-server/issues">open a new issue</a>. You can ask directly in the discussion room if you're not sure</p>
-<h2 id="translate-open-food-facts-in-your-language">Translate Open Food Facts in your language<a class="headerlink" href="#translate-open-food-facts-in-your-language" title="Permanent link">#</a></h2>
-<p>You can help translate the Open Food Facts web version and the app at :
-<a href="https://translate.openfoodfacts.org/">https://translate.openfoodfacts.org/</a> (no technical knowledge required, takes a minute to signup)</p>
-<h2 id="helping-with-html-and-css">Helping with HTML and CSS<a class="headerlink" href="#helping-with-html-and-css" title="Permanent link">#</a></h2>
-<p>We have <a href="https://github.com/openfoodfacts/openfoodfacts-server/tree/master/templates">templatized</a> Product Opener, we use Gulp and NPM, but you'll need to run the Product Opener docker to be able to see the result (see the How do I get set up? section).
-In particular, you can <a href="https://github.com/openfoodfacts/openfoodfacts-server/issues?q=is%3Aissue+is%3Aopen+label%3A%22new+design%22">help with issues on the new design</a>.</p>
-<h3 id="who-do-i-talk-to">Who do I talk to?<a class="headerlink" href="#who-do-i-talk-to" title="Permanent link">#</a></h3>
-<ul>
-<li>Join our discussion room at <a href="https://slack.openfoodfacts.org/">https://slack.openfoodfacts.org/</a> Make sure to join the #productopener and #productopener-alerts channels. Stéphane, Pierre, Charles or Hangy will be around to help you get started.</li>
-</ul>
-<h2 id="contributors">Contributors<a class="headerlink" href="#contributors" title="Permanent link">#</a></h2>
-<p>This project exists thanks to all the people who contribute.
-<a href="https://github.com/openfoodfacts/openfoodfacts-server/graphs/contributors"><img src="https://contrib.rocks/image?repo=openfoodfacts/openfoodfacts-server&columns=16" /></a></p>
-<h2 id="backers">Backers<a class="headerlink" href="#backers" title="Permanent link">#</a></h2>
-<p>Thank you to all our backers! 🙏 [<a href="https://opencollective.com/openfoodfacts-server#backer">Become a backer</a>]</p>
-<p><a href="https://opencollective.com/openfoodfacts-server#backers" target="_blank"><img src="https://opencollective.com/openfoodfacts-server/backers.svg?width=890"></a></p>
-<h2 id="sponsors">Sponsors<a class="headerlink" href="#sponsors" title="Permanent link">#</a></h2>
-<p>Support this project by becoming a sponsor. Your logo will show up here with a link to your website. [<a href="https://opencollective.com/openfoodfacts-server#sponsor">Become a sponsor</a>]</p>
-<p><a href="https://opencollective.com/openfoodfacts-server/sponsor/0/website" target="_blank"><img src="https://opencollective.com/openfoodfacts-server/sponsor/0/avatar.svg"></a>
-<a href="https://opencollective.com/openfoodfacts-server/sponsor/1/website" target="_blank"><img src="https://opencollective.com/openfoodfacts-server/sponsor/1/avatar.svg"></a>
-<a href="https://opencollective.com/openfoodfacts-server/sponsor/2/website" target="_blank"><img src="https://opencollective.com/openfoodfacts-server/sponsor/2/avatar.svg"></a>
-<a href="https://opencollective.com/openfoodfacts-server/sponsor/3/website" target="_blank"><img src="https://opencollective.com/openfoodfacts-server/sponsor/3/avatar.svg"></a>
-<a href="https://opencollective.com/openfoodfacts-server/sponsor/4/website" target="_blank"><img src="https://opencollective.com/openfoodfacts-server/sponsor/4/avatar.svg"></a>
-<a href="https://opencollective.com/openfoodfacts-server/sponsor/5/website" target="_blank"><img src="https://opencollective.com/openfoodfacts-server/sponsor/5/avatar.svg"></a>
-<a href="https://opencollective.com/openfoodfacts-server/sponsor/6/website" target="_blank"><img src="https://opencollective.com/openfoodfacts-server/sponsor/6/avatar.svg"></a>
-<a href="https://opencollective.com/openfoodfacts-server/sponsor/7/website" target="_blank"><img src="https://opencollective.com/openfoodfacts-server/sponsor/7/avatar.svg"></a>
-<a href="https://opencollective.com/openfoodfacts-server/sponsor/8/website" target="_blank"><img src="https://opencollective.com/openfoodfacts-server/sponsor/8/avatar.svg"></a>
-<a href="https://opencollective.com/openfoodfacts-server/sponsor/9/website" target="_blank"><img src="https://opencollective.com/openfoodfacts-server/sponsor/9/avatar.svg"></a></p>
-<p><a href="https://nlnet.nl/"><img style="height:100px" src="https://static.openfoodfacts.org/images/misc/nlnet_logo.svg" alt="Logo NLnet: abstract logo of four people seen from above Logo NGI Zero: letterlogo shaped like a tag"></a></p>
-<p>Open Food Facts Personal Search project was funded through the <a href="https://nlnet.nl/discovery/">NGI0 Discovery</a> Fund,
-a fund established by NLnet with financial support from the European Commission's <a href="https://ngi.eu">Next Generation Internet</a> programme.</p>
+<p>The repository for the project is at https://github.com/openfoodfacts/openfoodfacts-server/</p>
+<p>Do not hesitate to contribute to this documentation, this is highly appreciated.</p>
 
 
 
@@ -1050,27 +767,6 @@ a fund established by NLnet with financial support from the European Commission'
       </main>
       
         <footer class="md-footer">
-  
-    
-    <nav class="md-footer__inner md-grid" aria-label="Footer" >
-      
-      
-        
-        <a href="explanations/packaging-data/" class="md-footer__link md-footer__link--next" aria-label="Next: Packaging data" rel="next">
-          <div class="md-footer__title">
-            <div class="md-ellipsis">
-              <span class="md-footer__direction">
-                Next
-              </span>
-              Packaging data
-            </div>
-          </div>
-          <div class="md-footer__button md-icon">
-            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M4 11v2h12l-5.5 5.5 1.42 1.42L19.84 12l-7.92-7.92L10.5 5.5 16 11H4Z"/></svg>
-          </div>
-        </a>
-      
-    </nav>
   
   <div class="md-footer-meta md-typeset">
     <div class="md-footer-meta__inner md-grid">
@@ -1093,10 +789,10 @@ a fund established by NLnet with financial support from the European Commission'
       <div class="md-dialog__inner md-typeset"></div>
     </div>
     
-    <script id="__config" type="application/json">{"base": ".", "features": [], "search": "assets/javascripts/workers/search.5bf1dace.min.js", "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.config.lang": "en", "search.config.pipeline": "trimmer, stopWordFilter", "search.config.separator": "[\\s\\-]+", "search.placeholder": "Search", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version.title": "Select version"}}</script>
+    <script id="__config" type="application/json">{"base": ".", "features": [], "search": "assets/javascripts/workers/search.208ed371.min.js", "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}}</script>
     
     
-      <script src="assets/javascripts/bundle.078830c0.min.js"></script>
+      <script src="assets/javascripts/bundle.51198bba.min.js"></script>
       
     
   </body>
