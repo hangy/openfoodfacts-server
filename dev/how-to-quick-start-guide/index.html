@@ -17,7 +17,7 @@
         <link rel="next" href="../how-to-update-agribalyse-ecoscore/">
       
       <link rel="icon" href="../../assets/images/favicon.png">
-      <meta name="generator" content="mkdocs-1.4.2, mkdocs-material-9.1.6">
+      <meta name="generator" content="mkdocs-1.4.2, mkdocs-material-9.1.18">
     
     
       
@@ -25,10 +25,7 @@
       
     
     
-      <link rel="stylesheet" href="../../assets/stylesheets/main.ded33207.min.css">
-      
-        
-        <link rel="stylesheet" href="../../assets/stylesheets/palette.a0c5b2b5.min.css">
+      <link rel="stylesheet" href="../../assets/stylesheets/main.26e3688c.min.css">
       
       
 
@@ -54,14 +51,11 @@
   </head>
   
   
-    
-    
-    
-    
-    
-    <body dir="ltr" data-md-color-scheme="default" data-md-color-primary="" data-md-color-accent="">
+    <body dir="ltr">
   
     
+    
+      <script>var palette=__md_get("__palette");if(palette&&"object"==typeof palette.color)for(var key of Object.keys(palette.color))document.body.setAttribute("data-md-color-"+key,palette.color[key])</script>
     
     <input class="md-toggle" data-md-toggle="drawer" type="checkbox" id="__drawer" autocomplete="off">
     <input class="md-toggle" data-md-toggle="search" type="checkbox" id="__search" autocomplete="off">
@@ -384,6 +378,20 @@
     <li class="md-nav__item">
       <a href="../../api/ref-v3/" class="md-nav__link">
         Reference OpenAPI documentation for v3
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../api/aws-images-dataset/" class="md-nav__link">
+        Open Food Facts AWS images dataset
       </a>
     </li>
   
@@ -785,6 +793,20 @@
   
   
     <li class="md-nav__item">
+      <a href="../explain-nutition-data/" class="md-nav__link">
+        Explain nutition data
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
       <a href="../explain-packaging-data/" class="md-nav__link">
         Explanation on packaging data
       </a>
@@ -1075,11 +1097,11 @@ to instantly provision a ready-to-code development environment in the cloud.</p>
 <li><a href="https://docs.docker.com/compose/completion/">Enable command-line completion</a></li>
 </ul>
 <h3 id="windows-prerequisites">Windows Prerequisites<a class="headerlink" href="#windows-prerequisites" title="Permanent link">#</a></h3>
-<p>When running with Windows, install <a href="https://www.docker.com/products/docker-desktop/">Docker Desktop</a> which will cover all of the above.</p>
+<p>When running with Windows, install <a href="https://www.docker.com/products/docker-desktop/">Docker Desktop</a> <strong>which will cover all of the above</strong>.</p>
 <p>The Make tasks use a number of Linux commands, such as rm and nproc, so it is recommeded to run Make commands from the Git Bash shell. In addition, the following need to be installed and included in the PATH:</p>
 <ul>
 <li><a href="http://gnuwin32.sourceforge.net/packages/make.htm">Make for Windows</a></li>
-<li><a href="https://eternallybored.org/misc/wget/">wget for windows</a> (In order to download the full product database).</li>
+<li><a href="https://eternallybored.org/misc/wget/">wget for windows</a> (In order to download the full product database). If you want to download wget with the executable, copy the wget.exe file to C:/Windows/System32 and you are done.</li>
 </ul>
 <p>The process of cloning the repository will create a number of symbolic links which require specific permissions under Windows. In order to do this you can use any one of these alternatives:</p>
 <ul>
@@ -1087,6 +1109,7 @@ to instantly provision a ready-to-code development environment in the cloud.</p>
 <li>Completely disable UAC</li>
 <li>Specifically grant the <a href="https://learn.microsoft.com/en-us/windows/security/threat-protection/security-policy-settings/create-symbolic-links">Create symbolic links</a> permission to your user</li>
 </ul>
+<p>Make sure you also activated the <a href="https://learn.microsoft.com/en-us/windows/apps/get-started/enable-your-device-for-development">Developper mode</a> on your device.</p>
 <h2 id="2-clone-the-repository-from-github">2. Clone the repository from GitHub<a class="headerlink" href="#2-clone-the-repository-from-github" title="Permanent link">#</a></h2>
 <blockquote>
 <p><em>You must have a GitHub account if you want to contribute to Open Food Facts development, but it’s not required if you just want to see how it works.</em></p>
@@ -1115,20 +1138,61 @@ or
 </blockquote>
 <p>Before running the <code>docker-compose</code> deployment, you can review and configure
 Product Opener's environment (<code>.env</code> file).</p>
-<p>The <code>.env</code> file contains ProductOpener default settings:
-| Field | Description |
-| ----------------------------------------------------------------- | --- |
-| <code>PRODUCT_OPENER_DOMAIN</code>                                           | Can be set to different values based on which <strong>OFF flavor</strong> is run.|
-| <code>PRODUCT_OPENER_PORT</code>                                             | can be modified to run NGINX on a different port. Useful when running <strong>multiple OFF flavors</strong> on different ports on the same host. <br> Default port: <code>80</code>.|
-| <code>PRODUCT_OPENER_FLAVOR</code>                                           | Can be modified to run different flavors of OpenFoodFacts, amongst <code>openfoodfacts</code> (default), <code>openbeautyfacts</code>, <code>openpetfoodfacts</code>, <code>openproductsfacts</code>.|
-| <code>PRODUCT_OPENER_FLAVOR_SHORT</code>                                     | can be modified to run different flavors of OpenFoodFacts, amongst <code>off</code> (default), <code>obf</code>, <code>oppf</code>, <code>opf</code>.|
-| <code>PRODUCERS_PLATFORM</code>                                              | can be set to <code>1</code> to build / run the <strong>producer platform</strong>.|
-| <code>ROBOTOFF_URL</code>                                                    | can be set to <strong>connect with a Robotoff instance</strong>.|
-| <code>REDIS_URL</code> | can be set to <strong>connect with a Redis instance for populating the search index</strong>.|
-| <code>GOOGLE_CLOUD_VISION_API_KEY</code>                                     | can be set to <strong>enable OCR using Google Cloud Vision</strong>.|
-| <code>CROWDIN_PROJECT_IDENTIFIER</code> and <code>CROWDIN_PROJECT_KEY</code>            | can be set to <strong>run translations</strong>.|
-| <code>GEOLITE2_PATH</code>, <code>GEOLITE2_ACCOUNT_ID</code> and <code>GEOLITE2_LICENSE_KEY</code> | can be set to <strong>enable Geolite2</strong>.|
-| <code>TAG</code>                                                             | Is set to <code>latest</code> by default, but you can specify any Docker Hub tag for the <code>frontend</code> / <code>backend</code> images. <br> Note that this is useful only if you use pre-built images from the Docker Hub (<code>docker/prod.yml</code> override); the default dev setup (<code>docker/dev.yml</code>) builds images locally|</p>
+<p>The <code>.env</code> file contains ProductOpener default settings:</p>
+<table>
+<thead>
+<tr>
+<th>Field</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>PRODUCT_OPENER_DOMAIN</code></td>
+<td>Can be set to different values based on which <strong>OFF flavor</strong> is run.</td>
+</tr>
+<tr>
+<td><code>PRODUCT_OPENER_PORT</code></td>
+<td>can be modified to run NGINX on a different port. Useful when running <strong>multiple OFF flavors</strong> on different ports on the same host. <br> Default port: <code>80</code>.</td>
+</tr>
+<tr>
+<td><code>PRODUCT_OPENER_FLAVOR</code></td>
+<td>Can be modified to run different flavors of OpenFoodFacts, amongst <code>openfoodfacts</code> (default), <code>openbeautyfacts</code>, <code>openpetfoodfacts</code>, <code>openproductsfacts</code>.</td>
+</tr>
+<tr>
+<td><code>PRODUCT_OPENER_FLAVOR_SHORT</code></td>
+<td>can be modified to run different flavors of OpenFoodFacts, amongst <code>off</code> (default), <code>obf</code>, <code>oppf</code>, <code>opf</code>.</td>
+</tr>
+<tr>
+<td><code>PRODUCERS_PLATFORM</code></td>
+<td>can be set to <code>1</code> to build / run the <strong>producer platform</strong>.</td>
+</tr>
+<tr>
+<td><code>ROBOTOFF_URL</code></td>
+<td>can be set to <strong>connect with a Robotoff instance</strong>.</td>
+</tr>
+<tr>
+<td><code>REDIS_URL</code></td>
+<td>can be set to <strong>connect with a Redis instance for populating the search index</strong>.</td>
+</tr>
+<tr>
+<td><code>GOOGLE_CLOUD_VISION_API_KEY</code></td>
+<td>can be set to <strong>enable OCR using Google Cloud Vision</strong>.</td>
+</tr>
+<tr>
+<td><code>CROWDIN_PROJECT_IDENTIFIER</code> and <code>CROWDIN_PROJECT_KEY</code></td>
+<td>can be set to <strong>run translations</strong>.</td>
+</tr>
+<tr>
+<td><code>GEOLITE2_PATH</code>, <code>GEOLITE2_ACCOUNT_ID</code> and <code>GEOLITE2_LICENSE_KEY</code></td>
+<td>can be set to <strong>enable Geolite2</strong>.</td>
+</tr>
+<tr>
+<td><code>TAG</code></td>
+<td>Is set to <code>latest</code> by default, but you can specify any Docker Hub tag for the <code>frontend</code> / <code>backend</code> images. <br> Note that this is useful only if you use pre-built images from the Docker Hub (<code>docker/prod.yml</code> override); the default dev setup (<code>docker/dev.yml</code>) builds images locally</td>
+</tr>
+</tbody>
+</table>
 <p>The <code>.env</code> file also contains some useful Docker Compose variables:</p>
 <ul>
 <li><code>COMPOSE_PROJECT_NAME</code> is the compose project name that sets the <strong>prefix to every container name</strong>. Do not update this unless you know what you're doing.</li>
@@ -1177,7 +1241,7 @@ It can be solved by adding <code>{"base": "172.80.0.0/16","size": 24}, {"base": 
 <li>You might not immediately see the test products: create an account, login, and they should appear.</li>
 </ul>
 <ul>
-<li>For a full description of available make targets, see <a href="../../docker/README.md#makefile-commands">docker/README.md</a></li>
+<li>For a full description of available make targets, see <a href="../ref-docker-commands/">Docker / Makefile commands</a></li>
 </ul>
 <p><strong>Hosts file:</strong></p>
 <p>Since the default <code>PRODUCT_OPENER_DOMAIN</code> in the <code>.env</code> file is set to <code>openfoodfacts.localhost</code>, add the following to your hosts file (Windows: <code>C:\Windows\System32\drivers\etc\hosts</code>; Linux/MacOSX: <code>/etc/hosts</code>):</p>
@@ -1332,10 +1396,10 @@ To know more about docker-compose commands do read <a href="../how-to-develop-us
       <div class="md-dialog__inner md-typeset"></div>
     </div>
     
-    <script id="__config" type="application/json">{"base": "../..", "features": [], "search": "../../assets/javascripts/workers/search.208ed371.min.js", "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}}</script>
+    <script id="__config" type="application/json">{"base": "../..", "features": [], "search": "../../assets/javascripts/workers/search.74e28a9f.min.js", "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}}</script>
     
     
-      <script src="../../assets/javascripts/bundle.51198bba.min.js"></script>
+      <script src="../../assets/javascripts/bundle.220ee61c.min.js"></script>
       
     
   </body>
