@@ -127,6 +127,7 @@ use Encode;
 use Clone qw(clone);
 
 use LWP::UserAgent;
+use OpenTelemetry::Integration 'LWP::UserAgent';
 use Encode;
 use JSON::PP;
 use Log::Any qw($log);

@@ -105,6 +105,11 @@ requires 'Imager::File::JPEG';
 requires 'Imager::File::PNG';
 requires 'Imager::File::WEBP';
 
+# OpenTelemetry
+requires 'OpenTelemetry';
+requires 'OpenTelemetry::SDK';
+requires 'OpenTelemetry::Exporter::OTLP';
+
 on 'test' => sub {
   requires 'Test::More', '>= 1.302186, < 2.0';
   requires 'Test::MockModule';
