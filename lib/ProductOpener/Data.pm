@@ -71,6 +71,12 @@ use Log::Any qw($log);
 use Action::CircuitBreaker;
 use Action::Retry;
 
+use Apache2::RequestRec ();
+use Apache2::Const ();
+use OpenTelemetry;
+use OpenTelemetry::Constants;
+use OpenTelemetry::Integration 'LWP::UserAgent';
+
 my $client;
 my $action = Action::CircuitBreaker->new();
 
@@ -102,13 +108,25 @@ eval {
 
 sub execute_query ($sub) {
 
-	return Action::Retry->new(
-		attempt_code => sub {$action->run($sub)},
-		on_failure_code => sub {my ($error, $h) = @_; die $error;},    # by default Action::Retry would return undef
-			# If we didn't get results from MongoDB, the server is probably overloaded
-			# Do not retry the query, as it will make things worse
-		strategy => {Fibonacci => {max_retries_number => 0,}},
-	)->run();
+	my $req = Apache2::RequestUtil->request();
+	my $context
+		= OpenTelemetry->propagator->extract($req->headers_in, undef, sub ($carrier, $key) {$carrier->{ucfirst $key}},);
+	local OpenTelemetry::Context->current = $context;
+
+	my $tracer = OpenTelemetry->tracer_provider->tracer;
+
+	return $tracer->in_span(
+		mongo => sub ($span, $context) {
+			return Action::Retry->new(
+				attempt_code => sub {$action->run($sub)},
+				on_failure_code => sub {my ($error, $h) = @_; die $error;}
+				,    # by default Action::Retry would return undef
+					 # If we didn't get results from MongoDB, the server is probably overloaded
+					 # Do not retry the query, as it will make things worse
+				strategy => {Fibonacci => {max_retries_number => 0,}},
+			)->run();
+		}
+	);
 }
 
 sub execute_aggregate_tags_query ($query) {
@@ -121,6 +139,15 @@ sub execute_count_tags_query ($query) {
 
 sub execute_tags_query ($type, $query) {
 	if ((defined $query_url) and (length($query_url) > 0)) {
+		my $req = Apache2::RequestUtil->request();
+		my $context
+			= OpenTelemetry->propagator->extract($req->headers_in,
+			undef, sub ($carrier, $key) {$carrier->{ucfirst $key}},
+			);
+		local OpenTelemetry::Context->current = $context;
+
+		my $tracer = OpenTelemetry->tracer_provider->tracer;
+
 		$query_url =~ s/^\s+|\s+$//g;
 		my $params = Vars();
 		my $url = URI->new("$query_url/$type");
@@ -131,10 +158,15 @@ sub execute_tags_query ($type, $query) {
 		my $ua = LWP::UserAgent->new();
 		# Add a timeout to the HTTP query
 		$ua->timeout(15);
-		my $resp = $ua->post(
-			$url,
-			Content => encode_json($query),
-			'Content-Type' => 'application/json; charset=utf-8'
+
+		my $resp = $tracer->in_span(
+			req => sub ($span, $context) {
+				return $ua->post(
+					$url,
+					Content => encode_json($query),
+					'Content-Type' => 'application/json; charset=utf-8'
+				);
+			}
 		);
 		if ($resp->is_success) {
 			return decode_json($resp->decoded_content);
