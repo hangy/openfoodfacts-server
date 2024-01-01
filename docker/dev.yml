@@ -103,11 +103,6 @@ services:
     image: jaegertracing/all-in-one:latest
     ports:
       - '16686:16686'
-  collector:
-    image: otel/opentelemetry-collector:latest
-    command: ['--config=/etc/otel-collector-config.yaml']
-    volumes:
-      - ./conf/otel-collector-config.yaml:/etc/otel-collector-config.yaml
 
 volumes:
   product_images:

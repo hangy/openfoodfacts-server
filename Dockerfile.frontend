@@ -31,7 +31,23 @@ COPY --chown=node:node .snyk /opt/product-opener/
 RUN find . -xtype l | xargs -I {} sh -c "origin=\$(readlink {} | tr '\\\\\\\\' '/') && ln -sf \$origin {}"
 RUN npm run build
 
-FROM nginx:stable
+FROM nginx:1.24.0
+
+RUN set -x && \
+    apt-get update && \
+    apt-get install -y unzip wget && \
+    cd /opt && \
+    wget https://github.com/open-telemetry/opentelemetry-cpp-contrib/releases/download/webserver%2Fv1.0.4/opentelemetry-webserver-sdk-x64-linux.tgz && \
+    unzip -o opentelemetry-webserver-sdk-x64-linux.tgz && \
+    tar xvfz opentelemetry-webserver-sdk-x64-linux.tgz && \
+    rm opentelemetry-webserver-sdk-x64-linux.tgz && \
+    cd /opt/opentelemetry-webserver-sdk && \
+    ./install.sh && \
+    echo "load_module /opt/opentelemetry-webserver-sdk/WebServerModule/Nginx/1.24.0/ngx_http_opentelemetry_module.so;\n$(cat /etc/nginx/nginx.conf)" > /etc/nginx/nginx.conf && \
+    apt-get --purge -y remove unzip wget && \
+    rm -rf /var/lib/apt/lists/*
+ENV LD_LIBRARY_PATH=$LD_LIBRARY_PATH:/opt/opentelemetry-webserver-sdk/sdk_lib/lib
+
 WORKDIR /opt/product-opener
 ARG USER_UID
 ARG USER_GID

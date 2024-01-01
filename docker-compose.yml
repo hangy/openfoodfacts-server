@@ -65,7 +65,10 @@ x-backend-conf: &backend-conf
 
     # Apache conf
     - ./conf/apache.conf:/etc/apache2/sites-enabled/product-opener.conf
-    - ./conf/apache-mpm_prefork.conf:/etc/apache2/mods-avalable/mpm_prefork.conf
+    - ./conf/apache-mpm_prefork.conf:/etc/apache2/mods-available/mpm_prefork.conf
+    # OTEL
+    - ./conf/apache-2.4/mods-enabled/opentelemetry_module.load:/etc/apache2/mods-enabled/opentelemetry_module.load
+    - ./conf/apache-2.4/mods-enabled/opentelemetry_module.conf:/etc/apache2/mods-enabled/opentelemetry_module.conf
 
 services:
   memcached:
@@ -132,6 +135,8 @@ services:
       - ./conf/nginx/snippets/expires-no-json-xml.conf:/etc/nginx/snippets/expires-no-json-xml.conf
       # some redirects
       - ./conf/nginx/snippets/off.locations-redirects.include:/etc/nginx/snippets/off.locations-redirects.include
+      # OTEL
+      - ./conf/nginx/conf.d/opentelemetry_module.conf:/etc/nginx/conf.d/opentelemetry_module.conf
     ports:
       - ${PRODUCT_OPENER_EXPOSE}${PRODUCT_OPENER_PORT}:80
 

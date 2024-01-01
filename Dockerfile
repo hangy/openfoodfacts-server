@@ -172,6 +172,17 @@ RUN --mount=type=cache,id=apt-cache,target=/var/cache/apt set -x && \
         libwebp-dev \
         libx265-dev
 
+RUN --mount=type=cache,id=apt-cache,target=/var/cache/apt set -x && \
+    apt install -y unzip wget && \
+    cd /opt && \
+    wget https://github.com/open-telemetry/opentelemetry-cpp-contrib/releases/download/webserver%2Fv1.0.4/opentelemetry-webserver-sdk-x64-linux.tgz && \
+    unzip -o opentelemetry-webserver-sdk-x64-linux.tgz && \
+    tar xvfz opentelemetry-webserver-sdk-x64-linux.tgz && \
+    rm opentelemetry-webserver-sdk-x64-linux.tgz && \
+    cd /opt/opentelemetry-webserver-sdk && \
+    ./install.sh
+ENV LD_LIBRARY_PATH=$LD_LIBRARY_PATH:/opt/opentelemetry-webserver-sdk/sdk_lib/lib
+
 # Install zxing-cpp from source until 2.1 or higher is available in Debian: https://github.com/openfoodfacts/openfoodfacts-server/pull/8911/files#r1322987464
 RUN set -x && \
     cd /tmp && \
