@@ -17,7 +17,7 @@ Also it as the right
 Just run
 
 ```
-docker-compose run --rm backend re.pl
+docker compose run --rm backend re.pl
 ```
 
 If you want to access external services (like mongodb), do not forget to start them.
@@ -51,6 +51,5 @@ Eg. for a user:
 
 ```perl
 $ use ProductOpener::Store qw/:all/;
-$ my $user_id = "xxxx";
-$ my $user_ref = retrieve("/mnt/podata/users/$user_id.sto");
+$ my $product_ref = retrieve("/mnt/podata/products/007/107/917/0260/product.sto");
 ```

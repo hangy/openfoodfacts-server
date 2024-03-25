@@ -229,6 +229,7 @@ my %contains_regexps = (
 	es => "contiene",
 	et => "sisaldab",
 	fr => "contient",
+	hr => "sadrže",
 	it => "contengono",
 	nl => "bevat",
 	pl => "zawiera|zawierają",
@@ -808,6 +809,7 @@ my %min_regexp = (
 	es => "min|min\.|mín|mín\.|mínimo|minimo|minimum",
 	fr => "min|min\.|mini|minimum",
 	hr => "min|min\.|mini|minimum",
+	pl => "min|min\.|minimum",
 );
 
 my %max_regexp = (
@@ -816,6 +818,7 @@ my %max_regexp = (
 	es => "max|max\.|máximo",
 	fr => "max|max\.|maxi|maximum",
 	hr => "max|max\.|maxi|maximum",
+	pl => "max|max\.|maximum",
 );
 
 # Words that can be ignored after a percent
@@ -1183,7 +1186,13 @@ sub parse_specific_ingredients_from_text ($product_ref, $text, $percent_or_quant
 		# - prepared with 60g of fruits
 		# - prepared with 40g of fruits per 100g of finished product
 		elsif (
-			(defined $percent_or_quantity_regexp)
+			(
+					(defined $percent_or_quantity_regexp)
+				and (defined $of)
+				and ($of ne "")
+				and (defined $per_100g_regexp)
+				and ($per_100g_regexp ne "")
+			)
 			and (
 				# if the string does not start with "prepared with", it needs to finish with "per 100g",
 				# otherwise we will match items that could be part of the ingredients list such as "75% of tomatoes
@@ -1191,8 +1200,11 @@ sub parse_specific_ingredients_from_text ($product_ref, $text, $percent_or_quant
 				# prepared with, percent, ingredient, optional per 100g, separator
 				# $of needs to be first in (?:$of|\s|:) so that " of " is matched by it, instead of the ingredient capturing group
 				(
-					$text
-					=~ /((?:^|;|,|\.| - )\s*)$prepared_with(?:$of|\s|:)+$percent_or_quantity_regexp(?:$of|\s|:)+\s*([^,.;]+?)\s*(?:$per_100g_regexp)?(?:;|,|\.| - |$)/i
+						(defined $prepared_with)
+					and ($prepared_with ne "")
+					and ($text
+						=~ /((?:^|;|,|\.| - )\s*)$prepared_with(?:$of|\s|:)+$percent_or_quantity_regexp(?:$of|\s|:)+\s*([^,.;]+?)\s*(?:$per_100g_regexp)?(?:;|,|\.| - |$)/i
+					)
 				)
 				or
 				# percent, ingredient, per 100g, separator
@@ -1442,121 +1454,143 @@ sub parse_processing_from_ingredient ($ingredients_lc, $ingredient) {
 	}
 	else {
 
-		my $matches = 0;
+		my $found_a_known_ingredient = 0;
 		my $new_ingredient = $ingredient;
 		my @new_processings = ();
-		my $matching = 1;    # remove prefixes / suffixes one by one
-		while ($matching) {
-			$matching = 0;
-			foreach my $ingredient_processing_regexp_ref (@{$ingredients_processing_regexps{$ingredients_lc}}) {
-				my $regexp = $ingredient_processing_regexp_ref->[1];
+		my $removed_a_processing = 1;    # remove prefixes / suffixes one by one
+		while ($removed_a_processing) {
+			$removed_a_processing = 0;
 
-				$debug_parse_processing_from_ingredient and $log->trace("processing - checking processing regexps",
-					{new_ingredient => $new_ingredient, regexp => $regexp})
-					if $log->is_trace();
+			# First pass: match all prefixes / suffixes at the start and at the end of the ingredient
+			# Second pass: possibly match inside the ingredient (e.g. "soupe déshydratée de légumes" -> "soupe de légumes")
+			# Don't mix the two passes in order to avoid removing processings that are part of actual ingredients
+			# e.g. "pur jus de fruits" -> we don't want to remove "jus" before "pur", so that we can stop at "jus de fruits"
 
-				if (
-					# match before or after the ingredient, require a space
-					(
-						#($ingredients_lc =~ /^(en|es|it|fr)$/)
-						(
-							   ($ingredients_lc eq 'ar')
-							or ($ingredients_lc eq 'bg')
-							or ($ingredients_lc eq 'bs')
-							or ($ingredients_lc eq 'ca')
-							or ($ingredients_lc eq 'cs')
-							or ($ingredients_lc eq 'el')
-							or ($ingredients_lc eq 'en')
-							or ($ingredients_lc eq 'es')
-							or ($ingredients_lc eq 'fr')
-							or ($ingredients_lc eq 'hr')
-							or ($ingredients_lc eq 'it')
-							or ($ingredients_lc eq 'mk')
-							or ($ingredients_lc eq 'pl')
-							or ($ingredients_lc eq 'sl')
-							or ($ingredients_lc eq 'sr')
-						)
-						and ($new_ingredient =~ /(^($regexp)\b|\b($regexp)$)/i)
-					)
+			foreach my $pass ("start_and_end", "inside") {
 
-					#  match before or after the ingredient, does not require a space
-					or (
-						(
-							   ($ingredients_lc eq 'de')
-							or ($ingredients_lc eq 'hu')
-							or ($ingredients_lc eq 'ja')
-							or ($ingredients_lc eq 'nl')
-						)
-						and ($new_ingredient =~ /(^($regexp)|($regexp)$)/i)
-					)
+				# Skip the second pass if we already matched a processing ($removed_a_processing = 1) or if found a known ingredient ($found_a_known_ingredient = 1)
+				if ((not $removed_a_processing) and (not $found_a_known_ingredient)) {
 
-					# match after the ingredient, does not require a space
-					# match before the ingredient, require a space
-					or (
-						(
-							   ($ingredients_lc eq 'da')
-							or ($ingredients_lc eq 'fi')
-							or ($ingredients_lc eq 'nb')
-							or ($ingredients_lc eq 'no')
-							or ($ingredients_lc eq 'nn')
-							or ($ingredients_lc eq 'sv')
-						)
-						and ($new_ingredient =~ /(^($regexp)\b|($regexp)$)/i)
-					)
-					)
-				{
-					$new_ingredient = $` . $';
+					foreach my $ingredient_processing_regexp_ref (@{$ingredients_processing_regexps{$ingredients_lc}}) {
+						my $regexp = $ingredient_processing_regexp_ref->[1];
 
-					$debug_parse_processing_from_ingredient and $log->debug(
-						"processing - found processing",
-						{
-							ingredient => $ingredient,
-							new_ingredient => $new_ingredient,
-							processing => $ingredient_processing_regexp_ref->[0],
-							regexp => $regexp
-						}
-					) if $log->is_debug();
-
-					$matching = 1;
-					$matches++;
-					push @new_processings, $ingredient_processing_regexp_ref->[0];
-
-					# remove starting or ending " and "
-					# viande traitée en salaison et cuite -> viande et
-					$new_ingredient =~ s/($and)+$//i;
-					$new_ingredient =~ s/^($and)+//i;
-					# trim leading and trailing whitespaces or hyphens
-					$new_ingredient =~ s/(\s|-)+$//;
-					$new_ingredient =~ s/^(\s|-)+//;
-
-					# Stop if we now have a known ingredient.
-					# e.g. "jambon cru en tranches" -> keep "jambon cru".
-					my $new_ingredient_id = canonicalize_taxonomy_tag($ingredients_lc, "ingredients", $new_ingredient);
-
-					if (exists_taxonomy_tag("ingredients", $new_ingredient_id)) {
-						$debug_parse_processing_from_ingredient and $log->debug(
-							"processing - found existing ingredient, stop matching",
-							{
-								ingredient => $ingredient,
-								new_ingredient => $new_ingredient,
-								new_ingredient_id => $new_ingredient_id
-							}
-						) if $log->is_debug();
-
-						$matching = 0;
-					}
-					else {
 						$debug_parse_processing_from_ingredient
-							and $log->debug(
-							"processing - NOT found existing ingredient >$new_ingredient_id<, stop matching")
-							if $log->is_debug();
-					}
+							and $log->trace("processing - checking processing regexps",
+							{new_ingredient => $new_ingredient, regexp => $regexp})
+							if $log->is_trace();
 
-					last;
+						if (
+							(
+								($pass eq "start_and_end") and (
+									# match before or after the ingredient, require a space
+									(
+										#($ingredients_lc =~ /^(en|es|it|fr)$/)
+										(
+											   ($ingredients_lc eq 'ar')
+											or ($ingredients_lc eq 'bg')
+											or ($ingredients_lc eq 'bs')
+											or ($ingredients_lc eq 'ca')
+											or ($ingredients_lc eq 'cs')
+											or ($ingredients_lc eq 'el')
+											or ($ingredients_lc eq 'en')
+											or ($ingredients_lc eq 'es')
+											or ($ingredients_lc eq 'fr')
+											or ($ingredients_lc eq 'hr')
+											or ($ingredients_lc eq 'it')
+											or ($ingredients_lc eq 'mk')
+											or ($ingredients_lc eq 'pl')
+											or ($ingredients_lc eq 'sl')
+											or ($ingredients_lc eq 'sr')
+										)
+										and ($new_ingredient =~ /(^($regexp)\b|\b($regexp)$)/i)
+									)
+
+									#  match before or after the ingredient, does not require a space
+									or (
+										(
+											   ($ingredients_lc eq 'de')
+											or ($ingredients_lc eq 'hu')
+											or ($ingredients_lc eq 'ja')
+											or ($ingredients_lc eq 'nl')
+										)
+										and ($new_ingredient =~ /(^($regexp)|($regexp)$)/i)
+									)
+
+									# match after the ingredient, does not require a space
+									# match before the ingredient, require a space
+									or (
+										(
+											   ($ingredients_lc eq 'da')
+											or ($ingredients_lc eq 'fi')
+											or ($ingredients_lc eq 'nb')
+											or ($ingredients_lc eq 'no')
+											or ($ingredients_lc eq 'nn')
+											or ($ingredients_lc eq 'sv')
+										)
+										and ($new_ingredient =~ /(^($regexp)\b|($regexp)$)/i)
+									)
+								)
+							)
+							or (($pass eq "inside") and ($new_ingredient =~ /\b$regexp\b/i))
+							)
+						{
+							$new_ingredient = $` . $';
+
+							$debug_parse_processing_from_ingredient and $log->debug(
+								"processing - found processing",
+								{
+									ingredient => $ingredient,
+									new_ingredient => $new_ingredient,
+									processing => $ingredient_processing_regexp_ref->[0],
+									regexp => $regexp
+								}
+							) if $log->is_debug();
+
+							$removed_a_processing = 1;
+
+							push @new_processings, $ingredient_processing_regexp_ref->[0];
+
+							# remove starting or ending " and "
+							# viande traitée en salaison et cuite -> viande et
+							$new_ingredient =~ s/($and)+$//i;
+							$new_ingredient =~ s/^($and)+//i;
+							# trim leading and trailing whitespaces or hyphens
+							$new_ingredient =~ s/(\s|-)+$//;
+							$new_ingredient =~ s/^(\s|-)+//;
+							# remove extra spaces
+							$new_ingredient =~ s/\s+/ /g;
+
+							# Stop if we now have a known ingredient.
+							# e.g. "jambon cru en tranches" -> keep "jambon cru".
+							my $new_ingredient_id
+								= canonicalize_taxonomy_tag($ingredients_lc, "ingredients", $new_ingredient);
+
+							if (exists_taxonomy_tag("ingredients", $new_ingredient_id)) {
+								$debug_parse_processing_from_ingredient and $log->debug(
+									"processing - found existing ingredient, stop matching",
+									{
+										ingredient => $ingredient,
+										new_ingredient => $new_ingredient,
+										new_ingredient_id => $new_ingredient_id
+									}
+								) if $log->is_debug();
+
+								$found_a_known_ingredient = 1;
+							}
+							else {
+								$debug_parse_processing_from_ingredient
+									and $log->debug(
+									"processing - NOT found existing ingredient >$new_ingredient_id<, stop matching")
+									if $log->is_debug();
+							}
+
+							last;
+						}
+					}
 				}
 			}
 		}
-		if ($matches) {
+		if ($found_a_known_ingredient) {
 
 			my $new_ingredient_id = canonicalize_taxonomy_tag($ingredients_lc, "ingredients", $new_ingredient);
 			if (exists_taxonomy_tag("ingredients", $new_ingredient_id)) {
@@ -1975,6 +2009,100 @@ sub parse_ingredients_text_service ($product_ref, $updated_product_fields_ref) {
 						$between = "origins:" . $between;
 					}
 
+					# allergens or traces
+					# single allergen in parenthesis, for example: Krupica od durum pšenice (gluten) -> durum wheat semolina (gluten)
+					# more than a single allergen is handle just after
+					# in Japanese, 豚肉を含む (contains (を含む) pork (豚肉))
+					# 一部に卵・小麦・乳成分・大豆を含む (contains (を含む) parts of (一部に), eggs, wheat, milk, soybeans (卵・小麦・乳成分・大豆)
+					# 香料(乳由来) (Spices (from milk origin))
+					my $cano = canonicalize_taxonomy_tag($ingredients_lc, "allergens", $between);
+					$log->debug("parse_ingredients_text - BEFORE $cano.")
+						if $log->is_debug();
+					$log->debug("parse_ingredients_text - BEFORE2 $ingredients_lc:$between.")
+						if $log->is_debug();
+					if (
+						(
+							# only one sub-ingredient
+							($between !~ /$separators|$and/)
+							and (
+								(
+									# The ingredient in parenthesis is in the allergens taxonomy
+									exists_taxonomy_tag("allergens",
+										canonicalize_taxonomy_tag($ingredients_lc, "allergens", $between))
+									# The ingredient in parenthesis is the actual allergen, not an ingredient that contains the allergen
+									# e.g. in the allergens taxonomy, "cheese" and "parmigiano" are synonyms of "en:milk"
+									# because they contain the allergen milk
+									# but we don't want to turn "cheese (parmigiano)" to "cheese".
+									# The regexp below only contain the main allergen names, not ingredients that contain that allergen
+									and (canonicalize_taxonomy_tag($ingredients_lc, "ingredients", $between)
+										=~ /^en:(celery|crustacean|egg|fish|gluten|lactose|lupin-bean|lupin|milk|mollusc|mustard|nut|peanut|sesame|sesame-seeds|soy|soya|sulfite|e220)$/
+									)
+									# Also check that the parent ingredient is not just a label
+									# so that we don't transform "MSC (fish)" to just "MSC" with a fish allergen.
+									and (
+										not exists_taxonomy_tag(
+											"labels", canonicalize_taxonomy_tag($ingredients_lc, "labels", $before)
+										)
+									)
+								)
+							)
+						)
+						or ($between =~ /を含む|由来/)
+						)
+					{
+						# prepend ">allergens<:" in the beginning of the text, that will be reused below
+						# avoid "allergens:" to avoid false positive (for example, "salt, egg, spice.
+						#   allergen advice: for allergens including cereals containing gluten, see ingredients
+						#   in bold. May contain traces of nuts.")
+						$between = ">allergens<:" . $between;
+
+						$log->debug(
+							"parse_ingredients_text - sub-ingredients: single allergen or keyword for allergen.")
+							if $log->is_debug();
+					}
+
+					# # allergens or traces
+					# # 香料(小麦, 大豆) -> Flavoring (wheat, soybean)
+					# # 1- first occurence is allergen
+					# if (
+					# 	($between =~ /$separators|$and/)
+					# 	and (
+					# 		exists_taxonomy_tag(
+					# 			"allergens", canonicalize_taxonomy_tag($ingredients_lc, "allergens", $`)
+					# 		)
+					# 	)
+					# 	)
+					# {
+					# 	$log->debug("parse_ingredients_text - sub-ingredients: first word is an allergen.")
+					# 		if $log->is_debug();
+
+					# 	# 2- all elements should be allergens
+					# 	# to avoid false positive. Because allergen can be ingredient (eggs, for example)
+					# 	my @between_to_array = split /$separators|$and/, $between;
+					# 	my $all_allergens = 1;
+					# 	my $exist_allergen_bool;
+					# 	foreach my $between_element (@between_to_array) {
+					# 		$exist_allergen_bool = exists_taxonomy_tag("allergens",
+					# 			canonicalize_taxonomy_tag($ingredients_lc, "allergens", $`));
+					# 		if (defined $exist_allergen_bool && !$exist_allergen_bool) {
+					# 			$all_allergens = 0;
+
+					# 			$log->debug(
+					# 				"parse_ingredients_text - sub-ingredients: further words are not all allergens or are not known."
+					# 			) if $log->is_debug();
+					# 		}
+					# 	}
+					# 	if ($all_allergens == 1) {
+					# 		# prepend "allergens:" in the beginning of the text, that will be reused below
+					# 		$between = "allergens:" . $between;
+
+					# 		$log->debug(
+					# 			"parse_ingredients_text - sub-ingredients: further words are allergens as well.")
+					# 			if $log->is_debug();
+					# 	}
+
+					# }
+
 					$debug_ingredients and $log->debug(
 						"initial processing of percent and origins",
 						{
@@ -1987,18 +2115,19 @@ sub parse_ingredients_text_service ($product_ref, $updated_product_fields_ref) {
 
 					if (    ($between =~ $separators)
 						and ($` !~ /\s*(origin|origins|origine|alkuperä|ursprung)\s*/i)
+						and ($` !~ /\s*(allergens)\s*/i)
 						and ($between !~ /^$percent_or_quantity_regexp$/i))
 					{
 						$between_level = $level + 1;
 						$log->debug(
-							"parse_ingredients_text - sub-ingredients: between contains a separator and is not origin nor has percent",
+							"parse_ingredients_text - sub-ingredients: between contains a separator and is not origin nor allergen nor has percent",
 							{between => $between}
 						) if $log->is_debug();
 					}
 					else {
 						# no separator found : 34% ? or single ingredient
 						$log->debug(
-							"parse_ingredients_text - sub-ingredients: between does not contain a separator or is origin or is percent",
+							"parse_ingredients_text - sub-ingredients: between does not contain a separator or is origin or allergen or has percent",
 							{between => $between}
 						) if $log->is_debug();
 
@@ -2019,7 +2148,8 @@ sub parse_ingredients_text_service ($product_ref, $updated_product_fields_ref) {
 						else {
 							# label? (organic)
 							# origin? (origine : France)
-							$log->debug("parse_ingredients_text - sub-ingredients: label? origin? ($between)")
+							# allergens? (豚肉を含む) - (contains (を含む) pork (豚肉)) - in Japanese allergens are not separated from the ingredients list
+							$log->debug("parse_ingredients_text - sub-ingredients: label? origin? allergen? ($between)")
 								if $log->is_debug();
 
 							# try to remove the origin and store it as property
@@ -2057,6 +2187,49 @@ sub parse_ingredients_text_service ($product_ref, $updated_product_fields_ref) {
 											split(/$commas|$and/, $origin_string));
 								}
 							}
+							# try to remove the allergens and store them as allergens
+							# in Japanese allergens are not separated from the ingredients list, instead they are in parenthesis.
+							if ($between =~ /\s*(?:>allergens<:)(.*)$/i) {
+								$log->debug("parse_ingredients_text - sub-ingredients: contains allergens in $between")
+									if $log->is_debug();
+
+								$between = '';
+								# rm first occurence (allergens:)
+								my $allergen_string = $1;
+
+								if ($ingredients_lc eq 'ja') {
+									# if allergens are listed at the end of ingredients list
+									# it starts by 一部に
+									# it ends by を含む
+									$allergen_string =~ s/(一部に|を含む|由来)//g;
+								}
+
+								$allergens = join(",",
+									map {canonicalize_taxonomy_tag($ingredients_lc, "allergens", $_)}
+										split(/$commas|$and|\N{U+30FB}/, $allergen_string));
+
+								if ((defined $product_ref->{"allergens"}) and ($product_ref->{"allergens"} ne "")) {
+									$product_ref->{"allergens"} = $product_ref->{"allergens"} . ", " . $allergens;
+								}
+								else {
+									$product_ref->{"allergens"} = $allergens;
+								}
+
+								$log->debug("parse_ingredients_text - sub-ingredients: allergens. $allergens")
+									if $log->is_debug();
+
+								$log->debug("parse_ingredients_text - sub-ingredients: allergens in product. ",
+									$product_ref->{"allergens"})
+									if $log->is_debug();
+
+								$log->debug("parse_ingredients_text - sub-ingredients: traces in product. ",
+									$product_ref->{"traces"})
+									if $log->is_debug();
+
+								$between = '';
+
+							}
+
 							else {
 								$log->debug(
 									"parse_ingredients_text - sub-ingredients: origin not explicitly written in: $between"
@@ -2634,6 +2807,7 @@ sub parse_ingredients_text_service ($product_ref, $updated_product_fields_ref) {
 								'^czekolada( deserowa)?: masa kakaowa min(imum)?$',
 								'^masa kakaowa( w czekoladzie mlecznej)? min(imum)?$',
 								'^masa mleczna min(imum)?$',
+								'^zawartość tłuszczu$',
 								'^(?>\d+\s+g\s+)?(?>\w+\s?)*?100\s?g(?> \w*)?$',  # "pomidorów zużyto na 100 g produktu"
 								'^\w*\s?z \d* g (?>\w+\s?)*?100\s?g\s(?>produktu)?$'
 								,    # "Sporządzono z 40 g owoców na 100 g produktu"
@@ -4780,14 +4954,12 @@ my %phrases_after_ingredients_list = (
 	],
 
 	hr => [
-		'bez konzervans',    # without preservatives
-		'(neotvoreno (se može )|Transportirati, skladištiti i)čuvati na (čistom i suhom mjestu|hladnom i suhom mjestu|hladnom|sobnoj temperaturi|suhom|tamnom mestu|temperaturi|temperatu)'
-		,    # store in...
-		'(čuvati|čuvajte) (zatvoreno na|pri sobnoj temperaturi|u zamrzivaču na)',    # store in...
-		'izvor dijetalnih vlakana',    # source of proteins
+		'(č|Č)uvati|(č|Č)uvajte',    # store in...
+		'izvaditi',    # remove from the refrigerator half an hour before consumption
 		'najbolje upotrijebiti do',    # best before
 		'nakon otvaranja',    # after opening
-		'pakirano u (kontroliranoj|zaštitnoj) atmosferi',    # packed in a ... atmosphere
+		'neotvoreno',    # not opened can be stored etc.
+		'pakirano u',    # packed in a ... atmosphere
 		'pakiranje sadrži',    # pack contains x portions
 		'Prijedlog za serviranje',    # Proposal for serving
 		'priprema obroka',    # meal preparation
@@ -4806,7 +4978,6 @@ my %phrases_after_ingredients_list = (
 		'uvoznik za',    # importer
 		'vakuumirana',    # Vacuumed
 		'vrijeme kuhanja',    # Cooking time
-		'zaštićena oznaka zemljopisnog podrijetla',    # ZOI/PDO
 		'zbog (mutan|prisutnosti)',    # Due to ...
 		'zemlja (porijekla|podrijetla|porekla)',    # country of origin
 	],
@@ -5376,11 +5547,22 @@ my %ingredients_categories_and_types = (
 	],
 
 	de => [
+		# oil and fat
 		{
 			categories => ["pflanzliches Fett", "pflanzliche Öle", "pflanzliche Öle und Fette", "Fett", "Öle"],
 			types => ["Kokosnuss", "Palm", "Palmkern", "Raps", "Shea", "Sonnenblumen",],
 			# Kokosnussöl, Sonnenblumenfett
 			alternate_names => ["<type>fett", "<type>öl"],
+		},
+		# plant protein
+		{
+			categories => ["pflanzliche Proteine", "Pflanzliches Eiweiß", "Pflanzliches Eiweiss"],
+			types => [
+				"Ackerbohnen", "Erbsen", "Hafer", "Kartoffel", "Kichererbsen", "Pilz",
+				"Reis", "Soja", "Sonnenblumen", "Weizen"
+			],
+			# haferprotein
+			alternate_names => ["<type>protein", "<type>eiweiß"],
 		},
 	],
 
@@ -5417,6 +5599,15 @@ my %ingredients_categories_and_types = (
 				"muscade", "poivre", "poivre noir", "romarin", "thé", "thé vert",
 				"thym",
 			]
+		},
+		# plant protein
+		{
+			categories => ["protéines végétales",],
+			types => [
+				"avoine", "blé", "champignon", "colza", "fève", "pois",
+				"pois chiche", "pomme de terre", "riz", "soja", "tournesol",
+			],
+			alternate_names => ["protéine de <type>", "protéine d'<type>", "protéines de <type>", "protéines d'<type>"],
 		},
 		# lecithin
 		{
@@ -6255,7 +6446,9 @@ sub preparse_ingredients_text ($ingredients_lc, $text) {
 
 sub extract_ingredients_classes_from_text ($product_ref) {
 
-	not defined $product_ref->{ingredients_text} and return;
+	if (not defined $product_ref->{ingredients_text}) {
+		return;
+	}
 	my $ingredients_lc = $product_ref->{ingredients_lc} || $product_ref->{lc};
 	my $text = preparse_ingredients_text($ingredients_lc, $product_ref->{ingredients_text});
 	# do not match anything if we don't have a translation for "and"
@@ -6890,43 +7083,60 @@ sub extract_ingredients_classes_from_text ($product_ref) {
 	}
 
 	# Determine if the product has sweeteners, and non nutritive sweeteners
-	determine_if_the_product_contains_sweeteners($product_ref);
+	count_sweeteners_and_non_nutritive_sweeteners($product_ref);
 
 	return;
 }
 
-=head2 determine_if_the_product_contains_sweeteners
+=head2 count_sweeteners_and_non_nutritive_sweeteners
 
 Check if the product contains sweeteners and non nutritive sweeteners (used for the Nutri-Score for beverages)
 
 The NNS / Non nutritive sweeteners listed in the Nutri-Score Update report beverages_31 01 2023-voted
 have been added as a non_nutritive_sweetener:en:yes property in the additives taxonomy.
 
+=head3 Return values
+
+The function sets the following fields in the product_ref hash.
+
+If there are no ingredients specified for the product, the fields are not set.
+
+=head4 ingredients_sweeteners_n
+
+=head4 ingredients_non_nutritive_sweeteners_n
+
 =cut
 
-sub determine_if_the_product_contains_sweeteners ($product_ref) {
+sub count_sweeteners_and_non_nutritive_sweeteners ($product_ref) {
 
+	# Delete old fields, can be removed once all products have been reprocessed
 	delete $product_ref->{with_sweeteners};
-	delete $product_ref->{with_non_nutritive_sweeteners};
+	delete $product_ref->{without_non_nutritive_sweeteners};
 
-	if (
-		get_matching_regexp_property_from_tags(
-			'additives', $product_ref->{'additives_tags'},
-			'additives_classes:en', 'sweetener'
-		)
-		)
-	{
-		$product_ref->{with_sweeteners} = 1;
+	# Set the number of sweeteners only if the product has specified ingredients
+	if (not $product_ref->{ingredients_n}) {
+		delete $product_ref->{ingredients_sweeteners_n};
+		delete $product_ref->{ingredients_non_nutritive_sweeteners_n};
 	}
+	else {
 
-	if (
-		get_matching_regexp_property_from_tags(
-			'additives', $product_ref->{'additives_tags'},
-			'non_nutritive_sweetener:en', 'yes'
-		)
-		)
-	{
-		$product_ref->{with_non_nutritive_sweeteners} = 1;
+		$product_ref->{ingredients_sweeteners_n} = 0;
+		$product_ref->{ingredients_non_nutritive_sweeteners_n} = 0;
+
+		# Go through additives and check if the product contains sweeteners and non-nutritive sweeteners
+		if (defined $product_ref->{additives_tags}) {
+			foreach my $additive (@{$product_ref->{additives_tags}}) {
+				my $sweetener_property = get_inherited_property("additives", $additive, "sweetener:en") // "";
+				if ($sweetener_property eq "yes") {
+					$product_ref->{ingredients_sweeteners_n}++;
+				}
+				my $non_nutritive_sweetener_property
+					= get_inherited_property("additives", $additive, "non_nutritive_sweetener:en") // "";
+				if ($non_nutritive_sweetener_property eq "yes") {
+					$product_ref->{ingredients_non_nutritive_sweeteners_n}++;
+				}
+			}
+		}
 	}
 
 	return;

@@ -177,7 +177,6 @@ use ProductOpener::Config2;
 	hangy
 	manoncorneille
 	raphael0202
-	sarazine-ouattara
 	stephane
 	tacinte
 	teolemon
@@ -323,6 +322,46 @@ $options{product_type} = "food";
 	{
 		name => "Halal App Chakib",
 		conditions => [["user_id", "halal-app-chakib"],],
+		actions => [["ignore"],],
+		notifications => [
+			qw (
+				slack_channel_edit-alert
+			)
+		],
+	},
+	{
+		name => "Vegan App Chakib",
+		conditions => [["user_id", "vegan-app-chakib"],],
+		actions => [["ignore"],],
+		notifications => [
+			qw (
+				slack_channel_edit-alert
+			)
+		],
+	},
+	{
+		name => "Vegetarian App Chakib",
+		conditions => [["user_id", "vegetarian-app-chakib"],],
+		actions => [["ignore"],],
+		notifications => [
+			qw (
+				slack_channel_edit-alert
+			)
+		],
+	},
+	{
+		name => "Allergies App Chakib",
+		conditions => [["user_id", "allergies-app-chakib"],],
+		actions => [["ignore"],],
+		notifications => [
+			qw (
+				slack_channel_edit-alert
+			)
+		],
+	},
+	{
+		name => "Additives App Chakib",
+		conditions => [["user_id", "additives-app-chakib"],],
 		actions => [["ignore"],],
 		notifications => [
 			qw (
@@ -769,6 +808,7 @@ $options{replace_existing_values_when_importing_those_tags_fields} = {
 	created_t
 	last_modified_t
 	last_modified_by
+	last_updated_t
 	product_name
 	abbreviated_product_name
 	generic_name
@@ -1025,6 +1065,9 @@ $options{other_servers} = {
 		domain => "openpetfoodfacts.org",
 	}
 };
+
+# Name of the Redis stream to which product updates are published
+$options{redis_stream_name} = "product_updates_off";
 
 # used to rename texts and to redirect to the new name
 $options{redirect_texts} = {

@@ -697,6 +697,7 @@ sub compute_ecoscore ($product_ref) {
 
 	delete $product_ref->{ecoscore_grade};
 	delete $product_ref->{ecoscore_score};
+	delete $product_ref->{downgraded};
 
 	$product_ref->{ecoscore_data} = {adjustments => {},};
 
@@ -710,6 +711,8 @@ sub compute_ecoscore ($product_ref) {
 	remove_tag($product_ref, "misc", "en:ecoscore-not-applicable");
 	remove_tag($product_ref, "misc", "en:ecoscore-changed");
 	remove_tag($product_ref, "misc", "en:ecoscore-grade-changed");
+	remove_tag($product_ref, "misc", "en:ecoscore-score-above-100");
+	remove_tag($product_ref, "misc", "en:ecoscore-downgraded");
 
 	# Check if we have extended ecoscore_data from the impact estimator
 	# Remove any misc "en:ecoscore-extended-data-version-[..]" tags
@@ -853,8 +856,12 @@ sub compute_ecoscore ($product_ref) {
 						{non_recyclable_and_non_biodegradable_materials} > 0)
 					)
 				{
-
-					$product_ref->{"downgraded"} = "non_recyclable_and_non_biodegradable_materials";
+					$product_ref->{ecoscore_data}{"downgraded"} = "non_recyclable_and_non_biodegradable_materials";
+					# For France, save the original score
+					if ($cc eq 'fr') {
+						$product_ref->{ecoscore_data}{"scores"}{$cc . "_orig"}
+							= $product_ref->{ecoscore_data}{"scores"}{$cc};
+					}
 					$product_ref->{ecoscore_data}{"grades"}{$cc} = "b";
 					$product_ref->{ecoscore_data}{"scores"}{$cc} = 79;
 				}
@@ -882,6 +889,13 @@ sub compute_ecoscore ($product_ref) {
 			$product_ref->{"ecoscore_score"} = $product_ref->{ecoscore_data}{"scores"}{"fr"};
 			$product_ref->{"ecoscore_grade"} = $product_ref->{ecoscore_data}{"grades"}{"fr"};
 			$product_ref->{"ecoscore_tags"} = [$product_ref->{ecoscore_grade}];
+
+			if ($product_ref->{ecoscore_data}{"downgraded"}) {
+				add_tag($product_ref, "misc", "en:ecoscore-downgraded");
+			}
+			if (($product_ref->{ecoscore_data}{scores}{fr_orig} // $product_ref->{ecoscore_data}{scores}{fr}) > 100) {
+				add_tag($product_ref, "misc", "en:ecoscore-score-above-100");
+			}
 
 			if ($missing_data_warning) {
 				$product_ref->{ecoscore_data}{missing_data_warning} = 1;
@@ -1113,13 +1127,26 @@ my @production_system_labels = (
 	["en:responsible-aquaculture-asc", 10],
 );
 
-foreach my $label_ref (@production_system_labels) {
+my $production_system_labels_initialized = 0;
 
-	# Canonicalize the label ids in case the normalized id changed
-	$label_ref->[0] = canonicalize_taxonomy_tag("en", "labels", $label_ref->[0]);
+sub init_production_system_labels () {
+
+	return if $production_system_labels_initialized;
+
+	# Canonicalize the labels
+	foreach my $label_ref (@production_system_labels) {
+
+		# Canonicalize the label ids in case the normalized id changed
+		$label_ref->[0] = canonicalize_taxonomy_tag("en", "labels", $label_ref->[0]);
+	}
+	$production_system_labels_initialized = 1;
+
+	return;
 }
 
 sub compute_ecoscore_production_system_adjustment ($product_ref) {
+
+	init_production_system_labels();
 
 	$product_ref->{ecoscore_data}{adjustments}{production_system} = {value => 0, labels => []};
 
@@ -1371,7 +1398,10 @@ sub compute_ecoscore_origins_of_ingredients_adjustment ($product_ref) {
 		foreach my $category (@{$product_ref->{categories_tags}}) {
 			my $origin_id = get_property("categories", $category, "origins:en");
 			if (defined $origin_id) {
-				push @origins_from_categories, split(',', $origin_id);
+				# There may be multiple comma separated origins, and they might not be canonical
+				# so we split them and canonicalize them
+				push @origins_from_categories,
+					map ({canonicalize_taxonomy_tag("en", "origins", $_)} split(',', $origin_id));
 			}
 		}
 	}

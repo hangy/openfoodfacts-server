@@ -179,6 +179,7 @@ use ProductOpener::Export qw(:all);
 use ProductOpener::API qw(:all);
 use ProductOpener::Units qw/:all/;
 use ProductOpener::Cache qw/:all/;
+use ProductOpener::Permissions qw/:all/;
 
 use Encode;
 use URI::Escape::XS;
@@ -397,6 +398,10 @@ sub process_template ($template_filename, $template_data_ref, $result_content_re
 	$template_data_ref->{sep} = separator_before_colon($lc);
 	$template_data_ref->{lang} = \&lang;
 	$template_data_ref->{f_lang} = \&f_lang;
+	# escaping quotes for use in javascript or json
+	# using short names to favour readability
+	$template_data_ref->{esq} = sub {escape_char(@_, "\'")};    # esq as escape_single_quote_and_newlines
+	$template_data_ref->{edq} = sub {escape_char(@_, '"')};    # edq as escape_double_quote
 	$template_data_ref->{lang_sprintf} = \&lang_sprintf;
 	$template_data_ref->{lc} = $lc;
 	$template_data_ref->{cc} = $cc;
@@ -409,6 +414,12 @@ sub process_template ($template_filename, $template_data_ref, $result_content_re
 	$template_data_ref->{product_url} = \&product_url;
 	$template_data_ref->{product_action_url} = \&product_action_url;
 	$template_data_ref->{product_name_brand_quantity} = \&product_name_brand_quantity;
+	$template_data_ref->{has_permission} = sub ($permission) {
+		# Note: we pass a fake $request_ref object with only the fields admin, moderator and pro_moderator
+		# an alternative would be to pass the $request_ref object to process_template() calls
+		return has_permission({admin => $admin, moderator => $User{moderator}, pro_moderator => $User{pro_moderator}},
+			$permission);
+	};
 
 	# select2 options generator for all entries in a taxonomy
 	$template_data_ref->{generate_select2_options_for_taxonomy_to_json} = sub ($tagtype) {
@@ -826,7 +837,8 @@ sub init_request ($request_ref = {}) {
 				{
 					message => {id => "invalid_user_id_and_password"},
 					impact => {id => "failure"},
-				}
+				},
+				403
 			);
 		}
 		# /cgi/auth.pl returns a JSON body
@@ -854,6 +866,9 @@ sub init_request ($request_ref = {}) {
 	}
 	$request_ref->{admin} = $admin;
 	# TODO: remove the $admin global variable, and use $request_ref->{admin} instead.
+
+	$request_ref->{moderator} = $User{moderator};
+	$request_ref->{pro_moderator} = $User{pro_moderator};
 
 	# Producers platform: not logged in users, or users with no permission to add products
 
@@ -920,6 +935,16 @@ CSS
 			skip_ecoscore => 1,
 			skip_forest_footprint => 1,
 		};
+	}
+
+	if ($request_ref->{admin}) {
+		$knowledge_panels_options_ref->{admin} = 1;
+	}
+	if ($User{moderator}) {
+		$knowledge_panels_options_ref->{moderator} = 1;
+	}
+	if ($server_options{producers_platform}) {
+		$knowledge_panels_options_ref->{producers_platform} = 1;
 	}
 
 	$log->debug(
@@ -2993,7 +3018,7 @@ sub display_points ($request_ref) {
 	my $description = '';
 
 	if ($tagtype eq 'users') {
-		my $user_ref = retrieve("$BASE_DIRS{USERS}/$tagid.sto");
+		my $user_ref = retrieve_user($tagid);
 		if (defined $user_ref) {
 			if ((defined $user_ref->{name}) and ($user_ref->{name} ne '')) {
 				$title = $user_ref->{name} . " ($tagid)";
@@ -4034,7 +4059,7 @@ HTML
 
 				# User
 
-				$user_or_org_ref = retrieve("$BASE_DIRS{USERS}/$tagid.sto");
+				$user_or_org_ref = retrieve_user($tagid);
 
 				if (not defined $user_or_org_ref) {
 					display_error_and_exit(lang("error_unknown_user"), 404);
@@ -4151,7 +4176,14 @@ HTML
 				# We are on the main page of the tag (not a sub-page with another tag)
 				# so we display more information related to the tag
 
-				my $tag_logo_html = display_tags_hierarchy_taxonomy($lc, $tagtype, [$canon_tagid]);
+				my $tag_logo_html;
+
+				if (defined $taxonomy_fields{$tagtype}) {
+					$tag_logo_html = display_tags_hierarchy_taxonomy($lc, $tagtype, [$canon_tagid]);
+				}
+				else {
+					$tag_logo_html = display_tags_hierarchy($tagtype, [$canon_tagid]);
+				}
 
 				$tag_logo_html =~ s/.*<\/a>(<br \/>)?//;    # remove link, keep only tag logo
 
@@ -4208,8 +4240,8 @@ HTML
 	# Add parameters corresponding to the tag filters so that they can be added to the query by add_params_to_query()
 
 	foreach my $tag_ref (@{$request_ref->{tags}}) {
-		if ($tagtype eq 'users') {
-			deep_set($request_ref, "body_json", "creator", $tagid);
+		if ($tag_ref->{tagtype} eq 'users') {
+			deep_set($request_ref, "body_json", "creator", $tag_ref->{tagid});
 		}
 		else {
 			my $field_name = $tag_ref->{tagtype} . "_tags";
@@ -4230,6 +4262,7 @@ HTML
 	# TODO: is_crawl_bot should be added directly by process_template(),
 	# but we would need to add a new $request_ref parameter to process_template(), will do later
 	$tag_template_data_ref->{is_crawl_bot} = $request_ref->{is_crawl_bot};
+
 	process_template('web/pages/tag/tag.tt.html', $tag_template_data_ref, \$tag_html)
 		or $tag_html = "<p>tag.tt.html template error: " . $tt->error() . "</p>";
 
@@ -4298,7 +4331,7 @@ HTML
 	return;
 }
 
-=head2 display_list_of_tags ( $request_ref, $query_ref )
+=head2 list_all_request_params ( $request_ref, $query_ref )
 
 Return an array of names of all request parameters.
 
@@ -4395,8 +4428,8 @@ JS
 			;
 
 		$scripts .= <<JS
-<script src="/js/product-preferences.js"></script>
-<script src="/js/product-search.js"></script>
+<script src="$static_subdomain/js/product-preferences.js"></script>
+<script src="$static_subdomain/js/product-search.js"></script>
 JS
 			;
 
@@ -5429,8 +5462,8 @@ JS
 			;
 
 		$scripts .= <<JS
-<script src="/js/product-preferences.js"></script>
-<script src="/js/product-search.js"></script>
+<script src="$static_subdomain/js/product-preferences.js"></script>
+<script src="$static_subdomain/js/product-search.js"></script>
 JS
 			;
 
@@ -5727,18 +5760,6 @@ sub search_and_export_products ($request_ref, $query_ref, $sort_by) {
 	return;
 }
 
-sub escape_single_quote ($s) {
-
-	# some app escape single quotes already, so we have \' already
-	if (not defined $s) {
-		return '';
-	}
-	$s =~ s/\\'/'/g;
-	$s =~ s/'/\\'/g;
-	$s =~ s/\n/ /g;
-	return $s;
-}
-
 @search_series = (qw/organic fairtrade with_sweeteners default/);
 
 my %search_series_colors = (
@@ -5793,29 +5814,29 @@ sub get_search_field_title_and_details ($field) {
 
 	if ($field eq 'additives_n') {
 		$allow_decimals = "allowDecimals:false,\n";
-		$title = escape_single_quote(lang("number_of_additives"));
+		$title = escape_single_quote_and_newlines(lang("number_of_additives"));
 	}
 	elsif ($field eq "forest_footprint") {
 		$allow_decimals = "allowDecimals:true,\n";
-		$title = escape_single_quote(lang($field));
+		$title = escape_single_quote_and_newlines(lang($field));
 	}
 	elsif ($field =~ /_n$/) {
 		$allow_decimals = "allowDecimals:false,\n";
-		$title = escape_single_quote(lang($field . "_s"));
+		$title = escape_single_quote_and_newlines(lang($field . "_s"));
 	}
 	elsif ($field eq "product_quantity") {
 		$allow_decimals = "allowDecimals:false,\n";
-		$title = escape_single_quote(lang("quantity"));
+		$title = escape_single_quote_and_newlines(lang("quantity"));
 		$unit = ' (g)';
 		$unit2 = 'g';
 	}
 	elsif ($field eq "nova_group") {
 		$allow_decimals = "allowDecimals:false,\n";
-		$title = escape_single_quote(lang("nova_groups_s"));
+		$title = escape_single_quote_and_newlines(lang("nova_groups_s"));
 	}
 	elsif ($field eq "ecoscore_score") {
 		$allow_decimals = "allowDecimals:false,\n";
-		$title = escape_single_quote(lang("ecoscore_score"));
+		$title = escape_single_quote_and_newlines(lang("ecoscore_score"));
 	}
 	elsif ($field =~ /^packagings_materials\.([^.]+)\.([^.]+)$/) {
 		my $material = $1;
@@ -6256,7 +6277,7 @@ sub display_histogram ($graph_ref, $products_ref) {
 	}
 
 	$axis_details{"y"} = {
-		title => escape_single_quote(lang("number_of_products")),
+		title => escape_single_quote_and_newlines(lang("number_of_products")),
 		allow_decimals => "allowDecimals:false,\n",
 		unit => '',
 		unit2 => '',
@@ -6670,7 +6691,7 @@ sub search_and_graph_products ($request_ref, $query_ref, $graph_ref) {
 
 	if ($count > 0) {
 
-		$graph_ref->{graph_title} = escape_single_quote($graph_ref->{graph_title});
+		$graph_ref->{graph_title} = escape_single_quote_and_newlines($graph_ref->{graph_title});
 
 		# 1 axis: histogram / bar chart -> axis_y == "product_n" or is empty
 		# 2 axis: scatter plot
@@ -6723,20 +6744,21 @@ sub get_packager_code_coordinates ($emb_code) {
 	my $lng;
 
 	if (exists $packager_codes{$emb_code}) {
-		if (exists $packager_codes{$emb_code}{lat}) {
+		my %emb_code_data = %{$packager_codes{$emb_code}};
+		if (exists $emb_code_data{lat}) {
 			# some lat/lng have , for floating point numbers
-			$lat = $packager_codes{$emb_code}{lat};
-			$lng = $packager_codes{$emb_code}{lng};
+			$lat = $emb_code_data{lat};
+			$lng = $emb_code_data{lng};
 			$lat =~ s/,/\./g;
 			$lng =~ s/,/\./g;
 		}
-		elsif (exists $packager_codes{$emb_code}{fsa_rating_business_geo_lat}) {
-			$lat = $packager_codes{$emb_code}{fsa_rating_business_geo_lat};
-			$lng = $packager_codes{$emb_code}{fsa_rating_business_geo_lng};
+		elsif (exists $emb_code_data{fsa_rating_business_geo_lat}) {
+			$lat = $emb_code_data{fsa_rating_business_geo_lat};
+			$lng = $emb_code_data{fsa_rating_business_geo_lng};
 		}
-		elsif ($packager_codes{$emb_code}{cc} eq 'uk') {
-			#my $address = 'uk' . '.' . $packager_codes{$emb_code}{local_authority};
-			my $address = 'uk' . '.' . $packager_codes{$emb_code}{canon_local_authority};
+		elsif ($emb_code_data{cc} eq 'uk') {
+			#my $address = 'uk' . '.' . $emb_code_data{local_authority};
+			my $address = 'uk' . '.' . ($emb_code_data{canon_local_authority} // '');
 			if (exists $geocode_addresses{$address}) {
 				$lat = $geocode_addresses{$address}[0];
 				$lng = $geocode_addresses{$address}[1];
@@ -6800,7 +6822,7 @@ sub map_of_products ($products_iter, $request_ref, $graph_ref) {
 	init_packager_codes();
 	init_geocode_addresses();
 
-	$graph_ref->{graph_title} = escape_single_quote($graph_ref->{graph_title});
+	$graph_ref->{graph_title} = escape_single_quote_and_newlines($graph_ref->{graph_title});
 
 	my $matching_products = 0;
 	my $places = 0;
@@ -6813,7 +6835,7 @@ sub map_of_products ($products_iter, $request_ref, $graph_ref) {
 	while (my $product_ref = $products_iter->()) {
 		my $url = $formatted_subdomain . product_url($product_ref->{code});
 
-		my $manufacturing_places = escape_single_quote($product_ref->{"manufacturing_places"});
+		my $manufacturing_places = escape_single_quote_and_newlines($product_ref->{"manufacturing_places"});
 		$manufacturing_places =~ s/,( )?/, /g;
 		if ($manufacturing_places ne '') {
 			$manufacturing_places
@@ -6822,7 +6844,7 @@ sub map_of_products ($products_iter, $request_ref, $graph_ref) {
 				. $manufacturing_places . "<br>";
 		}
 
-		my $origins = escape_single_quote($product_ref->{origins});
+		my $origins = escape_single_quote_and_newlines($product_ref->{origins});
 		$origins =~ s/,( )?/, /g;
 		if ($origins ne '') {
 			$origins = ucfirst(lang("origins_p")) . separator_before_colon($lc) . ": " . $origins . "<br>";
@@ -7384,8 +7406,6 @@ sub display_page ($request_ref) {
 
 sub display_image_box ($product_ref, $id, $minheight_ref) {
 
-	# print STDERR "display_image_box : $id\n";
-
 	my $img = display_image($product_ref, $id, $small_size);
 	if ($img ne '') {
 		my $code = $product_ref->{code};
@@ -7545,7 +7565,7 @@ sub display_product ($request_ref) {
 	my $code = normalize_code($request_code);
 	local $log->context->{code} = $code;
 
-	if ($code !~ /^\d{4,24}$/) {
+	if (not is_valid_code($code)) {
 		display_error_and_exit($Lang{invalid_barcode}{$lang}, 403);
 	}
 
@@ -7558,10 +7578,12 @@ sub display_product ($request_ref) {
 	my $template_data_ref = {request_ref => $request_ref,};
 
 	$scripts .= <<SCRIPTS
-<script src="/js/dist/webcomponentsjs/webcomponents-loader.js"></script>
+<script src="$static_subdomain/js/dist/webcomponentsjs/webcomponents-loader.js"></script>
 <script src="$static_subdomain/js/dist/display-product.js"></script>
+<script src="$static_subdomain/js/dist/product-history.js"></script>
 SCRIPTS
 		;
+
 	# call equalizer when dropdown content is shown
 	$initjs .= <<JS
 \$('.f-dropdown').on('opened.fndtn.dropdown', function() {
@@ -8330,7 +8352,8 @@ HTML
 		$template_data_ref->{display_field_states} = display_field($product_ref, 'states');
 	}
 
-	$template_data_ref->{display_product_history} = display_product_history($code, $product_ref) if $User{moderator};
+	$template_data_ref->{display_product_history} = display_product_history($request_ref, $code, $product_ref)
+		if $User{moderator};
 
 	# Twitter card
 
@@ -8410,8 +8433,8 @@ var preferences_text = "$preferences_text";
 var product = $product_attribute_groups_json;
 </script>
 
-<script src="/js/product-preferences.js"></script>
-<script src="/js/product-search.js"></script>
+<script src="$static_subdomain/js/product-preferences.js"></script>
+<script src="$static_subdomain/js/product-search.js"></script>
 JS
 			;
 
@@ -8671,7 +8694,7 @@ HTML
 			my $link;
 
 			# taxonomy field?
-			if ($tagid =~ /:/) {
+			if (defined $taxonomy_fields{$class}) {
 				$tag = display_taxonomy_tag($lc, $class, $tagid);
 				$link = canonicalize_taxonomy_tag_link($lc, $class, $tagid);
 			}
@@ -8874,7 +8897,7 @@ HTML
 	return;
 }
 
-=head2 display_nutriscore_calculation_details( $nutriscore_data_ref )
+=head2 display_nutriscore_calculation_details( $nutriscore_data_ref, $version = "2021" )
 
 Generates HTML code with information on how the Nutri-Score was computed for a particular product.
 
@@ -8883,7 +8906,7 @@ the rounded value according to the Nutri-Score rules, and the corresponding poin
 
 =cut
 
-sub display_nutriscore_calculation_details ($nutriscore_data_ref) {
+sub display_nutriscore_calculation_details ($nutriscore_data_ref, $version = "2021") {
 
 	my $beverage_view;
 
@@ -9070,7 +9093,7 @@ sub data_to_display_nutrient_levels ($product_ref) {
 	return $result_data_ref;
 }
 
-=head2 data_to_display_nutriscore ( $product_ref )
+=head2 data_to_display_nutriscore ($nutriscore_data_ref, $version = "2021" )
 
 Generates a data structure to display the Nutri-Score.
 
@@ -9086,9 +9109,7 @@ Reference to a data structure with needed data to display.
 
 =cut
 
-sub data_to_display_nutriscore($) {
-
-	my $product_ref = shift;
+sub data_to_display_nutriscore ($product_ref, $version = "2021") {
 
 	my $result_data_ref = {};
 
@@ -9096,9 +9117,17 @@ sub data_to_display_nutriscore($) {
 
 	my @nutriscore_warnings = ();
 
-	if ((defined $product_ref->{nutrition_grade_fr}) and ($product_ref->{nutrition_grade_fr} =~ /^[abcde]$/)) {
+	my $nutriscore_grade = deep_get($product_ref, "nutriscore", $version, "grade");
+	my $nutriscore_data_ref = deep_get($product_ref, "nutriscore", $version, "data");
+	# On old product revisions, nutriscore grade was in nutrition_grade_fr
+	if ((not defined $nutriscore_grade) and ($version eq "2021")) {
+		$nutriscore_grade = $product_ref->{"nutrition_grade_fr"};
+		$nutriscore_data_ref = $product_ref->{nutriscore_data};
+	}
 
-		$result_data_ref->{nutriscore_grade} = $product_ref->{"nutrition_grade_fr"};
+	if ((defined $nutriscore_grade) and ($nutriscore_grade =~ /^[abcde]$/)) {
+
+		$result_data_ref->{nutriscore_grade} = $nutriscore_grade;
 
 		# Do not display a warning for water
 		if (not(has_tag($product_ref, "categories", "en:spring-waters"))) {
@@ -9213,8 +9242,7 @@ sub data_to_display_nutriscore($) {
 
 	# Display the details of the computation of the Nutri-Score if we computed one
 	if ((defined $product_ref->{nutriscore_grade}) and ($product_ref->{nutriscore_grade} =~ /^[a-e]$/)) {
-		$result_data_ref->{nutriscore_details}
-			= display_nutriscore_calculation_details($product_ref->{nutriscore_data});
+		$result_data_ref->{nutriscore_details} = display_nutriscore_calculation_details($nutriscore_data_ref, $version);
 	}
 
 	return $result_data_ref;
@@ -10315,7 +10343,7 @@ sub display_product_api ($request_ref) {
 		$product_ref = retrieve_product($product_id);
 	}
 
-	if ($code !~ /^\d{4,24}$/) {
+	if (not is_valid_code($code)) {
 
 		$log->info("invalid code", {code => $code, original_code => $request_ref->{code}}) if $log->is_info();
 		$response{status} = 0;
@@ -10505,7 +10533,7 @@ sub display_rev_info ($product_ref, $rev) {
 
 }
 
-sub display_product_history ($code, $product_ref) {
+sub display_product_history ($request_ref, $code, $product_ref) {
 
 	if ($product_ref->{rev} <= 0) {
 		return;
@@ -10550,7 +10578,8 @@ sub display_product_history ($code, $product_ref) {
 			return display_tag_link('editors', $uid);
 		},
 		this_product_url => product_url($product_ref),
-		revisions => \@revisions
+		revisions => \@revisions,
+		product => $product_ref,
 	};
 
 	my $html;
