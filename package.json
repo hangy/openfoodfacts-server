@@ -57,7 +57,7 @@
   },
   "devDependencies": {
     "@babel/core": "^7.24.3",
-    "@babel/preset-env": "^7.22.0",
+    "@babel/preset-env": "^7.24.3",
     "@types/gulp": "^4.0.17",
     "@types/gulp-concat": "^0.0.37",
     "@types/gulp-csso": "^4.0.5",
